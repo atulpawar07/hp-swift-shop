@@ -9,39 +9,36 @@ All colors MUST be HSL.
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 215 25% 27%;
+    --foreground: 0 0% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
+    --card-foreground: 0 0% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
+    --popover-foreground: 0 0% 20%;
 
-    /* SK Enterprise Blue */
-    --primary: 214 73% 40%;
+    /* Red primary color like Orion Tech */
+    --primary: 0 100% 40%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 214 73% 35%;
+    --primary-hover: 0 100% 35%;
 
-    /* SK Enterprise Gold */
-    --secondary: 45 95% 48%;
-    --secondary-foreground: 215 25% 27%;
-    --secondary-hover: 45 95% 42%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 20%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 214 73% 95%;
-    --accent-foreground: 214 73% 40%;
+    --accent: 214 73% 40%;
+    --accent-foreground: 0 0% 100%;
 
-    /* SK Red accent */
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 214 73% 40%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 100% 40%;
 
-    --radius: 0.5rem;
+    --radius: 0.25rem;
     
     /* Custom tokens */
     --gradient-primary: linear-gradient(135deg, hsl(214 73% 40%), hsl(214 73% 50%));
@@ -67,35 +64,34 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 215 28% 12%;
+    --background: 0 0% 20%;
     --foreground: 0 0% 98%;
 
-    --card: 215 25% 15%;
+    --card: 0 0% 25%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 215 25% 15%;
+    --popover: 0 0% 25%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 214 73% 50%;
+    --primary: 0 100% 45%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 214 73% 55%;
+    --primary-hover: 0 100% 40%;
 
-    --secondary: 45 95% 52%;
-    --secondary-foreground: 215 25% 12%;
-    --secondary-hover: 45 95% 58%;
+    --secondary: 0 0% 30%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 217 32% 20%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 0 0% 30%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 214 73% 25%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 214 73% 50%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 55%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 217 32% 20%;
-    --input: 217 32% 20%;
-    --ring: 214 73% 50%;
+    --border: 0 0% 30%;
+    --input: 0 0% 30%;
+    --ring: 0 100% 45%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;

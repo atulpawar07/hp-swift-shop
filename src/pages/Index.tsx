@@ -1,185 +1,121 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-
-// Sample product data - will be replaced with real data from database
-const featuredProducts = [
-  {
-    id: "1",
-    name: "HP ProBook 450 G9 - Intel Core i5 12th Gen",
-    price: 52999,
-    originalPrice: 64999,
-    image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format",
-    category: "Laptops",
-    inStock: true,
-    specs: ["Intel Core i5-1235U", "8GB RAM", "512GB SSD", "15.6\" FHD Display"]
-  },
-  {
-    id: "2",
-    name: "HP LaserJet Pro M404dn Printer",
-    price: 24999,
-    originalPrice: 29999,
-    image: "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=800&auto=format",
-    category: "Printers",
-    inStock: true,
-    specs: ["38 ppm", "Ethernet, USB", "Auto Duplex", "250-sheet tray"]
-  },
-  {
-    id: "3",
-    name: "HP EliteBook 840 G9 - Intel Core i7",
-    price: 89999,
-    originalPrice: 104999,
-    image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=800&auto=format",
-    category: "Laptops",
-    inStock: true,
-    specs: ["Intel Core i7-1265U", "16GB RAM", "512GB NVMe SSD", "14\" FHD IPS"]
-  },
-  {
-    id: "4",
-    name: "HP Wireless Mouse & Keyboard Combo",
-    price: 1899,
-    originalPrice: 2499,
-    image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&auto=format",
-    category: "Accessories",
-    inStock: true,
-    specs: ["2.4GHz Wireless", "Slim Design", "Plug & Play", "Long Battery Life"]
-  },
-  {
-    id: "5",
-    name: "HP Color LaserJet Pro M454dw",
-    price: 34999,
-    image: "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=800&auto=format",
-    category: "Printers",
-    inStock: true,
-    specs: ["28 ppm Color", "Wi-Fi, Ethernet", "Auto Duplex", "HP Smart App"]
-  },
-  {
-    id: "6",
-    name: "HP USB-C Universal Dock",
-    price: 8999,
-    originalPrice: 11999,
-    image: "https://images.unsplash.com/photo-1625948515291-69613efd103f?w=800&auto=format",
-    category: "Accessories",
-    inStock: true,
-    specs: ["USB-C 3.1", "Dual Display Support", "Power Delivery", "6 USB Ports"]
-  }
-];
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
+  const features = [
+    "Worldwide Sourcing",
+    "Broad Range of IT Products and Services",
+    "Flexible Logistics",
+    "Right Price",
+    "Speedy Service"
+  ];
+
+  const services = [
+    "Speed",
+    "Consistency",
+    "Reliability",
+    "Technical Competence",
+    "Virtual Integration",
+    "Adaptability"
+  ];
+
+  const partners = [
+    { name: "HP", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/HP_logo_2012.svg/300px-HP_logo_2012.svg.png" },
+    { name: "Dell", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Dell_Logo.svg/300px-Dell_Logo.svg.png" },
+    { name: "Lenovo", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Lenovo_logo_2015.svg/300px-Lenovo_logo_2015.svg.png" },
+    { name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Microsoft_logo_%282012%29.svg/300px-Microsoft_logo_%282012%29.svg.png" },
+    { name: "Apple", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/200px-Apple_logo_black.svg.png" },
+    { name: "Samsung", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/300px-Samsung_Logo.svg.png" },
+  ];
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen flex flex-col">
       <Navbar />
       <Hero />
-      
-      {/* Featured Products Section */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h2 className="text-3xl font-bold text-foreground mb-2">Featured Products</h2>
-            <p className="text-muted-foreground">Best deals on HP laptops, printers, and accessories</p>
-          </div>
-          <Link to="/products">
-            <Button variant="outline" className="gap-2 hidden md:flex">
-              View All
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.id} {...product} />
-          ))}
-        </div>
-
-        <div className="text-center mt-8 md:hidden">
-          <Link to="/products">
-            <Button variant="outline" className="gap-2">
-              View All Products
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </section>
-
-      {/* Categories Section */}
-      <section className="bg-accent/50 py-16">
+      {/* Welcome Section */}
+      <section className="py-16 bg-secondary">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Shop by Category</h2>
-          
-          <div className="grid md:grid-cols-3 gap-6">
-            <Link to="/products?category=laptops" className="group">
-              <div className="bg-card rounded-xl p-8 text-center hover:shadow-lg transition-all border border-border">
-                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
-                  <span className="text-4xl">💻</span>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Laptops</h3>
-                <p className="text-muted-foreground text-sm">Business & Enterprise Solutions</p>
-              </div>
-            </Link>
+          <div className="flex flex-col lg:flex-row gap-12 items-center">
+            {/* Image */}
+            <div className="lg:w-1/3">
+              <img 
+                src="https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&h=400&fit=crop" 
+                alt="Business Partnership" 
+                className="rounded-lg shadow-lg w-full"
+              />
+            </div>
 
-            <Link to="/products?category=printers" className="group">
-              <div className="bg-card rounded-xl p-8 text-center hover:shadow-lg transition-all border border-border">
-                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
-                  <span className="text-4xl">🖨️</span>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Printers</h3>
-                <p className="text-muted-foreground text-sm">LaserJet & InkJet Solutions</p>
-              </div>
-            </Link>
+            {/* Content */}
+            <div className="lg:w-2/3">
+              <h2 className="text-sm text-primary font-semibold mb-2">Welcome to</h2>
+              <h3 className="text-3xl font-bold text-foreground mb-6">SK Enterprise</h3>
+              
+              <p className="text-muted-foreground mb-6 leading-relaxed">
+                In today's demanding and dynamic world of IT Distribution, it takes a special kind of organization to deliver consistently on all key business metrics: availability, right price, prompt delivery, efficient logistics and top-class service. With decades of experience in worldwide sourcing of IT products and services and robust relationships across the IT value-chain, SK Enterprise is ideally positioned to be your supplier of choice. Whether your needs are a one-time fulfillment or on-going run-rate purchases, you will find the right partner in SK Enterprise.
+              </p>
 
-            <Link to="/products?category=accessories" className="group">
-              <div className="bg-card rounded-xl p-8 text-center hover:shadow-lg transition-all border border-border">
-                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
-                  <span className="text-4xl">⌨️</span>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Accessories</h3>
-                <p className="text-muted-foreground text-sm">Complete Your Setup</p>
+              <p className="text-muted-foreground mb-8">These are some of our key USPs:</p>
+
+              <div className="grid md:grid-cols-2 gap-4 mb-8">
+                {features.map((feature, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
+                    <span className="text-foreground">{feature}</span>
+                  </div>
+                ))}
               </div>
-            </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Why Choose Us Section */}
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center mb-12">Why Choose SK Enterprise?</h2>
-        
-        <div className="grid md:grid-cols-4 gap-8">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl">✓</span>
+      {/* HP Gold Partner Badge */}
+      <section className="py-12 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div>
+              <h3 className="text-2xl font-bold mb-2">Our Services</h3>
+              <div className="grid md:grid-cols-3 gap-4">
+                {services.map((service, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <span className="text-primary">▸</span>
+                    <span className="text-foreground">{service}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <h3 className="font-semibold text-lg mb-2">Authorized Dealer</h3>
-            <p className="text-sm text-muted-foreground">Official HP partner with genuine products</p>
+            <div className="bg-accent text-accent-foreground px-8 py-6 rounded-lg">
+              <div className="text-center">
+                <div className="text-4xl font-bold mb-1">HP</div>
+                <div className="text-sm">Gold Partner</div>
+              </div>
+            </div>
           </div>
+        </div>
+      </section>
 
-          <div className="text-center">
-            <div className="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl">🚚</span>
-            </div>
-            <h3 className="font-semibold text-lg mb-2">Fast Delivery</h3>
-            <p className="text-sm text-muted-foreground">Quick shipping across India</p>
+      {/* Our Partners Section */}
+      <section className="py-12 bg-secondary">
+        <div className="container mx-auto px-4">
+          <div className="bg-primary text-primary-foreground px-6 py-3 mb-8 inline-block">
+            <h3 className="text-xl font-bold">Our Partners</h3>
           </div>
-
-          <div className="text-center">
-            <div className="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl">💰</span>
-            </div>
-            <h3 className="font-semibold text-lg mb-2">Best Prices</h3>
-            <p className="text-sm text-muted-foreground">Competitive pricing for bulk orders</p>
-          </div>
-
-          <div className="text-center">
-            <div className="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl">🎧</span>
-            </div>
-            <h3 className="font-semibold text-lg mb-2">24/7 Support</h3>
-            <p className="text-sm text-muted-foreground">Expert assistance whenever you need</p>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center">
+            {partners.map((partner, index) => (
+              <div key={index} className="flex items-center justify-center p-4 bg-background rounded-lg">
+                <img 
+                  src={partner.logo} 
+                  alt={partner.name} 
+                  className="max-h-12 w-auto grayscale hover:grayscale-0 transition-all"
+                />
+              </div>
+            ))}
           </div>
         </div>
       </section>

@@ -25,11 +25,23 @@ const Index = () => {
 
   const partners = [
     { name: "HP", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/HP_logo_2012.svg/300px-HP_logo_2012.svg.png" },
-    { name: "Dell", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Dell_Logo.svg/300px-Dell_Logo.svg.png" },
     { name: "Lenovo", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Lenovo_logo_2015.svg/300px-Lenovo_logo_2015.svg.png" },
-    { name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Microsoft_logo_%282012%29.svg/300px-Microsoft_logo_%282012%29.svg.png" },
+    { name: "Toshiba", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Toshiba_logo.svg/300px-Toshiba_logo.svg.png" },
+    { name: "Dell", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Dell_Logo.svg/300px-Dell_Logo.svg.png" },
+    { name: "Sony", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Sony_logo.svg/300px-Sony_logo.svg.png" },
+    { name: "Compaq", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Compaq_logo.svg/300px-Compaq_logo.svg.png" },
     { name: "Apple", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/200px-Apple_logo_black.svg.png" },
+    { name: "Acer", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Acer_2011.svg/300px-Acer_2011.svg.png" },
+    { name: "Asus", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/ASUS_Logo.svg/300px-ASUS_Logo.svg.png" },
     { name: "Samsung", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/300px-Samsung_Logo.svg.png" },
+    { name: "APC", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/APC_by_Schneider_Electric_logo.svg/300px-APC_by_Schneider_Electric_logo.svg.png" },
+    { name: "IBM", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/300px-IBM_logo.svg.png" },
+    { name: "Canon", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Canon_wordmark.svg/300px-Canon_wordmark.svg.png" },
+    { name: "Epson", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Epson_logo.svg/300px-Epson_logo.svg.png" },
+    { name: "Brother", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Brother_logo.svg/300px-Brother_logo.svg.png" },
+    { name: "D-Link", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/D-Link_logo.svg/300px-D-Link_logo.svg.png" },
+    { name: "Cisco", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Cisco_logo_blue_2016.svg/300px-Cisco_logo_blue_2016.svg.png" },
+    { name: "Linksys", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Linksys_logo.svg/300px-Linksys_logo.svg.png" },
   ];
 
   return (
@@ -106,14 +118,15 @@ const Index = () => {
             <h3 className="text-xl font-bold">Our Partners</h3>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 items-center">
             {partners.map((partner, index) => (
-              <div key={index} className="flex items-center justify-center p-4 bg-background rounded-lg">
+              <div key={index} className="flex flex-col items-center justify-center p-4 bg-background rounded-lg hover:shadow-md transition-shadow">
                 <img 
                   src={partner.logo} 
-                  alt={partner.name} 
-                  className="max-h-12 w-auto grayscale hover:grayscale-0 transition-all"
+                  alt={`${partner.name} logo`} 
+                  className="max-h-12 w-auto grayscale hover:grayscale-0 transition-all mb-2"
                 />
+                <span className="text-sm font-medium text-muted-foreground">{partner.name}</span>
               </div>
             ))}
           </div>

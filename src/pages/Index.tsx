@@ -130,30 +130,50 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Our Partners Section - Grid View */}
-      <section className="py-12 bg-secondary">
+      {/* Our Partners Section - Horizontal Scrolling */}
+      <section className="py-12 bg-secondary overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="bg-primary text-primary-foreground px-6 py-3 mb-8 inline-block">
             <h3 className="text-xl font-bold">Our Partners</h3>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {partners.map((partner, index) => (
-              <div 
-                key={index} 
-                className="flex items-center justify-center p-6 bg-background border border-border hover:shadow-lg transition-all duration-300 hover:scale-105 min-h-[100px]"
-              >
-                <img 
-                  src={partner.logo} 
-                  alt={`${partner.name} logo`} 
-                  className="max-h-16 max-w-full w-auto object-contain"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = `https://via.placeholder.com/150x60?text=${partner.name}`;
-                  }}
-                />
-              </div>
-            ))}
+          <div className="relative">
+            <div className="flex animate-scroll-left">
+              {/* First set of logos */}
+              {partners.map((partner, index) => (
+                <div 
+                  key={`first-${index}`}
+                  className="flex items-center justify-center px-8 flex-shrink-0"
+                >
+                  <img 
+                    src={partner.logo} 
+                    alt={`${partner.name} logo`} 
+                    className="h-16 w-auto object-contain"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = `https://via.placeholder.com/150x60?text=${partner.name}`;
+                    }}
+                  />
+                </div>
+              ))}
+              {/* Duplicate set for seamless loop */}
+              {partners.map((partner, index) => (
+                <div 
+                  key={`second-${index}`}
+                  className="flex items-center justify-center px-8 flex-shrink-0"
+                >
+                  <img 
+                    src={partner.logo} 
+                    alt={`${partner.name} logo`} 
+                    className="h-16 w-auto object-contain"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = `https://via.placeholder.com/150x60?text=${partner.name}`;
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

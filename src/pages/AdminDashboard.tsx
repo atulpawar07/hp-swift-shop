@@ -86,6 +86,10 @@ const AdminDashboard = () => {
   const [editUserDialogOpen, setEditUserDialogOpen] = useState(false);
   const [editUserFullName, setEditUserFullName] = useState('');
   const [editUserPhone, setEditUserPhone] = useState('');
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const [changingPasswordFor, setChangingPasswordFor] = useState<User | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   // Product form state
   const [name, setName] = useState('');
@@ -700,6 +704,59 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleOpenPasswordDialog = (userItem: User) => {
+    setChangingPasswordFor(userItem);
+    setNewPassword('');
+    setConfirmPassword('');
+    setPasswordDialogOpen(true);
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!changingPasswordFor) return;
+
+    if (newPassword !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+
+    try {
+      // If changing own password
+      if (changingPasswordFor.id === user?.id) {
+        const { error } = await supabase.auth.updateUser({
+          password: newPassword
+        });
+
+        if (error) throw error;
+        toast.success('Your password has been changed successfully');
+      } else {
+        // For other users, send password reset email
+        const { error } = await supabase.auth.resetPasswordForEmail(
+          changingPasswordFor.email,
+          {
+            redirectTo: `${window.location.origin}/auth?mode=reset`
+          }
+        );
+
+        if (error) throw error;
+        toast.success(`Password reset email sent to ${changingPasswordFor.email}`);
+      }
+
+      setPasswordDialogOpen(false);
+      setChangingPasswordFor(null);
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error: any) {
+      console.error('Error changing password:', error);
+      toast.error(error.message || 'Failed to change password');
+    }
+  };
+
   if (loading || loadingProducts) {
     return (
       <div className="min-h-screen bg-background">
@@ -1200,6 +1257,15 @@ const AdminDashboard = () => {
                                     Edit Details
                                   </Button>
                                   
+                                  {/* Change Password Button - Available for all */}
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleOpenPasswordDialog(userItem)}
+                                  >
+                                    {userItem.id === user?.id ? 'Change Password' : 'Reset Password'}
+                                  </Button>
+                                  
                                   {/* Role management - Only for other users */}
                                   {userItem.id !== user?.id && (
                                     <>
@@ -1316,6 +1382,60 @@ const AdminDashboard = () => {
             <Button type="submit" className="w-full">
               Update User
             </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Change Password Dialog */}
+      <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {changingPasswordFor?.id === user?.id ? 'Change Your Password' : `Reset Password for ${changingPasswordFor?.email}`}
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleChangePassword} className="space-y-4">
+            {changingPasswordFor?.id === user?.id ? (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="new-password">New Password</Label>
+                  <Input
+                    id="new-password"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Minimum 6 characters"
+                    required
+                    minLength={6}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-password">Confirm Password</Label>
+                  <Input
+                    id="confirm-password"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Re-enter password"
+                    required
+                    minLength={6}
+                  />
+                </div>
+                <Button type="submit" className="w-full">
+                  Change Password
+                </Button>
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground">
+                  A password reset email will be sent to <strong>{changingPasswordFor?.email}</strong>. 
+                  The user will receive a link to create a new password.
+                </p>
+                <Button type="submit" className="w-full">
+                  Send Password Reset Email
+                </Button>
+              </>
+            )}
           </form>
         </DialogContent>
       </Dialog>

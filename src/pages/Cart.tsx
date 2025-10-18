@@ -159,9 +159,36 @@ const Cart = () => {
                 </p>
               )}
 
-              <Button size="lg" className="w-full">
-                Proceed to Checkout
-              </Button>
+              <div className="space-y-3">
+                <Button 
+                  size="lg" 
+                  className="w-full gap-2"
+                  onClick={() => {
+                    const itemsList = cartItems.map(item => 
+                      `${item.name} (Qty: ${item.quantity}) - ₹${(item.price * item.quantity).toLocaleString()}`
+                    ).join('%0D%0A');
+                    const message = `Hi, I would like to place an order:%0D%0A%0D%0A${itemsList}%0D%0A%0D%0ASubtotal: ₹${subtotal.toLocaleString()}%0D%0AShipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}%0D%0AGST: ₹${tax.toLocaleString()}%0D%0ATotal: ₹${total.toLocaleString()}`;
+                    window.open(`https://wa.me/9769805184?text=${message}`, '_blank');
+                  }}
+                >
+                  Send Enquiry via WhatsApp
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className="w-full gap-2"
+                  onClick={() => {
+                    const itemsList = cartItems.map(item => 
+                      `${item.name} (Qty: ${item.quantity}) - ₹${(item.price * item.quantity).toLocaleString()}`
+                    ).join('%0D%0A');
+                    const subject = 'Order Enquiry';
+                    const body = `Hi,%0D%0A%0D%0AI would like to place an order for the following items:%0D%0A%0D%0A${itemsList}%0D%0A%0D%0ASubtotal: ₹${subtotal.toLocaleString()}%0D%0AShipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}%0D%0AGST: ₹${tax.toLocaleString()}%0D%0ATotal: ₹${total.toLocaleString()}%0D%0A%0D%0APlease confirm availability and payment details.%0D%0A%0D%0AThank you.`;
+                    window.location.href = `mailto:info@skenterprise.ae?subject=${subject}&body=${body}`;
+                  }}
+                >
+                  Send Enquiry via Email
+                </Button>
+              </div>
 
               <div className="mt-6 pt-6 border-t border-border">
                 <p className="text-sm text-muted-foreground text-center">

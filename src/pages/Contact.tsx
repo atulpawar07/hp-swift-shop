@@ -106,41 +106,67 @@ const Contact = () => {
               <div className="bg-card border border-border rounded-lg p-8">
                 <h2 className="text-2xl font-bold text-foreground mb-6">Send us a Message</h2>
                 
-                <form className="space-y-4">
+                <form 
+                  className="space-y-4"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.currentTarget);
+                    const name = formData.get('name');
+                    const email = formData.get('email');
+                    const phone = formData.get('phone');
+                    const message = formData.get('message');
+                    
+                    // Send to WhatsApp
+                    const whatsappMessage = `New Enquiry:%0D%0A%0D%0AName: ${name}%0D%0AEmail: ${email}%0D%0APhone: ${phone}%0D%0A%0D%0AMessage:%0D%0A${message}`;
+                    window.open(`https://wa.me/9769805184?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+                    
+                    // Also send to email
+                    const emailSubject = `New Enquiry from ${name}`;
+                    const emailBody = `Name: ${name}%0D%0AEmail: ${email}%0D%0APhone: ${phone}%0D%0A%0D%0AMessage:%0D%0A${message}`;
+                    setTimeout(() => {
+                      window.location.href = `mailto:info@skenterprise.ae?subject=${emailSubject}&body=${emailBody}`;
+                    }, 500);
+                  }}
+                >
                   <div>
                     <label className="text-sm font-medium text-foreground mb-2 block">
-                      Name
+                      Name *
                     </label>
-                    <Input placeholder="Your name" />
+                    <Input name="name" placeholder="Your name" required />
                   </div>
 
                   <div>
                     <label className="text-sm font-medium text-foreground mb-2 block">
-                      Email
+                      Email *
                     </label>
-                    <Input type="email" placeholder="your.email@example.com" />
+                    <Input name="email" type="email" placeholder="your.email@example.com" required />
                   </div>
 
                   <div>
                     <label className="text-sm font-medium text-foreground mb-2 block">
-                      Phone
+                      Phone *
                     </label>
-                    <Input type="tel" placeholder="+971 XX XXX XXXX" />
+                    <Input name="phone" type="tel" placeholder="+971 XX XXX XXXX" required />
                   </div>
 
                   <div>
                     <label className="text-sm font-medium text-foreground mb-2 block">
-                      Message
+                      Message *
                     </label>
                     <Textarea 
+                      name="message"
                       placeholder="Tell us about your requirements..." 
                       className="min-h-32"
+                      required
                     />
                   </div>
 
                   <Button type="submit" className="w-full">
-                    Send Message
+                    Send Enquiry
                   </Button>
+                  <p className="text-xs text-muted-foreground text-center">
+                    Your enquiry will be sent via WhatsApp and Email
+                  </p>
                 </form>
               </div>
             </div>

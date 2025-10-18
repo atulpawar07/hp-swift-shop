@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ShoppingCart, Heart, Share2, Truck, Shield, Award, ArrowLeft } from "lucide-react";
+import { ShoppingCart, Heart, Share2, Truck, Shield, Award, ArrowLeft, Mail } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
@@ -173,12 +173,28 @@ const ProductDetail = () => {
 
             {/* Actions */}
             <div className="flex gap-3">
-              <Button size="lg" className="flex-1 gap-2" disabled={!product.in_stock}>
+              <Button 
+                size="lg" 
+                className="flex-1 gap-2" 
+                disabled={!product.in_stock}
+                onClick={() => {
+                  const message = `Hi, I'm interested in ${product.name} (${product.brand}). ${product.price ? `Price: AED ${product.price}` : 'Please provide pricing.'}`;
+                  window.open(`https://wa.me/9769805184?text=${encodeURIComponent(message)}`, '_blank');
+                }}
+              >
                 <ShoppingCart className="h-5 w-5" />
-                {product.in_stock ? "Add to Cart" : "Out of Stock"}
+                {product.in_stock ? "Enquire on WhatsApp" : "Out of Stock"}
               </Button>
-              <Button size="lg" variant="outline">
-                <Heart className="h-5 w-5" />
+              <Button 
+                size="lg" 
+                variant="outline"
+                onClick={() => {
+                  const subject = `Enquiry: ${product.name}`;
+                  const body = `Hi,%0D%0A%0D%0AI'm interested in the following product:%0D%0A%0D%0AProduct: ${product.name}%0D%0ABrand: ${product.brand}%0D%0A${product.price ? `Price: AED ${product.price}` : ''}%0D%0A%0D%0APlease provide more details.%0D%0A%0D%0AThank you.`;
+                  window.location.href = `mailto:info@skenterprise.ae?subject=${subject}&body=${body}`;
+                }}
+              >
+                <Mail className="h-5 w-5" />
               </Button>
               <Button size="lg" variant="outline">
                 <Share2 className="h-5 w-5" />

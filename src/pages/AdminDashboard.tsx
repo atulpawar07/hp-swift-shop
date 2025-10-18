@@ -14,7 +14,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Download, Upload } from 'lucide-react';
+import * as XLSX from 'xlsx';
 
 interface Product {
   id: string;
@@ -95,6 +96,11 @@ const AdminDashboard = () => {
   const [primaryEmail, setPrimaryEmail] = useState('info@skenterprise.ae');
   const [primaryWhatsApp, setPrimaryWhatsApp] = useState('9769805184');
   const [primaryPhone, setPrimaryPhone] = useState('+971 563 569089');
+
+  // Bulk upload state
+  const [bulkUploadFile, setBulkUploadFile] = useState<File | null>(null);
+  const [bulkImages, setBulkImages] = useState<FileList | null>(null);
+  const [uploadingBulk, setUploadingBulk] = useState(false);
 
   // Product form state
   const [name, setName] = useState('');
@@ -804,6 +810,169 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleDownloadTemplate = () => {
+    // Create sample data for template
+    const templateData = [
+      {
+        'Product Name': 'Example Product 1',
+        'Brand': 'HP',
+        'Category': 'Laptops',
+        'Price (AED)': '2999',
+        'In Stock': 'Yes',
+        'Image Filenames': 'product1_image1.jpg, product1_image2.jpg'
+      },
+      {
+        'Product Name': 'Example Product 2',
+        'Brand': 'Dell',
+        'Category': 'Printers',
+        'Price (AED)': '1499',
+        'In Stock': 'No',
+        'Image Filenames': 'product2_image1.jpg'
+      }
+    ];
+
+    // Create worksheet
+    const ws = XLSX.utils.json_to_sheet(templateData);
+    
+    // Set column widths
+    ws['!cols'] = [
+      { wch: 30 }, // Product Name
+      { wch: 15 }, // Brand
+      { wch: 15 }, // Category
+      { wch: 12 }, // Price
+      { wch: 10 }, // In Stock
+      { wch: 40 }  // Image Filenames
+    ];
+
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Products Template');
+
+    // Download
+    XLSX.writeFile(wb, 'product_upload_template.xlsx');
+    toast.success('Template downloaded successfully');
+  };
+
+  const handleBulkUpload = async () => {
+    if (!bulkUploadFile) {
+      toast.error('Please select an Excel file');
+      return;
+    }
+
+    setUploadingBulk(true);
+
+    try {
+      // Read Excel file
+      const data = await bulkUploadFile.arrayBuffer();
+      const workbook = XLSX.read(data);
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+      if (jsonData.length === 0) {
+        toast.error('Excel file is empty');
+        setUploadingBulk(false);
+        return;
+      }
+
+      // Upload bulk images first
+      const imageMap: Record<string, string> = {};
+      if (bulkImages && bulkImages.length > 0) {
+        toast.info(`Uploading ${bulkImages.length} images...`);
+        for (let i = 0; i < bulkImages.length; i++) {
+          const file = bulkImages[i];
+          const fileExt = file.name.split('.').pop();
+          const fileName = file.name;
+          const filePath = `bulk/${Date.now()}_${fileName}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from('product-images')
+            .upload(filePath, file);
+
+          if (!uploadError) {
+            const { data: urlData } = supabase.storage
+              .from('product-images')
+              .getPublicUrl(filePath);
+            
+            imageMap[fileName] = urlData.publicUrl;
+          }
+        }
+        toast.success(`${Object.keys(imageMap).length} images uploaded`);
+      }
+
+      // Process products
+      const productsToInsert = [];
+      let skipped = 0;
+
+      for (const row of jsonData as any[]) {
+        const productName = row['Product Name'] || row['product_name'];
+        const brand = row['Brand'] || row['brand'];
+        const category = row['Category'] || row['category'];
+        const price = row['Price (AED)'] || row['price'];
+        const inStock = row['In Stock'] || row['in_stock'];
+        const imageFilenames = row['Image Filenames'] || row['image_filenames'] || '';
+
+        // Validate required fields
+        if (!productName || !brand || !category) {
+          skipped++;
+          continue;
+        }
+
+        // Check if brand and category exist
+        const brandExists = brands.some(b => b.name.toLowerCase() === brand.toLowerCase());
+        const categoryExists = categories.some(c => c.name.toLowerCase() === category.toLowerCase());
+
+        if (!brandExists || !categoryExists) {
+          toast.error(`Skipping "${productName}": Brand or Category not found`);
+          skipped++;
+          continue;
+        }
+
+        // Parse image filenames and match with uploaded images
+        const productImages: string[] = [];
+        if (imageFilenames) {
+          const filenames = imageFilenames.split(',').map((f: string) => f.trim());
+          for (const filename of filenames) {
+            if (imageMap[filename]) {
+              productImages.push(imageMap[filename]);
+            }
+          }
+        }
+
+        productsToInsert.push({
+          name: productName,
+          brand: brand,
+          category: category,
+          price: price ? parseFloat(price) : null,
+          in_stock: inStock?.toString().toLowerCase() === 'yes' || inStock?.toString().toLowerCase() === 'true',
+          images: productImages
+        });
+      }
+
+      if (productsToInsert.length === 0) {
+        toast.error('No valid products to import');
+        setUploadingBulk(false);
+        return;
+      }
+
+      // Insert products
+      const { error } = await supabase
+        .from('products')
+        .insert(productsToInsert);
+
+      if (error) throw error;
+
+      toast.success(`Successfully imported ${productsToInsert.length} products${skipped > 0 ? ` (${skipped} skipped)` : ''}`);
+      setBulkUploadFile(null);
+      setBulkImages(null);
+      fetchProducts();
+    } catch (error: any) {
+      console.error('Bulk upload error:', error);
+      toast.error(`Failed to import products: ${error.message}`);
+    } finally {
+      setUploadingBulk(false);
+    }
+  };
+
   if (loading || loadingProducts) {
     return (
       <div className="min-h-screen bg-background">
@@ -826,8 +995,9 @@ const AdminDashboard = () => {
       
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="products" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-4">
+          <TabsList className="grid w-full grid-cols-6 mb-4">
             <TabsTrigger value="products">Products</TabsTrigger>
+            <TabsTrigger value="bulk">Bulk Upload</TabsTrigger>
             <TabsTrigger value="categories">Categories</TabsTrigger>
             <TabsTrigger value="brands">Brands</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
@@ -986,6 +1156,110 @@ const AdminDashboard = () => {
                     ))}
                   </TableBody>
                 </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Bulk Upload Tab */}
+          <TabsContent value="bulk">
+            <Card>
+              <CardHeader>
+                <CardTitle>Bulk Product Upload</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Step 1: Download Template */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold">Step 1: Download Template</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Download our Excel template with the correct format and sample data.
+                  </p>
+                  <Button onClick={handleDownloadTemplate} variant="outline" className="gap-2">
+                    <Download className="h-4 w-4" />
+                    Download Excel Template
+                  </Button>
+                </div>
+
+                <div className="border-t border-border pt-6" />
+
+                {/* Step 2: Prepare Data */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold">Step 2: Prepare Your Data</h3>
+                  <div className="text-sm text-muted-foreground space-y-2">
+                    <p>Fill in the template with your product information:</p>
+                    <ul className="list-disc list-inside space-y-1 ml-4">
+                      <li><strong>Product Name:</strong> Required - Full name of the product</li>
+                      <li><strong>Brand:</strong> Required - Must match existing brands</li>
+                      <li><strong>Category:</strong> Required - Must match existing categories</li>
+                      <li><strong>Price (AED):</strong> Optional - Leave empty for "Contact for price"</li>
+                      <li><strong>In Stock:</strong> Required - "Yes" or "No"</li>
+                      <li><strong>Image Filenames:</strong> Optional - Comma-separated list of image filenames</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="border-t border-border pt-6" />
+
+                {/* Step 3: Upload Files */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Step 3: Upload Files</h3>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="bulk-excel">Excel File *</Label>
+                    <Input
+                      id="bulk-excel"
+                      type="file"
+                      accept=".xlsx,.xls"
+                      onChange={(e) => setBulkUploadFile(e.target.files?.[0] || null)}
+                    />
+                    {bulkUploadFile && (
+                      <p className="text-sm text-muted-foreground">
+                        Selected: {bulkUploadFile.name}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="bulk-images">Product Images (Optional)</Label>
+                    <Input
+                      id="bulk-images"
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={(e) => setBulkImages(e.target.files)}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Select all product images. Make sure filenames match those in your Excel file.
+                    </p>
+                    {bulkImages && bulkImages.length > 0 && (
+                      <p className="text-sm text-muted-foreground">
+                        {bulkImages.length} image(s) selected
+                      </p>
+                    )}
+                  </div>
+
+                  <Button 
+                    onClick={handleBulkUpload} 
+                    disabled={!bulkUploadFile || uploadingBulk}
+                    className="w-full gap-2"
+                    size="lg"
+                  >
+                    <Upload className="h-4 w-4" />
+                    {uploadingBulk ? 'Uploading...' : 'Upload Products'}
+                  </Button>
+                </div>
+
+                <div className="border-t border-border pt-6" />
+
+                {/* Important Notes */}
+                <div className="bg-accent/50 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2">Important Notes:</h4>
+                  <ul className="text-sm space-y-1 list-disc list-inside text-muted-foreground">
+                    <li>Make sure brands and categories exist before uploading products</li>
+                    <li>Image filenames in Excel must exactly match uploaded image filenames</li>
+                    <li>Products with missing required fields will be skipped</li>
+                    <li>Large uploads may take several minutes to process</li>
+                  </ul>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

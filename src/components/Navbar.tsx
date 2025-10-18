@@ -29,7 +29,7 @@ const Navbar = () => {
       {/* Top Bar with Logo and Contact */}
       <div className="border-b border-border relative overflow-hidden">
         {/* Background IT Products Pattern */}
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute inset-0 opacity-35 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background"></div>
           <div className="h-full w-full flex items-center justify-end gap-6 px-8">
             <img src="/products/hp/HP M 102A Printer  600.00._hp52-e1755940257703.jpg" alt="" className="h-20 w-auto object-contain" />

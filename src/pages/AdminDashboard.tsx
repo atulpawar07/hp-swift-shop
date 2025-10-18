@@ -62,6 +62,7 @@ const AdminDashboard = () => {
   const [productDialogOpen, setProductDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [productSearchQuery, setProductSearchQuery] = useState('');
 
   // Categories state
   const [categories, setCategories] = useState<Category[]>([]);
@@ -901,7 +902,9 @@ const AdminDashboard = () => {
 
       // Process products
       const productsToInsert = [];
+      const productsToUpdate = [];
       let skipped = 0;
+      let updated = 0;
 
       for (const row of jsonData as any[]) {
         const productName = row['Product Name'] || row['product_name'];
@@ -938,30 +941,70 @@ const AdminDashboard = () => {
           }
         }
 
-        productsToInsert.push({
+        // Check if product already exists (by name)
+        const existingProduct = products.find(
+          p => p.name.toLowerCase() === productName.toLowerCase()
+        );
+
+        const productData = {
           name: productName,
           brand: brand,
           category: category,
           price: price ? parseFloat(price) : null,
           in_stock: inStock?.toString().toLowerCase() === 'yes' || inStock?.toString().toLowerCase() === 'true',
-          images: productImages
-        });
+          images: productImages.length > 0 ? productImages : (existingProduct?.images || [])
+        };
+
+        if (existingProduct) {
+          // Update existing product
+          productsToUpdate.push({
+            id: existingProduct.id,
+            ...productData
+          });
+        } else {
+          // Insert new product
+          productsToInsert.push(productData);
+        }
       }
 
-      if (productsToInsert.length === 0) {
-        toast.error('No valid products to import');
+      if (productsToInsert.length === 0 && productsToUpdate.length === 0) {
+        toast.error('No valid products to import or update');
         setUploadingBulk(false);
         return;
       }
 
-      // Insert products
-      const { error } = await supabase
-        .from('products')
-        .insert(productsToInsert);
+      // Insert new products
+      if (productsToInsert.length > 0) {
+        const { error } = await supabase
+          .from('products')
+          .insert(productsToInsert);
 
-      if (error) throw error;
+        if (error) throw error;
+      }
 
-      toast.success(`Successfully imported ${productsToInsert.length} products${skipped > 0 ? ` (${skipped} skipped)` : ''}`);
+      // Update existing products
+      if (productsToUpdate.length > 0) {
+        for (const product of productsToUpdate) {
+          const { id, ...updateData } = product;
+          const { error } = await supabase
+            .from('products')
+            .update(updateData)
+            .eq('id', id);
+
+          if (error) {
+            console.error(`Error updating product ${product.name}:`, error);
+          } else {
+            updated++;
+          }
+        }
+      }
+
+      let message = '';
+      if (productsToInsert.length > 0) message += `${productsToInsert.length} added`;
+      if (updated > 0) message += `${message ? ', ' : ''}${updated} updated`;
+      if (skipped > 0) message += `${message ? ', ' : ''}${skipped} skipped`;
+
+      toast.success(`Bulk upload completed: ${message}`);
       setBulkUploadFile(null);
       setBulkImages(null);
       fetchProducts();
@@ -1007,15 +1050,16 @@ const AdminDashboard = () => {
           {/* Products Tab */}
           <TabsContent value="products">
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Product Management</CardTitle>
-                <Dialog open={productDialogOpen} onOpenChange={setProductDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button onClick={resetProductForm}>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Add Product
-                    </Button>
-                  </DialogTrigger>
+              <CardHeader>
+                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                  <CardTitle>Product Management</CardTitle>
+                  <Dialog open={productDialogOpen} onOpenChange={setProductDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button onClick={resetProductForm}>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Add Product
+                      </Button>
+                    </DialogTrigger>
                   <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
                       <DialogTitle>
@@ -1109,6 +1153,17 @@ const AdminDashboard = () => {
                     </form>
                   </DialogContent>
                 </Dialog>
+              </div>
+              
+              {/* Search Input */}
+              <div className="mt-4">
+                <Input
+                  placeholder="Search products by name, brand, or category..."
+                  value={productSearchQuery}
+                  onChange={(e) => setProductSearchQuery(e.target.value)}
+                  className="max-w-md"
+                />
+              </div>
               </CardHeader>
               <CardContent>
                 <Table>
@@ -1123,7 +1178,17 @@ const AdminDashboard = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {products.map((product) => (
+                    {products
+                      .filter(product => {
+                        if (!productSearchQuery) return true;
+                        const query = productSearchQuery.toLowerCase();
+                        return (
+                          product.name.toLowerCase().includes(query) ||
+                          product.brand.toLowerCase().includes(query) ||
+                          product.category.toLowerCase().includes(query)
+                        );
+                      })
+                      .map((product) => (
                       <TableRow key={product.id}>
                         <TableCell>{product.name}</TableCell>
                         <TableCell>{product.brand}</TableCell>
@@ -1154,6 +1219,21 @@ const AdminDashboard = () => {
                         </TableCell>
                       </TableRow>
                     ))}
+                    {products.filter(product => {
+                      if (!productSearchQuery) return true;
+                      const query = productSearchQuery.toLowerCase();
+                      return (
+                        product.name.toLowerCase().includes(query) ||
+                        product.brand.toLowerCase().includes(query) ||
+                        product.category.toLowerCase().includes(query)
+                      );
+                    }).length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center text-muted-foreground">
+                          No products found matching your search.
+                        </TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
                 </Table>
               </CardContent>
@@ -1187,13 +1267,14 @@ const AdminDashboard = () => {
                   <div className="text-sm text-muted-foreground space-y-2">
                     <p>Fill in the template with your product information:</p>
                     <ul className="list-disc list-inside space-y-1 ml-4">
-                      <li><strong>Product Name:</strong> Required - Full name of the product</li>
+                      <li><strong>Product Name:</strong> Required - Full name of the product (used to identify existing products)</li>
                       <li><strong>Brand:</strong> Required - Must match existing brands</li>
                       <li><strong>Category:</strong> Required - Must match existing categories</li>
                       <li><strong>Price (AED):</strong> Optional - Leave empty for "Contact for price"</li>
                       <li><strong>In Stock:</strong> Required - "Yes" or "No"</li>
                       <li><strong>Image Filenames:</strong> Optional - Comma-separated list of image filenames</li>
                     </ul>
+                    <p className="mt-2 text-accent-foreground"><strong>Note:</strong> If a product with the same name already exists, it will be updated with the new information.</p>
                   </div>
                 </div>
 
@@ -1257,6 +1338,7 @@ const AdminDashboard = () => {
                     <li>Make sure brands and categories exist before uploading products</li>
                     <li>Image filenames in Excel must exactly match uploaded image filenames</li>
                     <li>Products with missing required fields will be skipped</li>
+                    <li>Existing products (matched by name) will be updated with new information</li>
                     <li>Large uploads may take several minutes to process</li>
                   </ul>
                 </div>

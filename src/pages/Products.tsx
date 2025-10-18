@@ -8,9 +8,22 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Search, SlidersHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
-import { productsData, brands, categories } from "@/data/productsData";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
+interface Product {
+  id: string;
+  name: string;
+  brand: string;
+  category: string;
+  price: number | null;
+  images: string[];
+  in_stock: boolean;
+}
 
 const Products = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 3000]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,9 +34,41 @@ const Products = () => {
   
   const ITEMS_PER_PAGE = 10;
 
+  // Fetch products from database
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        toast.error('Failed to load products');
+        console.error(error);
+      } else {
+        setProducts(data || []);
+      }
+      setLoading(false);
+    };
+
+    fetchProducts();
+  }, []);
+
+  // Get unique brands and categories from products
+  const brands = useMemo(() => {
+    const uniqueBrands = [...new Set(products.map(p => p.brand))];
+    return uniqueBrands.sort();
+  }, [products]);
+
+  const categories = useMemo(() => {
+    const uniqueCategories = [...new Set(products.map(p => p.category))];
+    return uniqueCategories.sort();
+  }, [products]);
+
   // Filter and sort products
   const filteredProducts = useMemo(() => {
-    let filtered = productsData.filter(product => {
+    let filtered = products.filter(product => {
       // Search filter
       if (searchQuery && !product.name.toLowerCase().includes(searchQuery.toLowerCase())) {
         return false;
@@ -63,7 +108,7 @@ const Products = () => {
     }
 
     return filtered;
-  }, [searchQuery, selectedBrands, selectedCategories, priceRange, sortBy]);
+  }, [products, searchQuery, selectedBrands, selectedCategories, priceRange, sortBy]);
 
   // Reset to page 1 when filters change
   useEffect(() => {
@@ -136,7 +181,12 @@ const Products = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      <div className="container mx-auto px-4 py-8">
+      {loading ? (
+        <div className="container mx-auto px-4 py-20 text-center">
+          <p className="text-lg">Loading products...</p>
+        </div>
+      ) : (
+        <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">All Products</h1>
@@ -172,7 +222,7 @@ const Products = () => {
               <div className="mb-6">
                 <label className="text-sm font-medium mb-3 block">Brand</label>
                 <div className="space-y-2">
-                  {brands.filter(b => b !== "All").map(brand => (
+                  {brands.map(brand => (
                     <div key={brand} className="flex items-center">
                       <Checkbox 
                         id={brand.toLowerCase()} 
@@ -194,7 +244,7 @@ const Products = () => {
               <div className="mb-6">
                 <label className="text-sm font-medium mb-3 block">Category</label>
                 <div className="space-y-2">
-                  {categories.filter(c => c !== "All").map(category => (
+                  {categories.map(category => (
                     <div key={category} className="flex items-center">
                       <Checkbox 
                         id={category.toLowerCase().replace(/\s+/g, '-')}
@@ -272,9 +322,9 @@ const Products = () => {
                     id={product.id}
                     name={product.name}
                     price={product.price || 0}
-                    image={product.images[0]}
+                    image={product.images[0] || ''}
                     category={product.category}
-                    inStock={product.inStock}
+                    inStock={product.in_stock}
                   />
                 ))}
               </div>
@@ -328,7 +378,8 @@ const Products = () => {
             )}
           </main>
         </div>
-      </div>
+        </div>
+      )}
 
       <Footer />
     </div>

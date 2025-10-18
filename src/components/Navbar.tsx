@@ -1,12 +1,14 @@
-import { ShoppingCart, Phone, Home as HomeIcon, Info, Package, Wrench, Mail } from "lucide-react";
+import { ShoppingCart, Phone, Home as HomeIcon, Info, Package, Wrench, Mail, User, LogOut, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/logo-light.jpeg";
 
 const Navbar = () => {
   const [cartCount] = useState(0);
   const location = useLocation();
+  const { user, isAdmin, signOut } = useAuth();
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -24,11 +26,41 @@ const Navbar = () => {
             </Link>
 
             {/* Contact Info */}
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 text-foreground">
                 <Phone className="h-5 w-5" />
                 <span className="font-semibold">+971 563 569089</span>
               </div>
+              
+              {user ? (
+                <div className="flex items-center gap-2">
+                  {isAdmin && (
+                    <Link to="/admin/dashboard">
+                      <Button variant="outline" size="sm" className="gap-2">
+                        <Shield className="h-4 w-4" />
+                        Admin Panel
+                      </Button>
+                    </Link>
+                  )}
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => signOut()}
+                    className="gap-2"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <Link to="/auth">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <User className="h-4 w-4" />
+                    Sign In
+                  </Button>
+                </Link>
+              )}
+              
               <Link to="/cart">
                 <Button variant="ghost" size="icon" className="relative">
                   <ShoppingCart className="h-5 w-5" />

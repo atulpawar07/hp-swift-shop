@@ -5,23 +5,65 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShoppingCart, Heart, Share2, Truck, Shield, Award, ArrowLeft } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
-import { productsData } from "@/data/productsData";
+import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
+
+interface Product {
+  id: string;
+  name: string;
+  brand: string;
+  category: string;
+  price: number | null;
+  images: string[];
+  in_stock: boolean;
+}
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Find the actual product from our data
-  const product = productsData.find(p => p.id === id);
-
-  // Redirect to products page if product not found
+  // Fetch product from database
   useEffect(() => {
-    if (!product) {
-      navigate('/products');
-    }
-  }, [product, navigate]);
+    const fetchProduct = async () => {
+      if (!id) {
+        navigate('/products');
+        return;
+      }
+
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle();
+
+      if (error || !data) {
+        toast.error('Product not found');
+        navigate('/products');
+      } else {
+        setProduct(data);
+      }
+      setLoading(false);
+    };
+
+    fetchProduct();
+  }, [id, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container mx-auto px-4 py-20 text-center">
+          <p className="text-lg">Loading product...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!product) {
     return null;
@@ -58,7 +100,7 @@ const ProductDetail = () => {
           <div className="space-y-4">
             <div className="aspect-square bg-muted rounded-lg overflow-hidden">
               <img 
-                src={encodeURI(product.images[currentImageIndex])} 
+                src={product.images[currentImageIndex] || ''} 
                 alt={product.name}
                 className="w-full h-full object-contain"
                 onError={(e) => {
@@ -77,7 +119,7 @@ const ProductDetail = () => {
                     onClick={() => setCurrentImageIndex(idx)}
                   >
                     <img 
-                      src={encodeURI(img)} 
+                      src={img || ''} 
                       alt={`${product.name} ${idx + 1}`} 
                       className="w-full h-full object-contain"
                       onError={(e) => {
@@ -106,8 +148,8 @@ const ProductDetail = () => {
               <p className="text-lg text-muted-foreground">Contact for pricing</p>
             )}
 
-            <Badge className={product.inStock ? "bg-green-500 text-white" : "bg-red-500 text-white"}>
-              {product.inStock ? "✓ In Stock" : "Out of Stock"}
+            <Badge className={product.in_stock ? "bg-green-500 text-white" : "bg-red-500 text-white"}>
+              {product.in_stock ? "✓ In Stock" : "Out of Stock"}
             </Badge>
 
             <p className="text-muted-foreground leading-relaxed">
@@ -117,9 +159,9 @@ const ProductDetail = () => {
 
             {/* Actions */}
             <div className="flex gap-3">
-              <Button size="lg" className="flex-1 gap-2" disabled={!product.inStock}>
+              <Button size="lg" className="flex-1 gap-2" disabled={!product.in_stock}>
                 <ShoppingCart className="h-5 w-5" />
-                {product.inStock ? "Add to Cart" : "Out of Stock"}
+                {product.in_stock ? "Add to Cart" : "Out of Stock"}
               </Button>
               <Button size="lg" variant="outline">
                 <Heart className="h-5 w-5" />

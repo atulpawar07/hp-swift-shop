@@ -4,26 +4,10 @@ import { Link } from "react-router-dom";
 import { usePageContent } from "@/hooks/usePageContent";
 import { EditButton } from "@/components/admin/EditButton";
 import { ContentEditor } from "@/components/admin/ContentEditor";
-import { useAuth } from "@/hooks/useAuth";
 
 const Hero = () => {
   const { content, updateContent } = usePageContent('home', 'hero');
-  const { loading } = useAuth();
   const [editing, setEditing] = useState(false);
-
-  if (loading) {
-    return (
-      <div className="relative bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 text-white">
-        <div className="container mx-auto px-4 py-24 md:py-32">
-          <div className="max-w-3xl">
-            <h1 className="text-5xl md:text-6xl font-bold leading-tight">
-              Loading...
-            </h1>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -45,7 +29,7 @@ const Hero = () => {
               </h2>
             )}
             <p className="text-lg md:text-xl mb-8 text-gray-300 leading-relaxed max-w-2xl">
-              {content?.description || 'Leading provider of IT equipment, office supplies, and technology solutions in UAE with over 2 decades of experience'}
+              Leading provider of IT equipment, office supplies, and technology solutions in UAE with over 2 decades of experience
             </p>
             <Link to="/products">
               <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 text-lg px-8">

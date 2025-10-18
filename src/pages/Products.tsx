@@ -113,7 +113,7 @@ const Products = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">All Products</h1>
-          <p className="text-muted-foreground">Browse our complete catalog of HP products</p>
+          <p className="text-muted-foreground">Browse our complete catalog of technology products</p>
         </div>
 
         <div className="flex gap-8">

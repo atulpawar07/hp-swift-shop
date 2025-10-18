@@ -108,31 +108,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* HP Gold Partner Badge */}
-      <section className="py-12 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div>
-              <h3 className="text-2xl font-bold mb-2">Our Services</h3>
-              <div className="grid md:grid-cols-3 gap-4">
-                {services.map((service, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <span className="text-primary">▸</span>
-                    <span className="text-foreground">{service}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="bg-accent text-accent-foreground px-8 py-6 rounded-lg">
-              <div className="text-center">
-                <div className="text-4xl font-bold mb-1">HP</div>
-                <div className="text-sm">Gold Partner</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Our Partners Section - Horizontal Scrolling */}
       <section className="py-12 bg-secondary overflow-hidden">
         <div className="container mx-auto px-4">

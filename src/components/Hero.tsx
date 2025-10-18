@@ -11,7 +11,7 @@ const Hero = () => {
             <span className="text-4xl md:text-5xl font-normal">technology</span>
           </h1>
           <p className="text-lg md:text-xl mb-8 text-gray-300 leading-relaxed max-w-2xl">
-            Established as a premier IT distribution company in UAE, SK Enterprise is your trusted partner for HP products and IT solutions. We deliver consistently on all key business metrics: availability, right price, prompt delivery, efficient logistics and top-class service.
+            Established as a premier IT distribution company in UAE, SK Enterprise is your trusted partner for technology products and IT solutions. We deliver consistently on all key business metrics: availability, right price, prompt delivery, efficient logistics and top-class service.
           </p>
           <Link to="/products">
             <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 text-lg px-8">

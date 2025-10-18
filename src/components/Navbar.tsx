@@ -27,11 +27,23 @@ const Navbar = () => {
   return (
     <nav className="bg-background sticky top-0 z-50 shadow-sm">
       {/* Top Bar with Logo and Contact */}
-      <div className="border-b border-border">
-        <div className="container mx-auto px-4 py-3 md:py-4">
+      <div className="border-b border-border relative overflow-hidden">
+        {/* Background IT Products Pattern */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-muted/50 to-transparent"></div>
+          <div className="h-full w-full flex items-center justify-end gap-4 px-8">
+            <div className="text-6xl opacity-30">💻</div>
+            <div className="text-5xl opacity-25">🖨️</div>
+            <div className="text-6xl opacity-30">⚡</div>
+            <div className="text-5xl opacity-20">🔌</div>
+            <div className="text-6xl opacity-25">📱</div>
+          </div>
+        </div>
+        
+        <div className="container mx-auto px-4 py-3 md:py-4 relative z-10">
           <div className="flex justify-between items-center gap-4">
-            {/* Logo */}
-            <Link to="/" className="flex items-center flex-shrink-0">
+            {/* Logo with white background */}
+            <Link to="/" className="flex items-center flex-shrink-0 bg-background px-4 py-2 rounded-lg shadow-sm">
               <img 
                 src={logo} 
                 alt="SK Enterprise" 
@@ -39,12 +51,12 @@ const Navbar = () => {
               />
             </Link>
 
-            {/* Contact Info & Actions */}
-            <div className="flex items-center gap-2 md:gap-4">
+            {/* Contact Info & Actions with semi-transparent background */}
+            <div className="flex items-center gap-2 md:gap-4 bg-background/80 backdrop-blur-sm px-3 md:px-4 py-2 rounded-lg shadow-sm">
               {/* Phone - Hidden on very small screens */}
-              <a href="tel:+971563569089" className="hidden sm:flex items-center gap-2 text-foreground hover:text-primary transition-colors">
+              <a href="tel:+971563569089" className="hidden sm:flex items-center gap-2 text-foreground hover:text-primary transition-colors font-semibold">
                 <Phone className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
-                <span className="font-semibold text-sm md:text-base whitespace-nowrap">+971 563 569089</span>
+                <span className="text-sm md:text-base whitespace-nowrap">+971 563 569089</span>
               </a>
               
               {/* User Actions - Compact on mobile */}
@@ -93,7 +105,7 @@ const Navbar = () => {
           </div>
 
           {/* Phone Number Row for very small screens */}
-          <div className="sm:hidden mt-2 flex items-center gap-2 text-foreground">
+          <div className="sm:hidden mt-2 flex items-center gap-2 text-foreground bg-background/80 backdrop-blur-sm px-3 py-2 rounded-lg w-fit shadow-sm">
             <Phone className="h-4 w-4 flex-shrink-0" />
             <a href="tel:+971563569089" className="font-semibold text-sm hover:text-primary">
               +971 563 569089

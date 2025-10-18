@@ -29,13 +29,13 @@ const Navbar = () => {
       {/* Top Bar with Logo and Contact */}
       <div className="border-b border-border relative overflow-hidden">
         {/* Background IT Products Pattern */}
-        <div className="absolute inset-0 opacity-[0.08] pointer-events-none">
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background"></div>
           <div className="h-full w-full flex items-center justify-end gap-6 px-8">
-            <img src="/products/hp/HP M 102A Printer  600.00._hp52-e1755940257703.jpg" alt="" className="h-20 w-auto object-contain opacity-60" />
-            <img src="/products/canon/CANON LASER MFP I-S MF453DW PR_CANON-LASER-MFP-I-S-MF453DW-PRINTER-e1755938715467.jpg" alt="" className="h-24 w-auto object-contain opacity-50" />
-            <img src="/products/apc/APC BV650i-MSX_APC.jpg" alt="" className="h-20 w-auto object-contain opacity-60" />
-            <img src="/products/epson/EPSON ECOTANK L3250 PRINTER_EPSON-ECOTANK-L3250-PRINTER.webp" alt="" className="h-22 w-auto object-contain opacity-55" />
+            <img src="/products/hp/HP M 102A Printer  600.00._hp52-e1755940257703.jpg" alt="" className="h-20 w-auto object-contain" />
+            <img src="/products/canon/CANON LASER MFP I-S MF453DW PR_CANON-LASER-MFP-I-S-MF453DW-PRINTER-e1755938715467.jpg" alt="" className="h-24 w-auto object-contain" />
+            <img src="/products/apc/APC BV650i-MSX_APC.jpg" alt="" className="h-20 w-auto object-contain" />
+            <img src="/products/epson/EPSON ECOTANK L3250 PRINTER_EPSON-ECOTANK-L3250-PRINTER.webp" alt="" className="h-22 w-auto object-contain" />
           </div>
         </div>
         

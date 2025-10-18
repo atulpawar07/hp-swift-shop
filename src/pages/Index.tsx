@@ -143,7 +143,7 @@ const Index = () => {
               {partners.map((partner, index) => (
                 <div 
                   key={`first-${index}`}
-                  className="flex items-center justify-center px-8 flex-shrink-0"
+                  className="flex items-center justify-center px-2 flex-shrink-0"
                 >
                   <img 
                     src={partner.logo} 
@@ -160,7 +160,7 @@ const Index = () => {
               {partners.map((partner, index) => (
                 <div 
                   key={`second-${index}`}
-                  className="flex items-center justify-center px-8 flex-shrink-0"
+                  className="flex items-center justify-center px-2 flex-shrink-0"
                 >
                   <img 
                     src={partner.logo} 

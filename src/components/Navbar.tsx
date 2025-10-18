@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import logo from "@/assets/logo-light.png";
+import logo from "@/assets/logo-light-new.png";
 
 const Navbar = () => {
   const [cartCount] = useState(0);

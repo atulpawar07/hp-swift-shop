@@ -12,18 +12,16 @@ const Hero = () => {
   return (
     <>
       <div className="relative bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 text-white">
-        <div className="container mx-auto px-4 py-24 md:py-32">
+        <div className="container mx-auto px-4 py-24 md:py-32 relative z-10">
           <div className="max-w-3xl">
-            <div className="flex justify-between items-start gap-4 mb-6 relative z-10">
+            <div className="flex justify-between items-start gap-4 mb-6">
               <h1 className="text-5xl md:text-6xl font-bold leading-tight flex-1">
                 {content?.title || 'Welcome to SK Enterprise'}
               </h1>
-              <div className="relative z-20">
-                <EditButton 
-                  onClick={() => setEditing(true)} 
-                  className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:border-white backdrop-blur-sm cursor-pointer" 
-                />
-              </div>
+              <EditButton 
+                onClick={() => setEditing(true)} 
+                className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:border-white backdrop-blur-sm shrink-0 pointer-events-auto" 
+              />
             </div>
             {content?.subtitle && (
               <h2 className="text-3xl md:text-4xl font-normal mb-6">

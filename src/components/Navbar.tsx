@@ -51,7 +51,7 @@ const Navbar = () => {
             </Link>
 
             {/* Contact Info & Actions with semi-transparent background */}
-            <div className="flex items-center gap-2 md:gap-4 bg-background/80 backdrop-blur-sm px-3 md:px-4 py-2 rounded-lg shadow-sm">
+            <div className="flex items-center gap-2 md:gap-4 bg-background/90 backdrop-blur-sm px-3 md:px-4 py-2 rounded-lg shadow-sm">
               {/* Phone - Hidden on very small screens */}
               <a href="tel:+971563569089" className="hidden sm:flex items-center gap-2 text-foreground hover:text-primary transition-colors font-semibold">
                 <Phone className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
@@ -104,7 +104,7 @@ const Navbar = () => {
           </div>
 
           {/* Phone Number Row for very small screens */}
-          <div className="sm:hidden mt-2 flex items-center gap-2 text-foreground bg-background/80 backdrop-blur-sm px-3 py-2 rounded-lg w-fit shadow-sm">
+          <div className="sm:hidden mt-2 flex items-center gap-2 text-foreground bg-background/90 backdrop-blur-sm px-3 py-2 rounded-lg w-fit shadow-sm">
             <Phone className="h-4 w-4 flex-shrink-0" />
             <a href="tel:+971563569089" className="font-semibold text-sm hover:text-primary">
               +971 563 569089

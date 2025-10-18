@@ -183,11 +183,8 @@ const Index = () => {
       <section className="py-12 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
-            <div>
-              <div className="bg-primary text-primary-foreground px-6 py-3 inline-block mb-2">
-                <h3 className="text-xl font-bold">Our Brands</h3>
-              </div>
-              <p className="text-sm text-muted-foreground italic">With over 2 decades of experience</p>
+            <div className="bg-primary text-primary-foreground px-6 py-3 inline-block">
+              <h3 className="text-xl font-bold">Our Brands</h3>
             </div>
             <EditButton 
               onClick={() => setEditingPartners(true)} 

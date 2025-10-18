@@ -27,22 +27,11 @@ const Navbar = () => {
   return (
     <nav className="bg-background sticky top-0 z-50 shadow-sm">
       {/* Top Bar with Logo and Contact */}
-      <div className="border-b border-border relative overflow-hidden">
-        {/* Background IT Products Pattern */}
-        <div className="absolute inset-0 opacity-50 pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background"></div>
-          <div className="h-full w-full flex items-center justify-end gap-6 px-8">
-            <img src="/products/hp/HP M 102A Printer  600.00._hp52-e1755940257703.jpg" alt="" className="h-20 w-auto object-contain" />
-            <img src="/products/canon/CANON LASER MFP I-S MF453DW PR_CANON-LASER-MFP-I-S-MF453DW-PRINTER-e1755938715467.jpg" alt="" className="h-24 w-auto object-contain" />
-            <img src="/products/apc/APC BV650i-MSX_APC.jpg" alt="" className="h-20 w-auto object-contain" />
-            <img src="/products/epson/EPSON ECOTANK L3250 PRINTER_EPSON-ECOTANK-L3250-PRINTER.webp" alt="" className="h-22 w-auto object-contain" />
-          </div>
-        </div>
-        
-        <div className="container mx-auto px-4 py-3 md:py-4 relative z-10">
+      <div className="border-b border-border">
+        <div className="container mx-auto px-4 py-3 md:py-4">
           <div className="flex justify-between items-center gap-4">
-            {/* Logo with white background */}
-            <Link to="/" className="flex items-center flex-shrink-0 bg-background px-4 py-2 rounded-lg shadow-sm">
+            {/* Logo */}
+            <Link to="/" className="flex items-center flex-shrink-0">
               <img 
                 src={logo} 
                 alt="SK Enterprise" 
@@ -50,12 +39,12 @@ const Navbar = () => {
               />
             </Link>
 
-            {/* Contact Info & Actions with semi-transparent background */}
-            <div className="flex items-center gap-2 md:gap-4 bg-background/90 backdrop-blur-sm px-3 md:px-4 py-2 rounded-lg shadow-sm">
+            {/* Contact Info & Actions */}
+            <div className="flex items-center gap-2 md:gap-4">
               {/* Phone - Hidden on very small screens */}
-              <a href="tel:+971563569089" className="hidden sm:flex items-center gap-2 text-foreground hover:text-primary transition-colors font-semibold">
+              <a href="tel:+971563569089" className="hidden sm:flex items-center gap-2 text-foreground hover:text-primary transition-colors">
                 <Phone className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
-                <span className="text-sm md:text-base whitespace-nowrap">+971 563 569089</span>
+                <span className="font-semibold text-sm md:text-base whitespace-nowrap">+971 563 569089</span>
               </a>
               
               {/* User Actions - Compact on mobile */}
@@ -104,7 +93,7 @@ const Navbar = () => {
           </div>
 
           {/* Phone Number Row for very small screens */}
-          <div className="sm:hidden mt-2 flex items-center gap-2 text-foreground bg-background/90 backdrop-blur-sm px-3 py-2 rounded-lg w-fit shadow-sm">
+          <div className="sm:hidden mt-2 flex items-center gap-2 text-foreground">
             <Phone className="h-4 w-4 flex-shrink-0" />
             <a href="tel:+971563569089" className="font-semibold text-sm hover:text-primary">
               +971 563 569089

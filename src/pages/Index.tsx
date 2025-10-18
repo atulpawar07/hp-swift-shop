@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
+import PartnerCarousel from "@/components/PartnerCarousel";
 import { CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -24,42 +25,42 @@ const Index = () => {
   ];
 
   const partners = [
-    { name: "HP", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/HP_logo_2012.svg/300px-HP_logo_2012.svg.png" },
-    { name: "Lenovo", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Lenovo_logo_2015.svg/300px-Lenovo_logo_2015.svg.png" },
-    { name: "Toshiba", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Toshiba_logo.svg/300px-Toshiba_logo.svg.png" },
-    { name: "Dell", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Dell_Logo.svg/300px-Dell_Logo.svg.png" },
-    { name: "Sony", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Sony_logo.svg/300px-Sony_logo.svg.png" },
-    { name: "Compaq", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Compaq_logo.svg/300px-Compaq_logo.svg.png" },
-    { name: "Apple", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/200px-Apple_logo_black.svg.png" },
-    { name: "Acer", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Acer_2011.svg/300px-Acer_2011.svg.png" },
-    { name: "Asus", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/ASUS_Logo.svg/300px-ASUS_Logo.svg.png" },
-    { name: "Samsung", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/300px-Samsung_Logo.svg.png" },
-    { name: "APC", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/APC_by_Schneider_Electric_logo.svg/300px-APC_by_Schneider_Electric_logo.svg.png" },
-    { name: "IBM", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/300px-IBM_logo.svg.png" },
-    { name: "Canon", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Canon_wordmark.svg/300px-Canon_wordmark.svg.png" },
-    { name: "Epson", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Epson_logo.svg/300px-Epson_logo.svg.png" },
-    { name: "Brother", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Brother_logo.svg/300px-Brother_logo.svg.png" },
-    { name: "D-Link", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/D-Link_logo.svg/300px-D-Link_logo.svg.png" },
-    { name: "Cisco", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Cisco_logo_blue_2016.svg/300px-Cisco_logo_blue_2016.svg.png" },
-    { name: "Linksys", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Linksys_logo.svg/300px-Linksys_logo.svg.png" },
-    { name: "Belkin", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Belkin_logo.svg/300px-Belkin_logo.svg.png" },
-    { name: "Netgear", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Netgear_logo.svg/300px-Netgear_logo.svg.png" },
-    { name: "Targus", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Targus_logo.svg/300px-Targus_logo.svg.png" },
-    { name: "Logitech", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Logitech_logo.svg/300px-Logitech_logo.svg.png" },
-    { name: "Intel", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Intel_logo_%282006-2020%29.svg/300px-Intel_logo_%282006-2020%29.svg.png" },
-    { name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Microsoft_logo_%282012%29.svg/300px-Microsoft_logo_%282012%29.svg.png" },
-    { name: "Creative", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Creative_Technology_logo.svg/300px-Creative_Technology_logo.svg.png" },
-    { name: "Imation", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Imation_logo.svg/300px-Imation_logo.svg.png" },
-    { name: "BenQ", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/BenQ_logo.svg/300px-BenQ_logo.svg.png" },
-    { name: "ViewSonic", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/ViewSonic_logo.svg/300px-ViewSonic_logo.svg.png" },
-    { name: "Gigabyte", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Gigabyte_Technology_logo.svg/300px-Gigabyte_Technology_logo.svg.png" },
-    { name: "Western Digital", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Western_Digital_logo.svg/300px-Western_Digital_logo.svg.png" },
-    { name: "Seagate", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Seagate_Technology_logo.svg/300px-Seagate_Technology_logo.svg.png" },
-    { name: "Symantec", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Symantec_logo10.svg/300px-Symantec_logo10.svg.png" },
-    { name: "SanDisk", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/SanDisk_Logo.svg/300px-SanDisk_Logo.svg.png" },
-    { name: "Kingston", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Kingston_Technology_logo.svg/300px-Kingston_Technology_logo.svg.png" },
-    { name: "Iomega", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Iomega_logo.svg/300px-Iomega_logo.svg.png" },
-    { name: "Polycom", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Polycom_logo.svg/300px-Polycom_logo.svg.png" },
+    { name: "HP", logo: "/partner_logos_hd_transparent/01_hp.png" },
+    { name: "Lenovo", logo: "/partner_logos_hd_transparent/02_lenovo.png" },
+    { name: "Toshiba", logo: "/partner_logos_hd_transparent/03_toshiba.png" },
+    { name: "Dell", logo: "/partner_logos_hd_transparent/04_dell.png" },
+    { name: "Sony", logo: "/partner_logos_hd_transparent/05_sony.png" },
+    { name: "Compaq", logo: "/partner_logos_hd_transparent/06_compaq.png" },
+    { name: "Apple", logo: "/partner_logos_hd_transparent/07_apple.png" },
+    { name: "Acer", logo: "/partner_logos_hd_transparent/08_acer.png" },
+    { name: "Asus", logo: "/partner_logos_hd_transparent/09_asus.png" },
+    { name: "Samsung", logo: "/partner_logos_hd_transparent/10_samsung.png" },
+    { name: "APC", logo: "/partner_logos_hd_transparent/11_apc.png" },
+    { name: "IBM", logo: "/partner_logos_hd_transparent/12_ibm.png" },
+    { name: "Canon", logo: "/partner_logos_hd_transparent/13_canon.png" },
+    { name: "Epson", logo: "/partner_logos_hd_transparent/14_epson.png" },
+    { name: "Brother", logo: "/partner_logos_hd_transparent/15_brother.png" },
+    { name: "D-Link", logo: "/partner_logos_hd_transparent/16_dlink.png" },
+    { name: "Cisco", logo: "/partner_logos_hd_transparent/17_cisco.png" },
+    { name: "Linksys", logo: "/partner_logos_hd_transparent/18_linksys.png" },
+    { name: "Belkin", logo: "/partner_logos_hd_transparent/19_belkin.png" },
+    { name: "Netgear", logo: "/partner_logos_hd_transparent/20_netgear.png" },
+    { name: "Targus", logo: "/partner_logos_hd_transparent/21_targus.png" },
+    { name: "Logitech", logo: "/partner_logos_hd_transparent/22_logitech.png" },
+    { name: "Intel", logo: "/partner_logos_hd_transparent/23_intel.png" },
+    { name: "Microsoft", logo: "/partner_logos_hd_transparent/24_microsoft.png" },
+    { name: "Creative", logo: "/partner_logos_hd_transparent/25_creative.png" },
+    { name: "Imation", logo: "/partner_logos_hd_transparent/26_imation.png" },
+    { name: "BenQ", logo: "/partner_logos_hd_transparent/27_benq.png" },
+    { name: "ViewSonic", logo: "/partner_logos_hd_transparent/28_viewsonic.png" },
+    { name: "Gigabyte", logo: "/partner_logos_hd_transparent/29_gigabyte.png" },
+    { name: "Western Digital", logo: "/partner_logos_hd_transparent/30_wd.png" },
+    { name: "Seagate", logo: "/partner_logos_hd_transparent/31_seagate.png" },
+    { name: "Symantec", logo: "/partner_logos_hd_transparent/32_symantec.png" },
+    { name: "SanDisk", logo: "/partner_logos_hd_transparent/33_sandisk.png" },
+    { name: "Kingston", logo: "/partner_logos_hd_transparent/34_kingston.png" },
+    { name: "Iomega", logo: "/partner_logos_hd_transparent/35_iomega.png" },
+    { name: "Polycom", logo: "/partner_logos_hd_transparent/36_polycom.png" },
   ];
 
   return (
@@ -129,25 +130,42 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Our Partners Section */}
+      {/* Our Partners Section - Grid View */}
       <section className="py-12 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="bg-primary text-primary-foreground px-6 py-3 mb-8 inline-block">
             <h3 className="text-xl font-bold">Our Partners</h3>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 items-center">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 items-center mb-12">
             {partners.map((partner, index) => (
               <div key={index} className="flex flex-col items-center justify-center p-4 bg-background rounded-lg hover:shadow-md transition-shadow">
                 <img 
                   src={partner.logo} 
                   alt={`${partner.name} logo`} 
-                  className="max-h-12 w-auto grayscale hover:grayscale-0 transition-all mb-2"
+                  className="max-h-12 w-auto object-contain mb-2"
+                  onError={(e) => {
+                    // Fallback to external URL if local file not found
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = `https://via.placeholder.com/150x60?text=${partner.name}`;
+                  }}
                 />
                 <span className="text-sm font-medium text-muted-foreground">{partner.name}</span>
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Our Partners Section - 3D Rotating Carousel */}
+      <section className="py-16 bg-background overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-bold mb-4">Partner Showcase</h3>
+            <p className="text-muted-foreground">Experience our trusted partners in 3D</p>
+          </div>
+          
+          <PartnerCarousel partners={partners} />
         </div>
       </section>
 

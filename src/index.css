@@ -111,4 +111,12 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+
+  .perspective-\[1500px\] {
+    perspective: 1500px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
 }

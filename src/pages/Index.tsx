@@ -178,18 +178,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Our Partners Section - 3D Rotating Carousel */}
-      <section className="py-16 bg-background overflow-hidden">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold mb-4">Partner Showcase</h3>
-            <p className="text-muted-foreground">Experience our trusted partners in 3D</p>
-          </div>
-          
-          <PartnerCarousel partners={partners} />
-        </div>
-      </section>
-
       <Footer />
     </div>
   );

@@ -40,7 +40,7 @@ const Index = () => {
     { name: "Canon", logo: "/partner_logos_hd_transparent/13_canon.png" },
     { name: "Epson", logo: "/partner_logos_hd_transparent/14_epson.png" },
     { name: "Brother", logo: "/partner_logos_hd_transparent/15_brother.png" },
-    { name: "D-Link", logo: "/partner_logos_hd_transparent/16_dlink.png" },
+    { name: "D-Link", logo: "/partner_logos_hd_transparent/16_d-link.png" },
     { name: "Cisco", logo: "/partner_logos_hd_transparent/17_cisco.png" },
     { name: "Linksys", logo: "/partner_logos_hd_transparent/18_linksys.png" },
     { name: "Belkin", logo: "/partner_logos_hd_transparent/19_belkin.png" },
@@ -137,20 +137,21 @@ const Index = () => {
             <h3 className="text-xl font-bold">Our Partners</h3>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 items-center mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {partners.map((partner, index) => (
-              <div key={index} className="flex flex-col items-center justify-center p-4 bg-background rounded-lg hover:shadow-md transition-shadow">
+              <div 
+                key={index} 
+                className="flex items-center justify-center p-6 bg-background border border-border hover:shadow-lg transition-all duration-300 hover:scale-105 min-h-[100px]"
+              >
                 <img 
                   src={partner.logo} 
                   alt={`${partner.name} logo`} 
-                  className="max-h-12 w-auto object-contain mb-2"
+                  className="max-h-16 max-w-full w-auto object-contain"
                   onError={(e) => {
-                    // Fallback to external URL if local file not found
                     e.currentTarget.onerror = null;
                     e.currentTarget.src = `https://via.placeholder.com/150x60?text=${partner.name}`;
                   }}
                 />
-                <span className="text-sm font-medium text-muted-foreground">{partner.name}</span>
               </div>
             ))}
           </div>

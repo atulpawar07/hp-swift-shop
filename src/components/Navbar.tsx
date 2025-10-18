@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import logo from "@/assets/logo-light.jpeg";
+import logo from "@/assets/logo-light.png";
 
 const Navbar = () => {
   const [cartCount] = useState(0);

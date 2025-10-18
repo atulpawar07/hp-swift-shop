@@ -1,0 +1,11 @@
+# Product Images Directory
+
+Please extract the nycom_images.zip and organize images into brand folders:
+
+/products/apc/
+/products/hp/
+/products/canon/
+/products/epson/
+/products/brother/
+
+Each product will reference its images from these directories.

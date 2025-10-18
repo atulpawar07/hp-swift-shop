@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, Eye } from "lucide-react";
-import { Link } from "react-router-dom";
+import { MessageCircle, Eye } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 interface ProductCardProps {
   id: string;
@@ -25,6 +25,7 @@ const ProductCard = ({
   inStock,
   specs = []
 }: ProductCardProps) => {
+  const navigate = useNavigate();
   const discount = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
   
   // Get proper image URL - handle both Supabase storage URLs and local paths
@@ -113,9 +114,13 @@ const ProductCard = ({
           className="w-full gap-2" 
           disabled={!inStock}
           variant={inStock ? "default" : "secondary"}
+          onClick={(e) => {
+            e.preventDefault();
+            navigate(`/product/${id}`);
+          }}
         >
-          <ShoppingCart className="h-4 w-4" />
-          {inStock ? "Add to Cart" : "Out of Stock"}
+          <MessageCircle className="h-4 w-4" />
+          {inStock ? "Enquire on WhatsApp or Email" : "Out of Stock"}
         </Button>
       </CardFooter>
     </Card>

@@ -24,6 +24,8 @@ interface Product {
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [brands, setBrands] = useState<string[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 3000]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -34,37 +36,49 @@ const Products = () => {
   
   const ITEMS_PER_PAGE = 10;
 
-  // Fetch products from database
+  // Fetch products and filter options from database
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       setLoading(true);
-      const { data, error } = await supabase
+      
+      // Fetch products
+      const { data: productsData, error: productsError } = await supabase
         .from('products')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) {
+      if (productsError) {
         toast.error('Failed to load products');
-        console.error(error);
+        console.error(productsError);
       } else {
-        setProducts(data || []);
+        setProducts(productsData || []);
       }
+
+      // Fetch brands
+      const { data: brandsData, error: brandsError } = await supabase
+        .from('brands')
+        .select('name')
+        .order('name');
+
+      if (!brandsError && brandsData) {
+        setBrands(brandsData.map(b => b.name));
+      }
+
+      // Fetch categories
+      const { data: categoriesData, error: categoriesError } = await supabase
+        .from('categories')
+        .select('name')
+        .order('name');
+
+      if (!categoriesError && categoriesData) {
+        setCategories(categoriesData.map(c => c.name));
+      }
+
       setLoading(false);
     };
 
-    fetchProducts();
+    fetchData();
   }, []);
-
-  // Get unique brands and categories from products
-  const brands = useMemo(() => {
-    const uniqueBrands = [...new Set(products.map(p => p.brand))];
-    return uniqueBrands.sort();
-  }, [products]);
-
-  const categories = useMemo(() => {
-    const uniqueCategories = [...new Set(products.map(p => p.category))];
-    return uniqueCategories.sort();
-  }, [products]);
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {

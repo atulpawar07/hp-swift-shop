@@ -8,9 +8,28 @@ interface EditButtonProps {
 }
 
 export const EditButton = ({ onClick, className = '' }: EditButtonProps) => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, loading, user } = useAuth();
 
-  if (!isAdmin) return null;
+  console.log('EditButton - isAdmin:', isAdmin, 'loading:', loading, 'user:', user?.email);
+
+  if (loading) {
+    return (
+      <Button
+        size="sm"
+        variant="outline"
+        disabled
+        className={`gap-2 flex-shrink-0 ${className}`}
+      >
+        <Edit className="h-4 w-4" />
+        ...
+      </Button>
+    );
+  }
+
+  if (!isAdmin) {
+    console.log('EditButton - Not showing because isAdmin is false');
+    return null;
+  }
 
   return (
     <Button

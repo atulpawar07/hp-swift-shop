@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import logo from "@/assets/logo-light-new.png";
+import logo from "@/assets/logo-light.png";
 
 const Navbar = () => {
   const [cartCount] = useState(0);
@@ -35,7 +35,7 @@ const Navbar = () => {
               <img 
                 src={logo} 
                 alt="SK Enterprise" 
-                className="h-17 md:h-21 lg:h-25 w-auto object-contain max-w-[240px] md:max-w-[320px]" 
+                className="h-16 md:h-20 lg:h-24 w-auto object-contain max-w-[240px] md:max-w-[320px]" 
               />
             </Link>
 

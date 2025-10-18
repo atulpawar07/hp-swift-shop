@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
@@ -7,8 +8,11 @@ import { usePageContent } from "@/hooks/usePageContent";
 import { EditButton } from "@/components/admin/EditButton";
 import { ContentEditor } from "@/components/admin/ContentEditor";
 import { supabase } from "@/integrations/supabase/client";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
+  const navigate = useNavigate();
   const { content: statsContent, updateContent: updateStats } = usePageContent('home', 'stats');
   const [editingStats, setEditingStats] = useState(false);
 
@@ -269,6 +273,33 @@ const Index = () => {
           onSave={updateWelcome}
         />
       )}
+
+      {/* Edit Partners Dialog */}
+      <Dialog open={editingPartners} onOpenChange={setEditingPartners}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Manage Partners</DialogTitle>
+            <DialogDescription>
+              Partner logos are managed in the Admin Dashboard under the Brands tab.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              You can add, edit, and upload partner logos from the Admin Dashboard. 
+              Click the button below to navigate to the Brands management section.
+            </p>
+            <Button 
+              onClick={() => {
+                setEditingPartners(false);
+                navigate('/admin/dashboard');
+              }}
+              className="w-full"
+            >
+              Go to Admin Dashboard
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

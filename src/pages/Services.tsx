@@ -292,6 +292,148 @@ const Services = () => {
             </div>
           </div>
         </section>
+
+        {/* Ask an Expert Section */}
+        <section className="py-16 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-3xl font-bold text-center mb-12">Ask an Expert</h2>
+              
+              <div className="grid lg:grid-cols-3 gap-8">
+                {/* Expert Profile */}
+                <div className="lg:col-span-1">
+                  <div className="bg-secondary rounded-lg p-8 text-center">
+                    <div className="w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden bg-muted">
+                      <img 
+                        src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop" 
+                        alt="Expert consultant" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <h3 className="text-2xl font-semibold mb-2">Expert Team</h3>
+                    <p className="text-muted-foreground mb-6">IT Solutions Specialists</p>
+                    <div className="space-y-3 text-left">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-primary">📞</span>
+                        </div>
+                        <a href="tel:+971563569089" className="text-foreground hover:text-primary transition-colors">
+                          +971 563 569089
+                        </a>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-primary">✉️</span>
+                        </div>
+                        <a href="mailto:info@skenterprise.ae" className="text-foreground hover:text-primary transition-colors">
+                          info@skenterprise.ae
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact Form */}
+                <div className="lg:col-span-2">
+                  <form className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <label htmlFor="company" className="block text-sm font-medium mb-2">
+                          Company
+                        </label>
+                        <input
+                          type="text"
+                          id="company"
+                          className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                          placeholder="Your company name"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="name" className="block text-sm font-medium mb-2">
+                          Name <span className="text-destructive">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          required
+                          className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                          placeholder="Your full name"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <label htmlFor="email" className="block text-sm font-medium mb-2">
+                          E-Mail <span className="text-destructive">*</span>
+                        </label>
+                        <input
+                          type="email"
+                          id="email"
+                          required
+                          className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                          placeholder="your.email@company.com"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="phone" className="block text-sm font-medium mb-2">
+                          Phone <span className="text-destructive">*</span>
+                        </label>
+                        <input
+                          type="tel"
+                          id="phone"
+                          required
+                          className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                          placeholder="+971 XX XXX XXXX"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="question" className="block text-sm font-medium mb-2">
+                        Your question <span className="text-destructive">*</span>
+                      </label>
+                      <textarea
+                        id="question"
+                        required
+                        rows={6}
+                        className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                        placeholder="Please describe your IT needs or questions..."
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        Attach file
+                      </label>
+                      <p className="text-xs text-muted-foreground mb-2">
+                        Quantity - up to 3 files, size - not more than 5 MB
+                      </p>
+                      <input
+                        type="file"
+                        multiple
+                        accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+                        className="w-full px-4 py-3 rounded-lg border border-border bg-background file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary file:text-primary-foreground file:cursor-pointer hover:file:bg-primary/90"
+                      />
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                      <button
+                        type="submit"
+                        className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
+                      >
+                        Send
+                      </button>
+                      <p className="text-xs text-muted-foreground">
+                        By clicking the button, you consent to the processing of personal data.
+                      </p>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
       <Footer />

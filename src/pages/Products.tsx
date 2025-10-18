@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Search, SlidersHorizontal } from "lucide-react";
-import { useState, useMemo } from "react";
+import { Search, SlidersHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
 import { productsData, brands, categories } from "@/data/productsData";
 
 const Products = () => {
@@ -17,6 +17,9 @@ const Products = () => {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("relevance");
+  const [currentPage, setCurrentPage] = useState(1);
+  
+  const ITEMS_PER_PAGE = 10;
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
@@ -62,6 +65,53 @@ const Products = () => {
     return filtered;
   }, [searchQuery, selectedBrands, selectedCategories, priceRange, sortBy]);
 
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedBrands, selectedCategories, priceRange, sortBy]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentProducts = filteredProducts.slice(startIndex, endIndex);
+
+  // Generate page numbers to display
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxPagesToShow = 5;
+    
+    if (totalPages <= maxPagesToShow) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push('...');
+        pages.push(currentPage - 1);
+        pages.push(currentPage);
+        pages.push(currentPage + 1);
+        pages.push('...');
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
+  };
+
   const toggleBrand = (brand: string) => {
     setSelectedBrands(prev =>
       prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
@@ -79,6 +129,7 @@ const Products = () => {
     setSelectedBrands([]);
     setSelectedCategories([]);
     setPriceRange([0, 3000]);
+    setCurrentPage(1);
   };
 
   return (
@@ -185,7 +236,7 @@ const Products = () => {
             {/* Toolbar */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <p className="text-muted-foreground">
-                Showing <span className="font-semibold text-foreground">{filteredProducts.length}</span> of {productsData.length} products
+                Showing <span className="font-semibold text-foreground">{startIndex + 1}-{Math.min(endIndex, filteredProducts.length)}</span> of {filteredProducts.length} products
               </p>
 
               <div className="flex gap-3 w-full sm:w-auto">
@@ -215,7 +266,7 @@ const Products = () => {
             {/* Products Grid */}
             {filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => (
+                {currentProducts.map((product) => (
                   <ProductCard 
                     key={product.id} 
                     id={product.id}
@@ -235,13 +286,46 @@ const Products = () => {
             )}
 
             {/* Pagination */}
-            <div className="mt-12 flex justify-center gap-2">
-              <Button variant="outline" disabled>Previous</Button>
-              <Button variant="default">1</Button>
-              <Button variant="outline">2</Button>
-              <Button variant="outline">3</Button>
-              <Button variant="outline">Next</Button>
-            </div>
+            {filteredProducts.length > ITEMS_PER_PAGE && (
+              <div className="mt-12 flex flex-wrap justify-center items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  aria-label="Previous page"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                
+                {getPageNumbers().map((page, index) => (
+                  typeof page === 'number' ? (
+                    <Button
+                      key={index}
+                      variant={currentPage === page ? "default" : "outline"}
+                      size="icon"
+                      onClick={() => setCurrentPage(page)}
+                    >
+                      {page}
+                    </Button>
+                  ) : (
+                    <span key={index} className="px-2 text-muted-foreground">
+                      {page}
+                    </span>
+                  )
+                ))}
+                
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  aria-label="Next page"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </main>
         </div>
       </div>

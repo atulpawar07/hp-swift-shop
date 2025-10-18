@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
@@ -6,6 +6,7 @@ import { CheckCircle } from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
 import { EditButton } from "@/components/admin/EditButton";
 import { ContentEditor } from "@/components/admin/ContentEditor";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const { content: statsContent, updateContent: updateStats } = usePageContent('home', 'stats');
@@ -19,47 +20,33 @@ const Index = () => {
     "Speedy Service"
   ];
 
-  const partners = [
-    { name: "HP", logo: "/partner_logos_hd_transparent/01_hp.png" },
-    { name: "Lenovo", logo: "/partner_logos_hd_transparent/02_lenovo.png" },
-    { name: "Toshiba", logo: "/partner_logos_hd_transparent/03_toshiba.png" },
-    { name: "Dell", logo: "/partner_logos_hd_transparent/04_dell.png" },
-    { name: "Sony", logo: "/partner_logos_hd_transparent/05_sony.png" },
-    { name: "Compaq", logo: "/partner_logos_hd_transparent/06_compaq.png" },
-    { name: "Apple", logo: "/partner_logos_hd_transparent/07_apple.png" },
-    { name: "Acer", logo: "/partner_logos_hd_transparent/08_acer.png" },
-    { name: "Asus", logo: "/partner_logos_hd_transparent/09_asus.png" },
-    { name: "Samsung", logo: "/partner_logos_hd_transparent/10_samsung.png" },
-    { name: "APC", logo: "/partner_logos_hd_transparent/11_apc.png" },
-    { name: "IBM", logo: "/partner_logos_hd_transparent/12_ibm.png" },
-    { name: "Canon", logo: "/partner_logos_hd_transparent/13_canon.png" },
-    { name: "Epson", logo: "/partner_logos_hd_transparent/14_epson.png" },
-    { name: "Brother", logo: "/partner_logos_hd_transparent/15_brother.png" },
-    { name: "D-Link", logo: "/partner_logos_hd_transparent/16_d-link.png" },
-    { name: "Cisco", logo: "/partner_logos_hd_transparent/17_cisco.png" },
-    { name: "Linksys", logo: "/partner_logos_hd_transparent/18_linksys.png" },
-    { name: "Belkin", logo: "/partner_logos_hd_transparent/19_belkin.png" },
-    { name: "Netgear", logo: "/partner_logos_hd_transparent/20_netgear.png" },
-    { name: "Targus", logo: "/partner_logos_hd_transparent/21_targus.png" },
-    { name: "Logitech", logo: "/partner_logos_hd_transparent/22_logitech.png" },
-    { name: "Intel", logo: "/partner_logos_hd_transparent/23_intel.png" },
-    { name: "Microsoft", logo: "/partner_logos_hd_transparent/24_microsoft.png" },
-    { name: "Creative", logo: "/partner_logos_hd_transparent/25_creative.png" },
-    { name: "Imation", logo: "/partner_logos_hd_transparent/26_imation.png" },
-    { name: "BenQ", logo: "/partner_logos_hd_transparent/27_benq.png" },
-    { name: "ViewSonic", logo: "/partner_logos_hd_transparent/28_viewsonic.png" },
-    { name: "Gigabyte", logo: "/partner_logos_hd_transparent/29_gigabyte.png" },
-    { name: "Western Digital", logo: "/partner_logos_hd_transparent/30_wd.png" },
-    { name: "Seagate", logo: "/partner_logos_hd_transparent/31_seagate.png" },
-    { name: "Symantec", logo: "/partner_logos_hd_transparent/32_symantec.png" },
-    { name: "SanDisk", logo: "/partner_logos_hd_transparent/33_sandisk.png" },
-    { name: "Kingston", logo: "/partner_logos_hd_transparent/34_kingston.png" },
-    { name: "Iomega", logo: "/partner_logos_hd_transparent/35_iomega.png" },
-    { name: "Polycom", logo: "/partner_logos_hd_transparent/36_polycom.png" },
-    { name: "Prysm", logo: "/partner_logos_hd_transparent/37_prysm.png" },
-    { name: "Aruba", logo: "/partner_logos_hd_transparent/38_aruba.png" },
-    { name: "Vaddio", logo: "/partner_logos_hd_transparent/39_vaddio.png" },
-  ];
+  const [partners, setPartners] = useState<{ name: string; logo: string }[]>([]);
+  const [editingWelcome, setEditingWelcome] = useState(false);
+  const [editingPartners, setEditingPartners] = useState(false);
+  const { content: welcomeContent, updateContent: updateWelcome } = usePageContent('home', 'welcome');
+
+  // Fetch partners from brands table
+  useEffect(() => {
+    const fetchPartners = async () => {
+      const { data, error } = await supabase
+        .from('brands')
+        .select('name, logo_url')
+        .eq('is_partner', true)
+        .order('display_order');
+
+      if (error) {
+        console.error('Error fetching partners:', error);
+      } else {
+        const partnersList = data?.map(b => ({
+          name: b.name,
+          logo: b.logo_url || `/partner_logos_hd_transparent/${b.name.toLowerCase().replace(/\s+/g, '-')}.png`
+        })) || [];
+        setPartners(partnersList);
+      }
+    };
+
+    fetchPartners();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -71,7 +58,10 @@ const Index = () => {
         <section className="py-12 bg-primary text-primary-foreground">
           <div className="container mx-auto px-4">
             <div className="flex justify-end mb-4">
-              <EditButton onClick={() => setEditingStats(true)} className="text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10" />
+              <EditButton 
+                onClick={() => setEditingStats(true)} 
+                className="bg-primary-foreground/10 text-primary-foreground border-primary-foreground/30 hover:bg-primary-foreground/20 backdrop-blur-sm" 
+              />
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               <div className="text-center">
@@ -98,6 +88,12 @@ const Index = () => {
       {/* Welcome Section */}
       <section className="py-16 bg-secondary">
         <div className="container mx-auto px-4">
+          <div className="flex justify-end mb-4">
+            <EditButton 
+              onClick={() => setEditingWelcome(true)} 
+              className="bg-background/50 border-border hover:bg-background/70 backdrop-blur-sm" 
+            />
+          </div>
           <div className="flex flex-col lg:flex-row gap-12 items-center">
             {/* Image */}
             <div className="lg:w-1/3">
@@ -110,11 +106,15 @@ const Index = () => {
 
             {/* Content */}
             <div className="lg:w-2/3">
-              <h2 className="text-sm text-primary font-semibold mb-2">Welcome to</h2>
-              <h3 className="text-3xl font-bold text-foreground mb-6">SK Enterprise</h3>
+              <h2 className="text-sm text-primary font-semibold mb-2">
+                {welcomeContent?.subtitle || 'Welcome to'}
+              </h2>
+              <h3 className="text-3xl font-bold text-foreground mb-6">
+                {welcomeContent?.title || 'SK Enterprise'}
+              </h3>
               
               <p className="text-muted-foreground mb-6 leading-relaxed">
-                In today's demanding and dynamic world of IT Distribution, it takes a special kind of organization to deliver consistently on all key business metrics: availability, right price, prompt delivery, efficient logistics and top-class service. With decades of experience in worldwide sourcing of IT products and services and robust relationships across the IT value-chain, SK Enterprise is ideally positioned to be your supplier of choice. Whether your needs are a one-time fulfillment or on-going run-rate purchases, you will find the right partner in SK Enterprise.
+                {welcomeContent?.description || 'In today\'s demanding and dynamic world of IT Distribution, it takes a special kind of organization to deliver consistently on all key business metrics: availability, right price, prompt delivery, efficient logistics and top-class service. With decades of experience in worldwide sourcing of IT products and services and robust relationships across the IT value-chain, SK Enterprise is ideally positioned to be your supplier of choice. Whether your needs are a one-time fulfillment or on-going run-rate purchases, you will find the right partner in SK Enterprise.'}
               </p>
 
               <p className="text-muted-foreground mb-8">These are some of our key USPs:</p>
@@ -135,8 +135,14 @@ const Index = () => {
       {/* Our Partners Section - Horizontal Scrolling */}
       <section className="py-12 bg-secondary overflow-hidden">
         <div className="container mx-auto px-4">
-          <div className="bg-primary text-primary-foreground px-6 py-3 mb-8 inline-block">
-            <h3 className="text-xl font-bold">Our Partners</h3>
+          <div className="flex justify-between items-center mb-8">
+            <div className="bg-primary text-primary-foreground px-6 py-3 inline-block">
+              <h3 className="text-xl font-bold">Our Partners</h3>
+            </div>
+            <EditButton 
+              onClick={() => setEditingPartners(true)} 
+              className="bg-background/50 border-border hover:bg-background/70 backdrop-blur-sm" 
+            />
           </div>
           
           <div className="relative">
@@ -202,6 +208,22 @@ const Index = () => {
             { key: 'satisfactionLabel', label: 'Satisfaction Label', type: 'text' }
           ]}
           onSave={updateStats}
+        />
+      )}
+
+      {/* Edit Welcome Dialog */}
+      {welcomeContent && (
+        <ContentEditor
+          open={editingWelcome}
+          onOpenChange={setEditingWelcome}
+          title="Edit Welcome Section"
+          content={welcomeContent}
+          fields={[
+            { key: 'subtitle', label: 'Subtitle', type: 'text' },
+            { key: 'title', label: 'Title', type: 'text' },
+            { key: 'description', label: 'Description', type: 'textarea', multiline: true }
+          ]}
+          onSave={updateWelcome}
         />
       )}
     </div>

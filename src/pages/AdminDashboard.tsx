@@ -349,10 +349,37 @@ const AdminDashboard = () => {
     e.preventDefault();
     
     try {
+      // Check if there's a logo file to upload
+      const fileInput = document.getElementById('brand-logo') as HTMLInputElement;
+      let logoUrl = editingBrand?.logo_url || null;
+
+      if (fileInput?.files && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `brand-logos/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('product-images')
+          .upload(filePath, file);
+
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          toast.error('Failed to upload logo');
+          return;
+        }
+
+        const { data } = supabase.storage
+          .from('product-images')
+          .getPublicUrl(filePath);
+
+        logoUrl = data.publicUrl;
+      }
+
       if (editingBrand) {
         const { error } = await supabase
           .from('brands')
-          .update({ name: brandName })
+          .update({ name: brandName, logo_url: logoUrl })
           .eq('id', editingBrand.id);
 
         if (error) throw error;
@@ -360,7 +387,7 @@ const AdminDashboard = () => {
       } else {
         const { error } = await supabase
           .from('brands')
-          .insert([{ name: brandName }]);
+          .insert([{ name: brandName, logo_url: logoUrl }]);
 
         if (error) throw error;
         toast.success('Brand added successfully');
@@ -737,22 +764,21 @@ const AdminDashboard = () => {
             </Card>
           </TabsContent>
 
-          {/* Brands Tab */}
           <TabsContent value="brands">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Brand Management</CardTitle>
+                <CardTitle>Brand & Partner Management</CardTitle>
                 <Dialog open={brandDialogOpen} onOpenChange={setBrandDialogOpen}>
                   <DialogTrigger asChild>
                     <Button onClick={resetBrandForm}>
                       <Plus className="mr-2 h-4 w-4" />
-                      Add Brand
+                      Add Brand/Partner
                     </Button>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent className="max-w-2xl">
                     <DialogHeader>
                       <DialogTitle>
-                        {editingBrand ? 'Edit Brand' : 'Add New Brand'}
+                        {editingBrand ? 'Edit Brand/Partner' : 'Add New Brand/Partner'}
                       </DialogTitle>
                     </DialogHeader>
                     <form onSubmit={handleSubmitBrand} className="space-y-4">
@@ -765,6 +791,32 @@ const AdminDashboard = () => {
                           required
                         />
                       </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="brand-logo">Partner Logo</Label>
+                        <Input
+                          id="brand-logo"
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              // Store file for upload
+                              const fileInput = e.target;
+                              fileInput.dataset.file = 'pending';
+                            }
+                          }}
+                        />
+                        {editingBrand?.logo_url && (
+                          <div className="mt-2">
+                            <img 
+                              src={editingBrand.logo_url} 
+                              alt="Current logo" 
+                              className="h-16 object-contain"
+                            />
+                            <p className="text-sm text-muted-foreground mt-1">Current logo</p>
+                          </div>
+                        )}
+                      </div>
                       <Button type="submit" className="w-full">
                         {editingBrand ? 'Update Brand' : 'Add Brand'}
                       </Button>
@@ -776,6 +828,7 @@ const AdminDashboard = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead>Logo</TableHead>
                       <TableHead>Brand Name</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
@@ -783,6 +836,19 @@ const AdminDashboard = () => {
                   <TableBody>
                     {brands.map((brand) => (
                       <TableRow key={brand.id}>
+                        <TableCell>
+                          {brand.logo_url ? (
+                            <img 
+                              src={brand.logo_url} 
+                              alt={brand.name} 
+                              className="h-12 w-20 object-contain"
+                            />
+                          ) : (
+                            <div className="h-12 w-20 bg-secondary flex items-center justify-center text-xs">
+                              No logo
+                            </div>
+                          )}
+                        </TableCell>
                         <TableCell>{brand.name}</TableCell>
                         <TableCell>
                           <div className="flex gap-2">

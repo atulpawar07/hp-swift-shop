@@ -29,7 +29,7 @@ const Hero = () => {
               </h2>
             )}
             <p className="text-lg md:text-xl mb-8 text-gray-300 leading-relaxed max-w-2xl">
-              {content?.description || 'Leading provider of IT equipment, office supplies, and technology solutions in UAE since 2010'}
+              {content?.description || 'Leading provider of IT equipment, office supplies, and technology solutions in UAE with over 2 decades of experience'}
             </p>
             <Link to="/products">
               <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100 text-lg px-8">

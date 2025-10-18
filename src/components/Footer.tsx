@@ -25,8 +25,8 @@ const Footer = () => {
         <div className="text-center text-sm border-t border-gray-700 pt-4">
           <p>© Copyright 2025. SK Enterprise. All Rights Reserved</p>
           <p className="mt-1">
-            <span className="text-gray-400">Contact: </span>
-            <a href="mailto:yakub@skenterprise.com" className="hover:text-white">yakub@skenterprise.com</a>
+            <span className="text-gray-400">Email: </span>
+            <a href="mailto:sales@skenterpriseuae.com" className="hover:text-white">sales@skenterpriseuae.com</a>
             <span className="mx-2">|</span>
             <a href="tel:+971563569089" className="hover:text-white">+971 563 569089</a>
           </p>

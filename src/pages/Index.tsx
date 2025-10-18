@@ -179,45 +179,53 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Our Partners Section - Horizontal Scrolling */}
-      <section className="py-12 bg-secondary overflow-hidden">
+      {/* Our Brands Section - With Scrollbar */}
+      <section className="py-12 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
-            <div className="bg-primary text-primary-foreground px-6 py-3 inline-block">
-              <h3 className="text-xl font-bold">Our Partners</h3>
+            <div>
+              <div className="bg-primary text-primary-foreground px-6 py-3 inline-block mb-2">
+                <h3 className="text-xl font-bold">Our Brands</h3>
+              </div>
+              <p className="text-sm text-muted-foreground italic">With over 2 decades of experience</p>
             </div>
             <EditButton 
               onClick={() => setEditingPartners(true)} 
               className="bg-background/50 border-border hover:bg-background/70 backdrop-blur-sm" 
             />
           </div>
+
+          {/* Microsoft Cloud Services - Featured */}
+          <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 rounded-lg border-2 border-blue-400">
+            <div className="flex items-center gap-4">
+              <div className="flex-shrink-0">
+                <img 
+                  src="/partner_logos_hd_transparent/24_microsoft.png" 
+                  alt="Microsoft logo" 
+                  className="h-20 w-auto object-contain"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = 'https://via.placeholder.com/150x60?text=Microsoft';
+                  }}
+                />
+              </div>
+              <div>
+                <h4 className="text-xl font-bold text-foreground mb-1">Microsoft Cloud Services</h4>
+                <p className="text-sm text-muted-foreground">
+                  Authorized partner for Microsoft cloud solutions, Azure, Microsoft 365, and enterprise services
+                </p>
+              </div>
+            </div>
+          </div>
           
-          <div className="relative">
-            <div className="flex animate-scroll-left" style={{ gap: '8px' }}>
-              {/* First set of logos */}
+          {/* Scrollable Brands Grid */}
+          <div className="overflow-x-auto pb-4">
+            <div className="flex gap-6 min-w-max">
               {partners.map((partner, index) => (
                 <div 
-                  key={`first-${index}`}
-                  className="flex items-center justify-center flex-shrink-0"
-                  style={{ width: '120px', height: '64px' }}
-                >
-                  <img 
-                    src={partner.logo} 
-                    alt={`${partner.name} logo`} 
-                    className="max-h-16 max-w-full object-contain"
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = `https://via.placeholder.com/150x60?text=${partner.name}`;
-                    }}
-                  />
-                </div>
-              ))}
-              {/* Duplicate set for seamless loop */}
-              {partners.map((partner, index) => (
-                <div 
-                  key={`second-${index}`}
-                  className="flex items-center justify-center flex-shrink-0"
-                  style={{ width: '120px', height: '64px' }}
+                  key={index}
+                  className="flex items-center justify-center bg-background rounded-lg p-4 border border-border hover:shadow-lg transition-shadow"
+                  style={{ width: '140px', height: '100px' }}
                 >
                   <img 
                     src={partner.logo} 

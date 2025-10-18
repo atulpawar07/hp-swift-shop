@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ShoppingCart, Heart, Share2, Truck, Shield, Award } from "lucide-react";
+import { ShoppingCart, Heart, Share2, Truck, Shield, Award, ArrowLeft } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { productsData } from "@/data/productsData";
 import { useEffect, useState } from "react";
@@ -32,9 +32,25 @@ const ProductDetail = () => {
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
+        {/* Back Button */}
+        <Button 
+          variant="ghost" 
+          className="mb-4 gap-2"
+          onClick={() => navigate('/products')}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Products
+        </Button>
+
         {/* Breadcrumb */}
         <nav className="text-sm text-muted-foreground mb-6">
-          Home / Products / {product.category} / {product.name}
+          <button onClick={() => navigate('/')} className="hover:text-primary transition-colors">Home</button>
+          {' / '}
+          <button onClick={() => navigate('/products')} className="hover:text-primary transition-colors">Products</button>
+          {' / '}
+          {product.category}
+          {' / '}
+          <span className="text-foreground">{product.name}</span>
         </nav>
 
         <div className="grid lg:grid-cols-2 gap-12">

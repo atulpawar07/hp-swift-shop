@@ -1,38 +1,121 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Zap, TrendingUp, Shield, Wrench, Globe, Settings } from "lucide-react";
+import { Search, Package, Headphones, TestTube, Network, Database, Wifi, Shield, Printer, Lock, Monitor, Video, Wrench } from "lucide-react";
 
 const Services = () => {
-  const services = [
+  const mainServices = [
     {
-      icon: Zap,
-      title: "Speed",
-      description: "Quick turnaround times and fast delivery to keep your business moving forward."
+      icon: Search,
+      title: "IT Consulting",
+      description: "Expert guidance for your IT infrastructure"
     },
     {
-      icon: TrendingUp,
-      title: "Consistency",
-      description: "Reliable and consistent service quality across all interactions and transactions."
+      icon: Package,
+      title: "IT Equipment Supply",
+      description: "Wide range of IT products and solutions"
+    },
+    {
+      icon: Headphones,
+      title: "IT Support",
+      description: "24/7 technical support services"
+    },
+    {
+      icon: TestTube,
+      title: "Free Trial Hardware",
+      description: "Try before you buy options"
+    }
+  ];
+
+  const serviceCategories = [
+    {
+      icon: Network,
+      title: "Data Communication Networks",
+      services: [
+        "Network Performance Auditing",
+        "Data Network Designing",
+        "Network Infrastructure Setup"
+      ]
+    },
+    {
+      icon: Database,
+      title: "Data Storage and Processing",
+      services: [
+        "IT Audit & Assessment",
+        "Unstructured Data Audit & Optimization",
+        "IT Infrastructure Services",
+        "Data Backup & Recovery Solutions"
+      ]
+    },
+    {
+      icon: Wifi,
+      title: "Wireless Networks",
+      services: [
+        "Wireless Network Auditing",
+        "Wireless Network Maintenance",
+        "Wireless Networking Solutions",
+        "Wireless Site Survey"
+      ]
     },
     {
       icon: Shield,
-      title: "Reliability",
-      description: "Dependable service you can count on for all your IT distribution needs."
+      title: "Cyber Security",
+      services: [
+        "Corporate Network Security Services",
+        "Network Security Auditing",
+        "Penetration Testing",
+        "Security Compliance"
+      ]
+    },
+    {
+      icon: Printer,
+      title: "Printing Systems",
+      services: [
+        "Managed Print Services (Cost-Per-Copy)",
+        "Print Auditing",
+        "Print Optimization"
+      ]
+    },
+    {
+      icon: Lock,
+      title: "Site Security",
+      services: [
+        "Access Control Systems",
+        "Surveillance Solutions",
+        "Physical Security Integration"
+      ]
+    },
+    {
+      icon: Monitor,
+      title: "Software Solutions",
+      services: [
+        "Virtual Desktop Solutions",
+        "Server Virtualization",
+        "Microsoft Office 365 Migration",
+        "Corporate Email Services"
+      ]
+    },
+    {
+      icon: Video,
+      title: "Multimedia",
+      services: [
+        "IPTV Systems",
+        "Meeting & Conference Room Booking Systems",
+        "Audio Visual Solutions"
+      ]
     },
     {
       icon: Wrench,
-      title: "Technical Competence",
-      description: "Expert knowledge and technical support for all HP products and solutions."
-    },
-    {
-      icon: Globe,
-      title: "Virtual Integration",
-      description: "Seamless integration with your business processes and supply chain."
-    },
-    {
-      icon: Settings,
-      title: "Adaptability",
-      description: "Flexible solutions that adapt to your changing business requirements."
+      title: "Vendor Support",
+      services: [
+        "Aruba Support",
+        "Check Point Support",
+        "Cisco Support",
+        "Dell Support",
+        "HPE Support",
+        "Huawei Support",
+        "Juniper Support",
+        "Kaspersky Support"
+      ]
     }
   ];
 
@@ -44,58 +127,55 @@ const Services = () => {
         {/* Hero Section */}
         <section className="bg-secondary py-16">
           <div className="container mx-auto px-4">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">Our Services</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">IT Services & Solutions</h1>
             <p className="text-lg text-muted-foreground max-w-3xl">
-              Comprehensive IT distribution solutions tailored to your business needs
+              Comprehensive IT solutions to drive your business forward
             </p>
           </div>
         </section>
 
-        {/* Services Grid */}
+        {/* Main Services - Icon Cards */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {services.map((service, index) => {
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+              {mainServices.map((service, index) => {
                 const Icon = service.icon;
                 return (
-                  <div key={index} className="bg-card border border-border rounded-lg p-6 hover:shadow-lg transition-shadow">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                      <Icon className="h-6 w-6 text-primary" />
+                  <div key={index} className="text-center p-6 hover:bg-secondary rounded-lg transition-colors">
+                    <div className="w-20 h-20 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                      <Icon className="h-10 w-10 text-primary" />
                     </div>
-                    <h3 className="text-xl font-semibold text-foreground mb-3">{service.title}</h3>
-                    <p className="text-muted-foreground">{service.description}</p>
+                    <h3 className="text-xl font-semibold text-foreground mb-2">{service.title}</h3>
+                    <p className="text-sm text-muted-foreground">{service.description}</p>
                   </div>
                 );
               })}
             </div>
-          </div>
-        </section>
 
-        {/* Additional Services */}
-        <section className="py-16 bg-secondary">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">What We Offer</h2>
-            
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              <div className="bg-background p-6 rounded-lg">
-                <h3 className="text-xl font-semibold mb-3">Product Distribution</h3>
-                <ul className="space-y-2 text-muted-foreground">
-                  <li>• HP Laptops & Desktops</li>
-                  <li>• Printers & Scanners</li>
-                  <li>• Computer Accessories</li>
-                  <li>• Enterprise Solutions</li>
-                </ul>
-              </div>
-
-              <div className="bg-background p-6 rounded-lg">
-                <h3 className="text-xl font-semibold mb-3">Support Services</h3>
-                <ul className="space-y-2 text-muted-foreground">
-                  <li>• Technical Support</li>
-                  <li>• Warranty Management</li>
-                  <li>• Bulk Order Processing</li>
-                  <li>• Custom Solutions</li>
-                </ul>
-              </div>
+            {/* Service Categories Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {serviceCategories.map((category, index) => {
+                const Icon = category.icon;
+                return (
+                  <div key={index} className="bg-secondary rounded-lg overflow-hidden">
+                    <div className="bg-accent/50 px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <Icon className="h-5 w-5 text-primary" />
+                        <h3 className="font-semibold text-foreground">{category.title}</h3>
+                      </div>
+                    </div>
+                    <div className="p-6">
+                      <ul className="space-y-2">
+                        {category.services.map((service, serviceIndex) => (
+                          <li key={serviceIndex} className="text-sm text-foreground hover:text-primary transition-colors cursor-pointer">
+                            {service}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>

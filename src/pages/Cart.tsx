@@ -29,23 +29,8 @@ const Cart = () => {
     fetchPrimaryContact();
   }, []);
 
-  // Sample cart data - will be managed with state/context
-  const cartItems = [
-    {
-      id: "1",
-      name: "HP ProBook 450 G9 - Intel Core i5 12th Gen",
-      price: 52999,
-      quantity: 1,
-      image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=300&auto=format"
-    },
-    {
-      id: "2",
-      name: "HP LaserJet Pro M404dn Printer",
-      price: 24999,
-      quantity: 2,
-      image: "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=300&auto=format"
-    }
-  ];
+  // Cart items - will be managed with state/context in future
+  const cartItems: any[] = [];
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const shipping = subtotal > 50000 ? 0 : 500;

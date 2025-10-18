@@ -77,6 +77,10 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [userRoles, setUserRoles] = useState<UserRole[]>([]);
   const [newAdminEmail, setNewAdminEmail] = useState('');
+  const [newUserEmail, setNewUserEmail] = useState('');
+  const [newUserPassword, setNewUserPassword] = useState('');
+  const [newUserDialogOpen, setNewUserDialogOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<'admin' | 'moderator' | 'user'>('user');
 
   // Product form state
   const [name, setName] = useState('');
@@ -506,6 +510,159 @@ const AdminDashboard = () => {
     return userRoles.some(role => role.user_id === userId && role.role === 'admin');
   };
 
+  const getUserRoles = (userId: string): string[] => {
+    return userRoles
+      .filter(role => role.user_id === userId)
+      .map(role => role.role);
+  };
+
+  const handleCreateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      // Create the user account
+      const redirectUrl = `${window.location.origin}/`;
+      const { data, error } = await supabase.auth.signUp({
+        email: newUserEmail.trim(),
+        password: newUserPassword,
+        options: {
+          emailRedirectTo: redirectUrl
+        }
+      });
+
+      if (error) throw error;
+
+      if (!data.user) {
+        toast.error('Failed to create user');
+        return;
+      }
+
+      // If a specific role is selected, assign it
+      if (selectedRole) {
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert([{ user_id: data.user.id, role: selectedRole }]);
+
+        if (roleError) {
+          console.error('Error assigning role:', roleError);
+          toast.error('User created but failed to assign role');
+        }
+      }
+
+      toast.success(`User created successfully with ${selectedRole} role`);
+      setNewUserEmail('');
+      setNewUserPassword('');
+      setSelectedRole('user');
+      setNewUserDialogOpen(false);
+      
+      // Wait a bit for the profile to be created by the trigger
+      setTimeout(fetchUsers, 1000);
+    } catch (error: any) {
+      console.error('Error creating user:', error);
+      toast.error(error.message || 'Failed to create user');
+    }
+  };
+
+  const handleDeleteUser = async (userId: string, userEmail: string) => {
+    // Prevent deleting admin users
+    if (isUserAdmin(userId)) {
+      toast.error('Cannot delete admin users');
+      return;
+    }
+
+    // Prevent deleting self
+    if (userId === user?.id) {
+      toast.error('You cannot delete your own account');
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to delete user ${userEmail}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      // Delete user roles first
+      const { error: rolesError } = await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', userId);
+
+      if (rolesError) throw rolesError;
+
+      // Delete profile (this will cascade to auth.users due to FK)
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', userId);
+
+      if (profileError) throw profileError;
+
+      toast.success('User deleted successfully');
+      fetchUsers();
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      toast.error('Failed to delete user. Note: Deleting auth users requires additional permissions.');
+    }
+  };
+
+  const handleGrantRole = async (userId: string, role: 'admin' | 'moderator' | 'user') => {
+    try {
+      // Check if user already has this role
+      const { data: existingRole } = await supabase
+        .from('user_roles')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('role', role)
+        .maybeSingle();
+
+      if (existingRole) {
+        toast.error(`User already has ${role} role`);
+        return;
+      }
+
+      // Grant the role
+      const { error } = await supabase
+        .from('user_roles')
+        .insert([{ user_id: userId, role }]);
+
+      if (error) throw error;
+
+      toast.success(`${role} role granted successfully`);
+      fetchUsers();
+    } catch (error) {
+      console.error('Error granting role:', error);
+      toast.error('Failed to grant role');
+    }
+  };
+
+  const handleRevokeRole = async (userId: string, role: string) => {
+    // Prevent revoking own admin role
+    if (userId === user?.id && role === 'admin') {
+      toast.error('You cannot revoke your own admin role');
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to revoke ${role} role from this user?`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', userId)
+        .eq('role', role as 'admin' | 'moderator' | 'user');
+
+      if (error) throw error;
+
+      toast.success(`${role} role revoked successfully`);
+      fetchUsers();
+    } catch (error) {
+      console.error('Error revoking role:', error);
+      toast.error('Failed to revoke role');
+    }
+  };
+
   if (loading || loadingProducts) {
     return (
       <div className="min-h-screen bg-background">
@@ -879,28 +1036,68 @@ const AdminDashboard = () => {
           {/* Users Tab */}
           <TabsContent value="users">
             <div className="grid gap-6">
-              {/* Grant Admin Access */}
+              {/* Create New User */}
               <Card>
-                <CardHeader>
-                  <CardTitle>Grant Admin Access</CardTitle>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle>User Management</CardTitle>
+                  <Dialog open={newUserDialogOpen} onOpenChange={setNewUserDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Create New User
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Create New User</DialogTitle>
+                      </DialogHeader>
+                      <form onSubmit={handleCreateUser} className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="new-user-email">Email</Label>
+                          <Input
+                            id="new-user-email"
+                            type="email"
+                            value={newUserEmail}
+                            onChange={(e) => setNewUserEmail(e.target.value)}
+                            placeholder="user@example.com"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="new-user-password">Password</Label>
+                          <Input
+                            id="new-user-password"
+                            type="password"
+                            value={newUserPassword}
+                            onChange={(e) => setNewUserPassword(e.target.value)}
+                            placeholder="Minimum 6 characters"
+                            required
+                            minLength={6}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="new-user-role">Initial Role</Label>
+                          <Select value={selectedRole} onValueChange={(value: any) => setSelectedRole(value)}>
+                            <SelectTrigger className="bg-background">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent className="bg-popover">
+                              <SelectItem value="user">User</SelectItem>
+                              <SelectItem value="moderator">Moderator</SelectItem>
+                              <SelectItem value="admin">Admin</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <Button type="submit" className="w-full">
+                          Create User
+                        </Button>
+                      </form>
+                    </DialogContent>
+                  </Dialog>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleGrantAdmin} className="flex gap-4">
-                    <Input
-                      type="email"
-                      placeholder="Enter user email"
-                      value={newAdminEmail}
-                      onChange={(e) => setNewAdminEmail(e.target.value)}
-                      required
-                      className="flex-1"
-                    />
-                    <Button type="submit">
-                      <Plus className="mr-2 h-4 w-4" />
-                      Grant Admin
-                    </Button>
-                  </form>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Note: User must have an account first. Enter their registered email address.
+                  <p className="text-sm text-muted-foreground">
+                    Create new users with specific roles. Users will receive a confirmation email.
                   </p>
                 </CardContent>
               </Card>
@@ -916,43 +1113,107 @@ const AdminDashboard = () => {
                       <TableRow>
                         <TableHead>Email</TableHead>
                         <TableHead>Full Name</TableHead>
-                        <TableHead>Role</TableHead>
+                        <TableHead>Roles</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {users.map((userItem) => (
-                        <TableRow key={userItem.id}>
-                          <TableCell>{userItem.email}</TableCell>
-                          <TableCell>{userItem.full_name || '-'}</TableCell>
-                          <TableCell>
-                            {isUserAdmin(userItem.id) ? (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                                Admin
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
-                                User
-                              </span>
-                            )}
-                          </TableCell>
-                          <TableCell>
-                            {isUserAdmin(userItem.id) && userItem.id !== user?.id && (
-                              <Button
-                                variant="destructive"
-                                size="sm"
-                                onClick={() => handleRevokeAdmin(userItem.id)}
-                              >
-                                <Trash2 className="h-4 w-4 mr-2" />
-                                Revoke Admin
-                              </Button>
-                            )}
-                            {userItem.id === user?.id && (
-                              <span className="text-sm text-muted-foreground">You</span>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {users.map((userItem) => {
+                        const roles = getUserRoles(userItem.id);
+                        const isAdmin = roles.includes('admin');
+                        
+                        return (
+                          <TableRow key={userItem.id}>
+                            <TableCell>{userItem.email}</TableCell>
+                            <TableCell>{userItem.full_name || '-'}</TableCell>
+                            <TableCell>
+                              <div className="flex flex-wrap gap-1">
+                                {roles.length > 0 ? (
+                                  roles.map((role) => (
+                                    <span
+                                      key={role}
+                                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                        role === 'admin'
+                                          ? 'bg-primary/10 text-primary'
+                                          : role === 'moderator'
+                                          ? 'bg-accent/10 text-accent-foreground'
+                                          : 'bg-secondary text-secondary-foreground'
+                                      }`}
+                                    >
+                                      {role}
+                                    </span>
+                                  ))
+                                ) : (
+                                  <span className="text-sm text-muted-foreground">No roles</span>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {userItem.id === user?.id ? (
+                                <span className="text-sm text-muted-foreground">You</span>
+                              ) : (
+                                <div className="flex flex-col gap-2">
+                                  <div className="flex gap-2 flex-wrap">
+                                    {/* Grant Role Buttons */}
+                                    {!roles.includes('admin') && (
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleGrantRole(userItem.id, 'admin')}
+                                      >
+                                        Grant Admin
+                                      </Button>
+                                    )}
+                                    {!roles.includes('moderator') && (
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleGrantRole(userItem.id, 'moderator')}
+                                      >
+                                        Grant Moderator
+                                      </Button>
+                                    )}
+                                    {!roles.includes('user') && (
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleGrantRole(userItem.id, 'user')}
+                                      >
+                                        Grant User
+                                      </Button>
+                                    )}
+                                  </div>
+                                  <div className="flex gap-2 flex-wrap">
+                                    {/* Revoke Role Buttons */}
+                                    {roles.map((role) => (
+                                      <Button
+                                        key={role}
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={() => handleRevokeRole(userItem.id, role)}
+                                      >
+                                        <Trash2 className="h-3 w-3 mr-1" />
+                                        Revoke {role}
+                                      </Button>
+                                    ))}
+                                    {/* Delete User Button (only for non-admins) */}
+                                    {!isAdmin && (
+                                      <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={() => handleDeleteUser(userItem.id, userItem.email)}
+                                      >
+                                        <Trash2 className="h-3 w-3 mr-1" />
+                                        Delete User
+                                      </Button>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 </CardContent>

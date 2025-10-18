@@ -25,14 +25,18 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-background">
+    <nav className="bg-background sticky top-0 z-50 shadow-sm">
       {/* Top Bar with Logo and Contact */}
       <div className="border-b border-border">
         <div className="container mx-auto px-4 py-3 md:py-4">
-          <div className="flex justify-between items-center gap-2">
+          <div className="flex justify-between items-center gap-4">
             {/* Logo */}
             <Link to="/" className="flex items-center flex-shrink-0">
-              <img src={logo} alt="SK Enterprise" className="h-12 md:h-16 w-auto" />
+              <img 
+                src={logo} 
+                alt="SK Enterprise" 
+                className="h-10 md:h-14 lg:h-16 w-auto object-contain" 
+              />
             </Link>
 
             {/* Contact Info & Actions */}

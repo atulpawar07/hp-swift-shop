@@ -25,6 +25,49 @@ const Index = () => {
   const [editingPartners, setEditingPartners] = useState(false);
   const { content: welcomeContent, updateContent: updateWelcome } = usePageContent('home', 'welcome');
 
+  // Legacy logo filename mapping
+  const logoMapping: Record<string, string> = {
+    'HP': '01_hp.png',
+    'Lenovo': '02_lenovo.png',
+    'Toshiba': '03_toshiba.png',
+    'Dell': '04_dell.png',
+    'Sony': '05_sony.png',
+    'Compaq': '06_compaq.png',
+    'Apple': '07_apple.png',
+    'Acer': '08_acer.png',
+    'Asus': '09_asus.png',
+    'Samsung': '10_samsung.png',
+    'APC': '11_apc.png',
+    'IBM': '12_ibm.png',
+    'Canon': '13_canon.png',
+    'Epson': '14_epson.png',
+    'Brother': '15_brother.png',
+    'D-Link': '16_d-link.png',
+    'Cisco': '17_cisco.png',
+    'Linksys': '18_linksys.png',
+    'Belkin': '19_belkin.png',
+    'Netgear': '20_netgear.png',
+    'Targus': '21_targus.png',
+    'Logitech': '22_logitech.png',
+    'Intel': '23_intel.png',
+    'Microsoft': '24_microsoft.png',
+    'Creative': '25_creative.png',
+    'Imation': '26_imation.png',
+    'BenQ': '27_benq.png',
+    'ViewSonic': '28_viewsonic.png',
+    'Gigabyte': '29_gigabyte.png',
+    'WD': '30_wd.png',
+    'Seagate': '31_seagate.png',
+    'Symantec': '32_symantec.png',
+    'SanDisk': '33_sandisk.png',
+    'Kingston': '34_kingston.png',
+    'Iomega': '35_iomega.png',
+    'Polycom': '36_polycom.png',
+    'Prysm': '37_prysm.png',
+    'Aruba': '38_aruba.png',
+    'Vaddio': '39_vaddio.png'
+  };
+
   // Fetch partners from brands table
   useEffect(() => {
     const fetchPartners = async () => {
@@ -39,7 +82,7 @@ const Index = () => {
       } else {
         const partnersList = data?.map(b => ({
           name: b.name,
-          logo: b.logo_url || `/partner_logos_hd_transparent/${b.name.toLowerCase().replace(/\s+/g, '-')}.png`
+          logo: b.logo_url || (logoMapping[b.name] ? `/partner_logos_hd_transparent/${logoMapping[b.name]}` : `https://via.placeholder.com/150x60?text=${b.name}`)
         })) || [];
         setPartners(partnersList);
       }

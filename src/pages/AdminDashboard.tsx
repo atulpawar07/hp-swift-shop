@@ -1188,49 +1188,55 @@ const AdminDashboard = () => {
                               </div>
                             </TableCell>
                             <TableCell>
-                              {userItem.id === user?.id ? (
-                                <span className="text-sm text-muted-foreground">You</span>
-                              ) : (
-                                <div className="flex flex-col gap-2">
-                                  <div className="flex gap-2 flex-wrap">
-                                    {/* Edit User Button */}
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => handleEditUser(userItem)}
-                                    >
-                                      <Edit className="h-3 w-3 mr-1" />
-                                      Edit Details
-                                    </Button>
-                                    {/* Grant Role Buttons */}
-                                    {!roles.includes('admin') && (
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => handleGrantRole(userItem.id, 'admin')}
-                                      >
-                                        Grant Admin
-                                      </Button>
-                                    )}
-                                    {!roles.includes('moderator') && (
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => handleGrantRole(userItem.id, 'moderator')}
-                                      >
-                                        Grant Moderator
-                                      </Button>
-                                    )}
-                                    {!roles.includes('user') && (
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => handleGrantRole(userItem.id, 'user')}
-                                      >
-                                        Grant User
-                                      </Button>
-                                    )}
-                                  </div>
+                              <div className="flex flex-col gap-2">
+                                <div className="flex gap-2 flex-wrap">
+                                  {/* Edit User Button - Available for all users including self */}
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleEditUser(userItem)}
+                                  >
+                                    <Edit className="h-3 w-3 mr-1" />
+                                    Edit Details
+                                  </Button>
+                                  
+                                  {/* Role management - Only for other users */}
+                                  {userItem.id !== user?.id && (
+                                    <>
+                                      {/* Grant Role Buttons */}
+                                      {!roles.includes('admin') && (
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={() => handleGrantRole(userItem.id, 'admin')}
+                                        >
+                                          Grant Admin
+                                        </Button>
+                                      )}
+                                      {!roles.includes('moderator') && (
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={() => handleGrantRole(userItem.id, 'moderator')}
+                                        >
+                                          Grant Moderator
+                                        </Button>
+                                      )}
+                                      {!roles.includes('user') && (
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={() => handleGrantRole(userItem.id, 'user')}
+                                        >
+                                          Grant User
+                                        </Button>
+                                      )}
+                                    </>
+                                  )}
+                                </div>
+                                
+                                {/* Revoke/Delete actions - Only for other users */}
+                                {userItem.id !== user?.id && (
                                   <div className="flex gap-2 flex-wrap">
                                     {/* Revoke Role Buttons */}
                                     {roles.map((role) => (
@@ -1256,8 +1262,8 @@ const AdminDashboard = () => {
                                       </Button>
                                     )}
                                   </div>
-                                </div>
-                              )}
+                                )}
+                              </div>
                             </TableCell>
                           </TableRow>
                         );

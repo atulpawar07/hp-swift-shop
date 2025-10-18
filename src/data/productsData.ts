@@ -46,8 +46,8 @@ export const productsData: Product[] = [
     brand: "APC",
     category: "UPS & Batteries",
     images: [
-      "/products/apc/APC_BV650i-MSX_APC-BV650i-MSX.webp",
-      "/products/apc/APC_BV650i-MSX_APC.jpg"
+      "/products/apc/APC BV650i-MSX_APC-BV650i-MSX.webp",
+      "/products/apc/APC BV650i-MSX_APC.jpg"
     ],
     inStock: true
   },
@@ -57,8 +57,8 @@ export const productsData: Product[] = [
     brand: "APC",
     category: "UPS & Batteries",
     images: [
-      "/products/apc/APC_BV800i-MSX_APC-BV800i-MSX.webp",
-      "/products/apc/APC_BV800i-MSX_n1.webp"
+      "/products/apc/APC BV800i-MSX_APC-BV800i-MSX.webp",
+      "/products/apc/APC BV800i-MSX_n1.webp"
     ],
     inStock: true
   },
@@ -67,7 +67,7 @@ export const productsData: Product[] = [
     name: "APC BX750MI",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/APC_BX750MI_APC-BX750MI.jpg"],
+    images: ["/products/apc/APC BX750MI_APC-BX750MI.jpg"],
     inStock: true
   },
   {
@@ -75,7 +75,7 @@ export const productsData: Product[] = [
     name: "APC EASY SRV1KI",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/APC_EASY_SRV1KI_APC-EASY-SRV1KI.webp"],
+    images: ["/products/apc/APC EASY SRV1KI_APC-EASY-SRV1KI.webp"],
     inStock: true
   },
   {
@@ -83,7 +83,7 @@ export const productsData: Product[] = [
     name: "APC EASY SRV3KRILRK",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/APC_EASY_SRV3KRILRK_APC-EASY-SRV3KRILRK.webp"],
+    images: ["/products/apc/APC EASY SRV3KRILRK_APC-EASY-SRV3KRILRK.webp"],
     inStock: true
   },
   {
@@ -91,7 +91,7 @@ export const productsData: Product[] = [
     name: "APC Replacement Battery Cartridge #7",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/APC_Replacement_Battery_download-7.jpg"],
+    images: ["/products/apc/APC Replacement Battery Cartri_download-7.jpg"],
     inStock: true
   },
   {
@@ -99,7 +99,7 @@ export const productsData: Product[] = [
     name: "APC SMC1000IC / 1500IC",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/APC_SMC1000IC_APC-SMC1000I1500.jpg"],
+    images: ["/products/apc/APC SMC1000IC  1500IC_APC-SMC1000I1500.jpg"],
     inStock: true
   },
   {
@@ -107,7 +107,7 @@ export const productsData: Product[] = [
     name: "APC SMC3000I",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/APC_SMC3000I_jk.jpg"],
+    images: ["/products/apc/APC SMC3000I_jk.jpg"],
     inStock: true
   },
   {
@@ -115,7 +115,7 @@ export const productsData: Product[] = [
     name: "APC SMC3000RMI2UC",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/APC_SMC3000RMI2UC_ko.webp"],
+    images: ["/products/apc/APC SMC3000RMI2UC_ko-e1755939839468.webp"],
     inStock: true
   },
   {
@@ -123,7 +123,7 @@ export const productsData: Product[] = [
     name: "APC SMT1000I – IC",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/APC_SMT1000I_IC_lo.jpg"],
+    images: ["/products/apc/APC SMT1000I  IC_lo.jpg"],
     inStock: true
   },
   {
@@ -131,7 +131,7 @@ export const productsData: Product[] = [
     name: "APC SMT3000IC",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/APC_SMT3000IC_download856.jpg"],
+    images: ["/products/apc/APC SMT3000IC_download856.jpg"],
     inStock: true
   },
   {
@@ -139,7 +139,7 @@ export const productsData: Product[] = [
     name: "APC SMV3000AI-MSX",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/APC_SMV3000AI-MSX_hkiy.jpg"],
+    images: ["/products/apc/APC SMV3000AI-MSX_hkiy.jpg"],
     inStock: true
   },
   {
@@ -147,7 +147,7 @@ export const productsData: Product[] = [
     name: "APC SRT1000XLI",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/APC_SRT1000XLI_369.webp"],
+    images: ["/products/apc/APC SRT1000XLI_8030DB440449C565852583ED00640FBD_JVAN_BBRPHY_f_h_hi_369-e1755938871313.webp"],
     inStock: true
   },
   {
@@ -155,7 +155,7 @@ export const productsData: Product[] = [
     name: "APC SRT1500XLI",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/APC_SRT1500XLI_uiopl.webp"],
+    images: ["/products/apc/APC SRT1500XLI_uiopl.webp"],
     inStock: true
   },
   {
@@ -164,7 +164,7 @@ export const productsData: Product[] = [
     brand: "APC",
     category: "UPS & Batteries",
     images: [
-      "/products/apc/APC_SRT2200XLI_APC-SRT2200XLI.jpg",
+      "/products/apc/APC SRT2200XLI_APC-SRT2200XLI.jpg",
       "/products/apc/srt2200xli_poiu.jpg"
     ],
     inStock: true
@@ -182,7 +182,7 @@ export const productsData: Product[] = [
     name: "APC SRT72BP",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/APC_SRT72BP_pi.webp"],
+    images: ["/products/apc/APC SRT72BP_pi-e1755939821256.webp"],
     inStock: true
   },
   {
@@ -190,7 +190,7 @@ export const productsData: Product[] = [
     name: "APC SRT96BP",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/APC_SRT96BP_APC-SRT96BP.jpg"],
+    images: ["/products/apc/APC SRT96BP_APC-SRT96BP.jpg"],
     inStock: true
   },
   {
@@ -198,7 +198,7 @@ export const productsData: Product[] = [
     name: "APC SRTG10KXLI",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/APC_SRTG10KXLI_download-2.jpg"],
+    images: ["/products/apc/APC SRTG10KXLI_download-2.jpg"],
     inStock: true
   },
   {
@@ -207,7 +207,7 @@ export const productsData: Product[] = [
     brand: "APC",
     category: "UPS & Batteries",
     images: [
-      "/products/apc/APC_SRTG5KXLI_oiuy.jpg",
+      "/products/apc/APC SRTG5KXLI_oiuy.jpg",
       "/products/apc/srtg5kxli_download-3.jpg"
     ],
     inStock: true
@@ -225,7 +225,7 @@ export const productsData: Product[] = [
     name: "RBC55 APC Replacement Battery Cartridge #55",
     brand: "APC",
     category: "UPS & Batteries",
-    images: ["/products/apc/RBC55_download-8.jpg"],
+    images: ["/products/apc/RBC55 APC Replacement Battery_download-8.jpg"],
     inStock: true
   },
 
@@ -236,7 +236,7 @@ export const productsData: Product[] = [
     brand: "HP",
     category: "Printers",
     price: 2690,
-    images: ["/products/hp/HP_CP5225n_Untitled-design-10.jpg"],
+    images: ["/products/hp/HP CP5225n PRINTER 269010 QT_Untitled-design-10.jpg"],
     inStock: true
   },
   {
@@ -245,7 +245,7 @@ export const productsData: Product[] = [
     brand: "HP",
     category: "Printers",
     price: 600,
-    images: ["/products/hp/HP_M_102A_hp52.jpg"],
+    images: ["/products/hp/HP M 102A Printer  600.00._hp52-e1755940257703.jpg"],
     inStock: true
   },
   {
@@ -254,7 +254,7 @@ export const productsData: Product[] = [
     brand: "HP",
     category: "Printers",
     price: 610,
-    images: ["/products/hp/HP_M_137Fnw_ll.jpg"],
+    images: ["/products/hp/HP M 137Fnw Printer  610.00._ll-e1755939079903.jpg"],
     inStock: true
   },
   {
@@ -263,7 +263,7 @@ export const productsData: Product[] = [
     brand: "HP",
     category: "Printers",
     price: 650,
-    images: ["/products/hp/HP_M_1502W_download-1.jpg"],
+    images: ["/products/hp/HP M 1502W Printer  650.00._download-1-e1755939922613.jpg"],
     inStock: true
   },
   {
@@ -272,7 +272,7 @@ export const productsData: Product[] = [
     brand: "HP",
     category: "Printers",
     price: 875,
-    images: ["/products/hp/HP_M_178nw_Untitled-design-12.jpg"],
+    images: ["/products/hp/HP M 178nw Printer  875.00._Untitled-design-12.jpg"],
     inStock: true
   },
   {
@@ -281,7 +281,7 @@ export const productsData: Product[] = [
     brand: "HP",
     category: "Printers",
     price: 810,
-    images: ["/products/hp/HP_M_179FNW_Untitled-design-11.jpg"],
+    images: ["/products/hp/HP M 179FNW  810.00  13QTY_Untitled-design-11.jpg"],
     inStock: true
   },
   {
@@ -291,8 +291,8 @@ export const productsData: Product[] = [
     category: "Printers",
     price: 900,
     images: [
-      "/products/hp/HP_M_182N_Printer.webp",
-      "/products/hp/HP_M_182N_Untitled-design-13.webp"
+      "/products/hp/HP M 182N Printer  900.00_HP-M-182N-Printer--900.00.--9-QTY.webp",
+      "/products/hp/HP M 182N Printer  900.00_Untitled-design-13.webp"
     ],
     inStock: true
   },
@@ -302,7 +302,7 @@ export const productsData: Product[] = [
     brand: "HP",
     category: "Printers",
     price: 600,
-    images: ["/products/hp/HP_M_236D_ppppp.jpg"],
+    images: ["/products/hp/HP M 236D Printer  600.00._ppppp.jpg"],
     inStock: true
   },
   {
@@ -311,7 +311,7 @@ export const productsData: Product[] = [
     brand: "HP",
     category: "Printers",
     price: 670,
-    images: ["/products/hp/HP_M_236sdw.jpg"],
+    images: ["/products/hp/HP M 236sdw  670.00.  7QTY_HP-M-236sdw--670.00.--7QTY-e1755940337617.jpg"],
     inStock: true
   },
   {
@@ -320,7 +320,7 @@ export const productsData: Product[] = [
     brand: "HP",
     category: "Printers",
     price: 750,
-    images: ["/products/hp/HP_M_28A.webp"],
+    images: ["/products/hp/HP M 28A  750.00..  1 QTY_HP-M-28A--750.00.--1-QTY.webp"],
     inStock: true
   },
   {
@@ -329,7 +329,7 @@ export const productsData: Product[] = [
     brand: "HP",
     category: "Printers",
     price: 800,
-    images: ["/products/hp/HP_M_28W.jpg"],
+    images: ["/products/hp/HP M 28W  800.00..  2 QTY_HP-M-28W--800.00.--2-QTY-e1755940376157.jpg"],
     inStock: true
   },
   {
@@ -338,7 +338,7 @@ export const productsData: Product[] = [
     brand: "HP",
     category: "Printers",
     price: 1140,
-    images: ["/products/hp/HP_M_3303FDW_hp2020.jpg"],
+    images: ["/products/hp/HP M 3303FDW Printer  1140_hp2020-e1755940242986.jpg"],
     inStock: true
   },
   {
@@ -347,7 +347,7 @@ export const productsData: Product[] = [
     brand: "HP",
     category: "Printers",
     price: 1050,
-    images: ["/products/hp/HP_M_4103dw.jpg"],
+    images: ["/products/hp/HP M 4103dw Printer  1050.00_pppppppppppppppp-1-e1755939093727.jpg"],
     inStock: true
   },
   {
@@ -356,7 +356,7 @@ export const productsData: Product[] = [
     brand: "HP",
     category: "Printers",
     price: 1450,
-    images: ["/products/hp/HP_M_4303FDW_h.jpg"],
+    images: ["/products/hp/HP M 4303FDW  1450.00_h.jpg"],
     inStock: true
   },
   {
@@ -365,7 +365,7 @@ export const productsData: Product[] = [
     brand: "HP",
     category: "Printers",
     price: 1325,
-    images: ["/products/hp/HP_M507DN_k.jpg"],
+    images: ["/products/hp/HP M507DN PRINTER1325  1 QTY_k.jpg"],
     inStock: true
   },
   {
@@ -374,7 +374,7 @@ export const productsData: Product[] = [
     brand: "HP",
     category: "Scanners",
     price: 950,
-    images: ["/products/hp/HP_Scanjet_2500.jpg"],
+    images: ["/products/hp/HP Scanjet 2500  950.00  4_images-1-e1755939139399.jpg"],
     inStock: true
   },
 
@@ -384,7 +384,7 @@ export const productsData: Product[] = [
     name: "CANON I-SENSYS MF-237W EU MFP",
     brand: "CANON",
     category: "Printers",
-    images: ["/products/canon/CANON_I-SENSYS_MF-237W.webp"],
+    images: ["/products/canon/CANON I-SENSYS MF-237W EU MFP_CANON-I-SENSYS-MF-237W-EU-MFP.webp"],
     inStock: true
   },
   {
@@ -392,7 +392,7 @@ export const productsData: Product[] = [
     name: "Canon I-Sensys MF275DW EU MFP",
     brand: "CANON",
     category: "Printers",
-    images: ["/products/canon/Canon_MF275DW.webp"],
+    images: ["/products/canon/Canon I-Sensys MF275DW EU MFP_Canon-I-Sensys-MF275DW-EU-MFP.webp"],
     inStock: true
   },
   {
@@ -400,7 +400,7 @@ export const productsData: Product[] = [
     name: "CANON IJ MFP G2470 EUM/EMB PRINTER",
     brand: "CANON",
     category: "Printers",
-    images: ["/products/canon/CANON_G2470.webp"],
+    images: ["/products/canon/CANON IJ MFP G2470 EUMEMB PRI_CANON-IJ-MFP-G2470-EUMEMB-PRINTER.webp"],
     inStock: true
   },
   {
@@ -408,7 +408,7 @@ export const productsData: Product[] = [
     name: "Canon IJ MFP PIXMA G3410 EUM/EMB Printer",
     brand: "CANON",
     category: "Printers",
-    images: ["/products/canon/Canon_PIXMA_G3410.webp"],
+    images: ["/products/canon/Canon IJ MFP PIXMA G3410 EUME_Canon-IJ-MFP-PIXMA-G3410-EUMEMB-Printer.webp"],
     inStock: true
   },
   {
@@ -416,7 +416,7 @@ export const productsData: Product[] = [
     name: "Canon IJ MFP PIXMA G3430 EUM/EMB",
     brand: "CANON",
     category: "Printers",
-    images: ["/products/canon/Canon_PIXMA_G3430.webp"],
+    images: ["/products/canon/Canon IJ MFP PIXMA G3430 EUME_Canon-IJ-MFP-PIXMA-G3410-EUMEMB-Printer-1.webp"],
     inStock: true
   },
   {
@@ -424,7 +424,7 @@ export const productsData: Product[] = [
     name: "Canon IJ SFP PIXMA G540 PRINTER",
     brand: "CANON",
     category: "Printers",
-    images: ["/products/canon/Canon_PIXMA_G540.webp"],
+    images: ["/products/canon/Canon IJ SFP PIXMA G540 PRINTE_Canon-IJ-MFP-PIXMA-G3410-EUMEMB-Printer-1-1.webp"],
     inStock: true
   },
   {
@@ -433,8 +433,8 @@ export const productsData: Product[] = [
     brand: "CANON",
     category: "Printers",
     images: [
-      "/products/canon/CANON_G3470_design-8.webp",
-      "/products/canon/CANON_G3470.webp"
+      "/products/canon/CANON INKJET MFP G3470 EUMEMB_Untitled-design-8-1.webp",
+      "/products/canon/CANON INKJET MFP G3470 EUMEMB_CANON-INKJET-MFP-G3470-EUMEMB-BK-e1755940583625.webp"
     ],
     inStock: true
   },
@@ -443,7 +443,7 @@ export const productsData: Product[] = [
     name: "CANON INKJET MFP PIXMA TS3340 MEA BLACK",
     brand: "CANON",
     category: "Printers",
-    images: ["/products/canon/CANON_PIXMA_TS3340.webp"],
+    images: ["/products/canon/CANON INKJET MFP PIXMA TS3340_CANON-INKJET-MFP-PIXMA-TS3340-MEA-BLACK.webp"],
     inStock: true
   },
   {
@@ -451,7 +451,7 @@ export const productsData: Product[] = [
     name: "CANON LASER MFP I-S MF453DW PRINTER",
     brand: "CANON",
     category: "Printers",
-    images: ["/products/canon/CANON_MF453DW.jpg"],
+    images: ["/products/canon/CANON LASER MFP I-S MF453DW PR_CANON-LASER-MFP-I-S-MF453DW-PRINTER-e1755938715467.jpg"],
     inStock: true
   },
   {
@@ -459,7 +459,7 @@ export const productsData: Product[] = [
     name: "Canon Laser MFP I-S MF651CW EMEA",
     brand: "CANON",
     category: "Printers",
-    images: ["/products/canon/Canon_MF651CW.jpg"],
+    images: ["/products/canon/Canon Laser MFP I-S MF651CW EM_E280A2-Canon-Laser-MFP-I-S-MF651CW-EMEA-e1755940507128.jpg"],
     inStock: true
   },
   {
@@ -467,7 +467,7 @@ export const productsData: Product[] = [
     name: "Canon Laser MFP I-Sensys MF465DW",
     brand: "CANON",
     category: "Printers",
-    images: ["/products/canon/Canon_MF465DW.jpg"],
+    images: ["/products/canon/Canon Laser MFP I-Sensys MF465_Canon-Laser-MFP-I-Sensys-MF465DW-e1755940440714.jpg"],
     inStock: true
   },
   {
@@ -475,7 +475,7 @@ export const productsData: Product[] = [
     name: "Canon Laser MFP Isensys MF461DW",
     brand: "CANON",
     category: "Printers",
-    images: ["/products/canon/Canon_MF461DW.jpg"],
+    images: ["/products/canon/Canon Laser MFP Isensys MF461D_lll-e1755940464258.jpg"],
     inStock: true
   },
 
@@ -485,7 +485,7 @@ export const productsData: Product[] = [
     name: "EPSON ECOTANK L18050 PRINTER",
     brand: "Epson",
     category: "Printers",
-    images: ["/products/epson/EPSON_L18050_download-17.jpg"],
+    images: ["/products/epson/EPSON ECOTANK L18050 PRINTER_download-17.jpg"],
     inStock: true
   },
   {
@@ -493,7 +493,7 @@ export const productsData: Product[] = [
     name: "EPSON ECOTANK L3210 PRINTER",
     brand: "Epson",
     category: "Printers",
-    images: ["/products/epson/EPSON_L3210.webp"],
+    images: ["/products/epson/EPSON ECOTANK L3210 PRINTER_EPSON-ECOTANK-L3210-PRINTER.webp"],
     inStock: true
   },
   {
@@ -501,7 +501,7 @@ export const productsData: Product[] = [
     name: "EPSON ECOTANK L3250 PRINTER",
     brand: "Epson",
     category: "Printers",
-    images: ["/products/epson/EPSON_L3250.webp"],
+    images: ["/products/epson/EPSON ECOTANK L3250 PRINTER_EPSON-ECOTANK-L3250-PRINTER.webp"],
     inStock: true
   },
   {
@@ -509,7 +509,7 @@ export const productsData: Product[] = [
     name: "EPSON ECOTANK L3251 PRINTER",
     brand: "Epson",
     category: "Printers",
-    images: ["/products/epson/EPSON_L3251.webp"],
+    images: ["/products/epson/EPSON ECOTANK L3251 PRINTER_EPSON-ECOTANK-L3251-PRINTER.webp"],
     inStock: true
   },
   {
@@ -517,7 +517,7 @@ export const productsData: Product[] = [
     name: "EPSON ECOTANK L5290 PRINTER",
     brand: "Epson",
     category: "Printers",
-    images: ["/products/epson/EPSON_L5290.webp"],
+    images: ["/products/epson/EPSON ECOTANK L5290 PRINTER_EPSON-ECOTANK-L5290-PRINTER.webp"],
     inStock: true
   },
   {
@@ -525,7 +525,7 @@ export const productsData: Product[] = [
     name: "EPSON ECOTANK L8050 PRINTER",
     brand: "Epson",
     category: "Printers",
-    images: ["/products/epson/EPSON_L8050_download-16.jpg"],
+    images: ["/products/epson/EPSON ECOTANK L8050 PRINTER_download-16.jpg"],
     inStock: true
   },
   {
@@ -533,7 +533,7 @@ export const productsData: Product[] = [
     name: "EPSON PRINTER L11050 PRINTER",
     brand: "Epson",
     category: "Printers",
-    images: ["/products/epson/EPSON_L11050_printer-1.jpg"],
+    images: ["/products/epson/EPSON PRINTER L11050 PRINTER_printer-1.jpg"],
     inStock: true
   },
   {
@@ -541,7 +541,7 @@ export const productsData: Product[] = [
     name: "EPSON PRINTER L14150 PRINTER",
     brand: "Epson",
     category: "Printers",
-    images: ["/products/epson/EPSON_L14150_printer-3.jpg"],
+    images: ["/products/epson/EPSON PRINTER L14150 PRINTER_printer-3.jpg"],
     inStock: true
   },
   {
@@ -549,7 +549,7 @@ export const productsData: Product[] = [
     name: "EPSON LQ 590",
     brand: "Epson",
     category: "Printers",
-    images: ["/products/epson/EPSON_LQ590.webp"],
+    images: ["/products/epson/EPSON LQ 590_EPSON-LQ-590.webp"],
     inStock: true
   },
   {
@@ -557,7 +557,7 @@ export const productsData: Product[] = [
     name: "EPSON LQ350 / LX350",
     brand: "Epson",
     category: "Printers",
-    images: ["/products/epson/EPSON_LQ350.webp"],
+    images: ["/products/epson/EPSON LQ350  LX350_lq.webp"],
     inStock: true
   },
   {
@@ -565,7 +565,7 @@ export const productsData: Product[] = [
     name: "EPSON- LQ2190",
     brand: "Epson",
     category: "Printers",
-    images: ["/products/epson/EPSON_LQ2190.jpg"],
+    images: ["/products/epson/EPSON- LQ2190_Untitled-design-5-1.jpg"],
     inStock: true
   },
   {
@@ -573,7 +573,7 @@ export const productsData: Product[] = [
     name: "EPSON-TMT220d",
     brand: "Epson",
     category: "Printers",
-    images: ["/products/epson/EPSON_TMT220d.webp"],
+    images: ["/products/epson/EPSON-TMT220d_Untitled-design-6-2.webp"],
     inStock: true
   },
   {
@@ -581,7 +581,7 @@ export const productsData: Product[] = [
     name: "EPSON-TMT88VI",
     brand: "Epson",
     category: "Printers",
-    images: ["/products/epson/EPSON_TMT88VI.webp"],
+    images: ["/products/epson/EPSON-TMT88VI_EPSON-TMT88VI-1.webp"],
     inStock: true
   },
 
@@ -591,7 +591,7 @@ export const productsData: Product[] = [
     name: "DCP-L3520CDW COLOUR 3IN1 PRINTER",
     brand: "Brother",
     category: "Printers",
-    images: ["/products/brother/DCP-L3520CDW.webp"],
+    images: ["/products/brother/DCP-L3520CDW COLOUR 3IN1 PRINT_DCP-L3520CDW-COLOUR-3IN1-PRINTER-1.webp"],
     inStock: true
   },
   {
@@ -599,7 +599,7 @@ export const productsData: Product[] = [
     name: "DCP-L3560CDW COLOUR 4IN1 PRINTER",
     brand: "Brother",
     category: "Printers",
-    images: ["/products/brother/DCP-L3560CDW.webp"],
+    images: ["/products/brother/DCP-L3560CDW COLOUR 4IN1 PRINT_DCP-L3560CDW-COLOUR-4IN1-PRINTER.webp"],
     inStock: true
   },
   {
@@ -607,7 +607,7 @@ export const productsData: Product[] = [
     name: "HL-L3220CW COLOUR ONLY PRINTER",
     brand: "Brother",
     category: "Printers",
-    images: ["/products/brother/HL-L3220CW.webp"],
+    images: ["/products/brother/HL-L3220CW COLOUR ONLY PRINTER_HL-L3220CW-COLOUR-ONLY-PRINTER.webp"],
     inStock: true
   },
   {
@@ -615,7 +615,7 @@ export const productsData: Product[] = [
     name: "HL-L3280CDW COLOUR ONLY PRINTER",
     brand: "Brother",
     category: "Printers",
-    images: ["/products/brother/HL-L3280CDW.webp"],
+    images: ["/products/brother/HL-L3280CDW COLOUR ONLY PRINTE_HL-L3280CDW-COLOUR-ONLY-PRINTER.webp"],
     inStock: true
   },
   {
@@ -623,7 +623,7 @@ export const productsData: Product[] = [
     name: "MFC-L3760CDW COLOUR 4IN1 PRINTER",
     brand: "Brother",
     category: "Printers",
-    images: ["/products/brother/MFC-L3760CDW.jpg"],
+    images: ["/products/brother/MFC-L3760CDW COLOUR 4IN1 PRINT_MFC-L3760CDW-COLOUR-4IN1-PRINTER.jpg"],
     inStock: true
   },
   {
@@ -631,7 +631,7 @@ export const productsData: Product[] = [
     name: "MFC-L8390CDW COLOUR 4IN1 PRINTER",
     brand: "Brother",
     category: "Printers",
-    images: ["/products/brother/MFC-L8390CDW.jpg"],
+    images: ["/products/brother/MFC-L8390CDW COLOUR 4IN1 PRINT_p-1.jpg"],
     inStock: true
   }
 ];

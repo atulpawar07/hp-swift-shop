@@ -138,12 +138,12 @@ const Index = () => {
           </div>
           
           <div className="relative">
-            <div className="flex animate-scroll-left">
+            <div className="flex animate-scroll-left gap-2">
               {/* First set of logos */}
               {partners.map((partner, index) => (
                 <div 
                   key={`first-${index}`}
-                  className="flex items-center justify-center px-2 flex-shrink-0"
+                  className="flex items-center justify-center flex-shrink-0"
                 >
                   <img 
                     src={partner.logo} 
@@ -160,7 +160,7 @@ const Index = () => {
               {partners.map((partner, index) => (
                 <div 
                   key={`second-${index}`}
-                  className="flex items-center justify-center px-2 flex-shrink-0"
+                  className="flex items-center justify-center flex-shrink-0"
                 >
                   <img 
                     src={partner.logo} 

@@ -1,8 +1,18 @@
+import { useState } from 'react';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { CheckCircle } from "lucide-react";
+import { usePageContent } from "@/hooks/usePageContent";
+import { EditButton } from "@/components/admin/EditButton";
+import { ContentEditor } from "@/components/admin/ContentEditor";
 
 const About = () => {
+  const { content: heroContent, updateContent: updateHero } = usePageContent('about', 'hero');
+  const { content: storyContent, updateContent: updateStory } = usePageContent('about', 'story');
+  
+  const [editingHero, setEditingHero] = useState(false);
+  const [editingStory, setEditingStory] = useState(false);
+
   const features = [
     "Worldwide Sourcing",
     "Broad Range of IT Products and Services",
@@ -19,10 +29,17 @@ const About = () => {
         {/* Hero Section */}
         <section className="bg-secondary py-16">
           <div className="container mx-auto px-4">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">About SK Enterprise</h1>
-            <p className="text-lg text-muted-foreground max-w-3xl">
-              Your trusted partner in IT distribution across UAE
-            </p>
+            <div className="flex justify-between items-start gap-4">
+              <div>
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+                  {heroContent?.title || 'About SK Enterprise'}
+                </h1>
+                <p className="text-lg text-muted-foreground max-w-3xl">
+                  {heroContent?.description || 'Your trusted partner in IT distribution across UAE'}
+                </p>
+              </div>
+              <EditButton onClick={() => setEditingHero(true)} />
+            </div>
           </div>
         </section>
 
@@ -39,14 +56,15 @@ const About = () => {
               </div>
 
               <div className="lg:w-2/3">
-                <h2 className="text-3xl font-bold text-foreground mb-6">Who We Are</h2>
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-3xl font-bold text-foreground">
+                    {storyContent?.title || 'Who We Are'}
+                  </h2>
+                  <EditButton onClick={() => setEditingStory(true)} />
+                </div>
                 
-                <p className="text-muted-foreground mb-6 leading-relaxed">
-                  In today's demanding and dynamic world of IT Distribution, it takes a special kind of organization to deliver consistently on all key business metrics: availability, right price, prompt delivery, efficient logistics and top-class service.
-                </p>
-
-                <p className="text-muted-foreground mb-6 leading-relaxed">
-                  With decades of experience in worldwide sourcing of IT products and services and robust relationships across the IT value-chain, SK Enterprise is ideally positioned to be your supplier of choice. Whether your needs are a one-time fulfillment or on-going run-rate purchases, you will find the right partner in SK Enterprise.
+                <p className="text-muted-foreground mb-6 leading-relaxed whitespace-pre-line">
+                  {storyContent?.content || 'In today\'s demanding and dynamic world of IT Distribution, it takes a special kind of organization to deliver consistently on all key business metrics: availability, right price, prompt delivery, efficient logistics and top-class service. With decades of experience in worldwide sourcing of IT products and services and robust relationships across the IT value-chain, SK Enterprise is ideally positioned to be your supplier of choice.'}
                 </p>
 
                 <h3 className="text-xl font-semibold text-foreground mb-4">Our Key USPs:</h3>
@@ -86,6 +104,35 @@ const About = () => {
       </main>
 
       <Footer />
+
+      {/* Edit Dialogs */}
+      {heroContent && (
+        <ContentEditor
+          open={editingHero}
+          onOpenChange={setEditingHero}
+          title="Edit About Hero"
+          content={heroContent}
+          fields={[
+            { key: 'title', label: 'Title', type: 'text' },
+            { key: 'description', label: 'Description', type: 'textarea' }
+          ]}
+          onSave={updateHero}
+        />
+      )}
+
+      {storyContent && (
+        <ContentEditor
+          open={editingStory}
+          onOpenChange={setEditingStory}
+          title="Edit Company Story"
+          content={storyContent}
+          fields={[
+            { key: 'title', label: 'Title', type: 'text' },
+            { key: 'content', label: 'Content', type: 'textarea', multiline: true }
+          ]}
+          onSave={updateStory}
+        />
+      )}
     </div>
   );
 };

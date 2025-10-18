@@ -1,11 +1,21 @@
+import { useState } from 'react';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { usePageContent } from "@/hooks/usePageContent";
+import { EditButton } from "@/components/admin/EditButton";
+import { ContentEditor } from "@/components/admin/ContentEditor";
 
 const Contact = () => {
+  const { content: heroContent, updateContent: updateHero } = usePageContent('contact', 'hero');
+  const { content: contactInfo, updateContent: updateInfo } = usePageContent('contact', 'info');
+  
+  const [editingHero, setEditingHero] = useState(false);
+  const [editingInfo, setEditingInfo] = useState(false);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -14,10 +24,17 @@ const Contact = () => {
         {/* Hero Section */}
         <section className="bg-secondary py-16">
           <div className="container mx-auto px-4">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">Contact Us</h1>
-            <p className="text-lg text-muted-foreground max-w-3xl">
-              Get in touch with our team for any inquiries or support
-            </p>
+            <div className="flex justify-between items-start gap-4">
+              <div>
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+                  {heroContent?.title || 'Contact Us'}
+                </h1>
+                <p className="text-lg text-muted-foreground max-w-3xl">
+                  {heroContent?.description || 'Get in touch with our team for any inquiries or support'}
+                </p>
+              </div>
+              <EditButton onClick={() => setEditingHero(true)} />
+            </div>
           </div>
         </section>
 
@@ -27,7 +44,10 @@ const Contact = () => {
             <div className="grid md:grid-cols-2 gap-12">
               {/* Contact Information */}
               <div>
-                <h2 className="text-3xl font-bold text-foreground mb-8">Get In Touch</h2>
+                <div className="flex justify-between items-center mb-8">
+                  <h2 className="text-3xl font-bold text-foreground">Get In Touch</h2>
+                  <EditButton onClick={() => setEditingInfo(true)} />
+                </div>
                 
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
@@ -36,8 +56,8 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground mb-1">Phone</h3>
-                      <a href="tel:+971563569089" className="text-muted-foreground hover:text-primary">
-                        +971 563 569089
+                      <a href={`tel:${contactInfo?.phone}`} className="text-muted-foreground hover:text-primary">
+                        {contactInfo?.phone || '+971 563 569089'}
                       </a>
                     </div>
                   </div>
@@ -48,8 +68,8 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground mb-1">Email</h3>
-                      <a href="mailto:yakub@skenterprise.com" className="text-muted-foreground hover:text-primary">
-                        yakub@skenterprise.com
+                      <a href={`mailto:${contactInfo?.email}`} className="text-muted-foreground hover:text-primary">
+                        {contactInfo?.email || 'info@skenterprise.ae'}
                       </a>
                     </div>
                   </div>
@@ -61,20 +81,24 @@ const Contact = () => {
                     <div>
                       <h3 className="font-semibold text-foreground mb-1">Location</h3>
                       <p className="text-muted-foreground">
-                        Global IT Distribution & Solutions<br />
-                        United Arab Emirates
+                        {contactInfo?.address || 'Dubai, United Arab Emirates'}
                       </p>
                     </div>
                   </div>
-                </div>
 
-                <div className="mt-8 p-6 bg-secondary rounded-lg">
-                  <h3 className="font-semibold text-foreground mb-2">Business Hours</h3>
-                  <p className="text-muted-foreground">
-                    Sunday - Thursday: 9:00 AM - 6:00 PM<br />
-                    Saturday: 10:00 AM - 4:00 PM<br />
-                    Friday: Closed
-                  </p>
+                  {contactInfo?.hours && (
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Clock className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-foreground mb-1">Business Hours</h3>
+                        <p className="text-muted-foreground whitespace-pre-line">
+                          {contactInfo.hours}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -125,6 +149,37 @@ const Contact = () => {
       </main>
 
       <Footer />
+
+      {/* Edit Dialogs */}
+      {heroContent && (
+        <ContentEditor
+          open={editingHero}
+          onOpenChange={setEditingHero}
+          title="Edit Contact Hero"
+          content={heroContent}
+          fields={[
+            { key: 'title', label: 'Title', type: 'text' },
+            { key: 'description', label: 'Description', type: 'textarea' }
+          ]}
+          onSave={updateHero}
+        />
+      )}
+
+      {contactInfo && (
+        <ContentEditor
+          open={editingInfo}
+          onOpenChange={setEditingInfo}
+          title="Edit Contact Information"
+          content={contactInfo}
+          fields={[
+            { key: 'phone', label: 'Phone Number', type: 'text' },
+            { key: 'email', label: 'Email Address', type: 'text' },
+            { key: 'address', label: 'Address', type: 'textarea' },
+            { key: 'hours', label: 'Business Hours', type: 'textarea', multiline: true }
+          ]}
+          onSave={updateInfo}
+        />
+      )}
     </div>
   );
 };

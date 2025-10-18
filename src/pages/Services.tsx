@@ -1,231 +1,23 @@
+import { useState } from 'react';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Search, Package, Headphones, TestTube, Network, Database, Wifi, Shield, Printer, Lock, Monitor, Video, Wrench } from "lucide-react";
+import { Package, Building, Wrench, Network, Users, ShoppingCart, Settings, Database, Shield, Zap, Globe, Smartphone } from "lucide-react";
+import { usePageContent } from "@/hooks/usePageContent";
+import { EditButton } from "@/components/admin/EditButton";
+import { ContentEditor } from "@/components/admin/ContentEditor";
+import { ServicesEditor } from "@/components/admin/ServicesEditor";
+
+const iconMap: Record<string, any> = {
+  Package, Building, Wrench, Network, Users, ShoppingCart,
+  Settings, Database, Shield, Zap, Globe, Smartphone
+};
 
 const Services = () => {
-  const mainServices = [
-    {
-      icon: Search,
-      title: "IT Consulting",
-      description: "Professional evaluation of your technology infrastructure to identify optimization opportunities and create strategic IT roadmaps aligned with business objectives"
-    },
-    {
-      icon: Package,
-      title: "IT Equipment Supply",
-      description: "Comprehensive procurement solutions offering a vast selection of hardware and technology products from leading global manufacturers"
-    },
-    {
-      icon: Headphones,
-      title: "IT Support",
-      description: "Round-the-clock technical assistance ensuring continuous availability and peak performance of your IT systems and infrastructure"
-    },
-    {
-      icon: TestTube,
-      title: "Free Trial Hardware",
-      description: "Experience cutting-edge technology firsthand with our complimentary equipment testing program before making purchase decisions"
-    }
-  ];
-
-  const serviceCategories = [
-    {
-      icon: Network,
-      title: "Data Communication Networks",
-      services: [
-        {
-          name: "Network Performance Auditing",
-          description: "Thorough evaluation of network infrastructure to prevent failures, identify performance bottlenecks, and ensure optimal operational efficiency"
-        },
-        {
-          name: "Data Network Designing",
-          description: "Custom network architecture development tailored to meet specific business requirements and future scalability needs"
-        },
-        {
-          name: "Network Infrastructure Setup",
-          description: "Complete installation and configuration of enterprise-grade networking equipment and connectivity solutions"
-        }
-      ]
-    },
-    {
-      icon: Database,
-      title: "Data Storage and Processing",
-      services: [
-        {
-          name: "IT Audit & Assessment",
-          description: "In-depth analysis of IT systems to evaluate performance levels, identify vulnerabilities, and establish effective risk management strategies"
-        },
-        {
-          name: "Unstructured Data Audit & Optimization",
-          description: "Systematic review and organization of file servers to improve data accessibility and reduce storage costs"
-        },
-        {
-          name: "IT Infrastructure Services",
-          description: "Comprehensive management and maintenance of servers, storage systems, and computing resources for optimal business operations"
-        },
-        {
-          name: "Data Backup & Recovery Solutions",
-          description: "Robust protection strategies ensuring business continuity through reliable data backup systems and disaster recovery planning"
-        }
-      ]
-    },
-    {
-      icon: Wifi,
-      title: "Wireless Networks",
-      services: [
-        {
-          name: "Wireless Network Auditing",
-          description: "Complete assessment of WiFi infrastructure to verify coverage quality, signal strength, and security compliance"
-        },
-        {
-          name: "Wireless Network Maintenance",
-          description: "Ongoing monitoring and optimization of wireless systems to maintain consistent performance and reliability"
-        },
-        {
-          name: "Wireless Networking Solutions",
-          description: "Design and deployment of enterprise WiFi systems providing seamless connectivity across office environments"
-        },
-        {
-          name: "Wireless Site Survey",
-          description: "Detailed facility analysis to determine optimal access point placement and ensure comprehensive wireless coverage"
-        }
-      ]
-    },
-    {
-      icon: Shield,
-      title: "Cyber Security",
-      services: [
-        {
-          name: "Corporate Network Security Services",
-          description: "Multi-layered protection strategies safeguarding your network from unauthorized access, malware threats, and data breaches"
-        },
-        {
-          name: "Network Security Auditing",
-          description: "Systematic evaluation of security measures to identify vulnerabilities and strengthen defense mechanisms against cyber threats"
-        },
-        {
-          name: "Penetration Testing",
-          description: "Simulated cyber attacks conducted by security experts to uncover weaknesses before malicious actors can exploit them"
-        },
-        {
-          name: "Security Compliance",
-          description: "Implementation of security standards and regulatory requirements to meet industry compliance obligations"
-        }
-      ]
-    },
-    {
-      icon: Printer,
-      title: "Printing Systems",
-      services: [
-        {
-          name: "Managed Print Services (Cost-Per-Copy)",
-          description: "Flexible pricing model providing comprehensive printing solutions with predictable per-page costs and full maintenance coverage"
-        },
-        {
-          name: "Print Auditing",
-          description: "Detailed analysis of printing activities to track usage patterns, identify inefficiencies, and control operational expenses"
-        },
-        {
-          name: "Print Optimization",
-          description: "Strategic improvements to printing workflows reducing waste, lowering costs, and enhancing document management efficiency"
-        }
-      ]
-    },
-    {
-      icon: Lock,
-      title: "Site Security",
-      services: [
-        {
-          name: "Access Control Systems",
-          description: "Advanced entry management solutions regulating physical access to facilities through electronic authentication and monitoring"
-        },
-        {
-          name: "Surveillance Solutions",
-          description: "High-definition CCTV systems providing continuous monitoring and recording capabilities for enhanced premises security"
-        },
-        {
-          name: "Physical Security Integration",
-          description: "Unified security platforms combining multiple protection systems into a cohesive management solution"
-        }
-      ]
-    },
-    {
-      icon: Monitor,
-      title: "Software Solutions",
-      services: [
-        {
-          name: "Virtual Desktop Solutions",
-          description: "Centralized desktop environments allowing users to access their workstations remotely from any device or location"
-        },
-        {
-          name: "Server Virtualization",
-          description: "Technology platform maximizing hardware utilization by running multiple virtual machines on single physical servers"
-        },
-        {
-          name: "Microsoft Office 365 Migration",
-          description: "Smooth transition services moving email, documents, and collaboration tools to cloud-based Microsoft 365 platform"
-        },
-        {
-          name: "Corporate Email Services",
-          description: "Professional email hosting and management solutions with enhanced security features and reliable uptime guarantees"
-        }
-      ]
-    },
-    {
-      icon: Video,
-      title: "Multimedia",
-      services: [
-        {
-          name: "IPTV Systems",
-          description: "Television content delivery over IP networks enabling flexible distribution of live broadcasts and on-demand programming"
-        },
-        {
-          name: "Meeting & Conference Room Booking Systems",
-          description: "Smart scheduling platforms streamlining room reservations and optimizing utilization of collaborative spaces"
-        },
-        {
-          name: "Audio Visual Solutions",
-          description: "Professional AV installations featuring presentation systems, sound equipment, and interactive display technologies"
-        }
-      ]
-    },
-    {
-      icon: Wrench,
-      title: "Vendor Support",
-      services: [
-        {
-          name: "Aruba Support",
-          description: "Expert assistance for Aruba networking equipment"
-        },
-        {
-          name: "Check Point Support",
-          description: "Professional support for Check Point security solutions"
-        },
-        {
-          name: "Cisco Support",
-          description: "Certified support services for Cisco infrastructure"
-        },
-        {
-          name: "Dell Support",
-          description: "Technical support for Dell hardware and systems"
-        },
-        {
-          name: "HPE Support",
-          description: "Specialized support for HPE enterprise solutions"
-        },
-        {
-          name: "Huawei Support",
-          description: "Expert maintenance for Huawei technology products"
-        },
-        {
-          name: "Juniper Support",
-          description: "Professional services for Juniper networking equipment"
-        },
-        {
-          name: "Kaspersky Support",
-          description: "Comprehensive support for Kaspersky security software"
-        }
-      ]
-    }
-  ];
+  const { content: heroContent, updateContent: updateHero } = usePageContent('services', 'hero');
+  const { content: servicesContent, updateContent: updateServices } = usePageContent('services', 'services_list');
+  
+  const [editingHero, setEditingHero] = useState(false);
+  const [editingServices, setEditingServices] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -235,57 +27,38 @@ const Services = () => {
         {/* Hero Section */}
         <section className="bg-secondary py-16">
           <div className="container mx-auto px-4">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">IT Services & Solutions</h1>
-            <p className="text-lg text-muted-foreground max-w-3xl">
-              Comprehensive IT solutions to drive your business forward
-            </p>
+            <div className="flex justify-between items-start gap-4">
+              <div>
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+                  {heroContent?.title || 'Our Services'}
+                </h1>
+                <p className="text-lg text-muted-foreground max-w-3xl">
+                  {heroContent?.description || 'Comprehensive IT solutions tailored to your business needs'}
+                </p>
+              </div>
+              <EditButton onClick={() => setEditingHero(true)} />
+            </div>
           </div>
         </section>
 
-        {/* Main Services - Icon Cards */}
+        {/* Services Grid */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-              {mainServices.map((service, index) => {
-                const Icon = service.icon;
-                return (
-                  <div key={index} className="text-center p-6 hover:bg-secondary rounded-lg transition-colors">
-                    <div className="w-20 h-20 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                      <Icon className="h-10 w-10 text-primary" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-foreground mb-2">{service.title}</h3>
-                    <p className="text-sm text-muted-foreground">{service.description}</p>
-                  </div>
-                );
-              })}
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-3xl font-bold">What We Offer</h2>
+              <EditButton onClick={() => setEditingServices(true)} />
             </div>
-
-            {/* Service Categories Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {serviceCategories.map((category, index) => {
-                const Icon = category.icon;
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {servicesContent?.services?.map((service: any, index: number) => {
+                const Icon = iconMap[service.icon] || Package;
                 return (
-                  <div key={index} className="bg-secondary rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
-                    <div className="bg-primary/10 px-6 py-4 border-b border-border">
-                      <div className="flex items-center gap-3">
-                        <Icon className="h-5 w-5 text-primary" />
-                        <h3 className="font-semibold text-foreground">{category.title}</h3>
-                      </div>
+                  <div key={index} className="bg-card border border-border rounded-lg p-6 hover:shadow-lg transition-all">
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                      <Icon className="h-6 w-6 text-primary" />
                     </div>
-                    <div className="p-6">
-                      <ul className="space-y-4">
-                        {category.services.map((service, serviceIndex) => (
-                          <li key={serviceIndex} className="group">
-                            <div className="font-medium text-foreground group-hover:text-primary transition-colors cursor-pointer mb-1">
-                              {service.name}
-                            </div>
-                            <p className="text-xs text-muted-foreground leading-relaxed">
-                              {service.description}
-                            </p>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
+                    <p className="text-muted-foreground">{service.description}</p>
                   </div>
                 );
               })}
@@ -293,150 +66,47 @@ const Services = () => {
           </div>
         </section>
 
-        {/* Ask an Expert Section */}
-        <section className="py-16 bg-background">
-          <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl font-bold text-center mb-12">Ask an Expert</h2>
-              
-              <div className="grid lg:grid-cols-3 gap-8">
-                {/* Expert Profile */}
-                <div className="lg:col-span-1">
-                  <div className="bg-secondary rounded-lg p-8 text-center">
-                    <div className="w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden bg-muted">
-                      <img 
-                        src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop" 
-                        alt="Expert consultant" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <h3 className="text-2xl font-semibold mb-2">Expert Team</h3>
-                    <p className="text-muted-foreground mb-6">IT Solutions Specialists</p>
-                    <div className="space-y-3 text-left">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-primary">📞</span>
-                        </div>
-                        <a href="tel:+971563569089" className="text-foreground hover:text-primary transition-colors">
-                          +971 563 569089
-                        </a>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-primary">✉️</span>
-                        </div>
-                        <a href="mailto:info@skenterprise.ae" className="text-foreground hover:text-primary transition-colors">
-                          info@skenterprise.ae
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Contact Form */}
-                <div className="lg:col-span-2">
-                  <form className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div>
-                        <label htmlFor="company" className="block text-sm font-medium mb-2">
-                          Company
-                        </label>
-                        <input
-                          type="text"
-                          id="company"
-                          className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                          placeholder="Your company name"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="name" className="block text-sm font-medium mb-2">
-                          Name <span className="text-destructive">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="name"
-                          required
-                          className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                          placeholder="Your full name"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div>
-                        <label htmlFor="email" className="block text-sm font-medium mb-2">
-                          E-Mail <span className="text-destructive">*</span>
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          required
-                          className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                          placeholder="your.email@company.com"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="phone" className="block text-sm font-medium mb-2">
-                          Phone <span className="text-destructive">*</span>
-                        </label>
-                        <input
-                          type="tel"
-                          id="phone"
-                          required
-                          className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                          placeholder="+971 XX XXX XXXX"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="question" className="block text-sm font-medium mb-2">
-                        Your question <span className="text-destructive">*</span>
-                      </label>
-                      <textarea
-                        id="question"
-                        required
-                        rows={6}
-                        className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                        placeholder="Please describe your IT needs or questions..."
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Attach file
-                      </label>
-                      <p className="text-xs text-muted-foreground mb-2">
-                        Quantity - up to 3 files, size - not more than 5 MB
-                      </p>
-                      <input
-                        type="file"
-                        multiple
-                        accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
-                        className="w-full px-4 py-3 rounded-lg border border-border bg-background file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary file:text-primary-foreground file:cursor-pointer hover:file:bg-primary/90"
-                      />
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                      <button
-                        type="submit"
-                        className="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
-                      >
-                        Send
-                      </button>
-                      <p className="text-xs text-muted-foreground">
-                        By clicking the button, you consent to the processing of personal data.
-                      </p>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
+        {/* Contact CTA */}
+        <section className="py-16 bg-secondary">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl font-bold mb-4">Need a Custom Solution?</h2>
+            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Our team of experts is ready to discuss your specific requirements and create a tailored solution for your business.
+            </p>
+            <a href="/contact">
+              <button className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors">
+                Contact Us Today
+              </button>
+            </a>
           </div>
         </section>
       </main>
 
       <Footer />
+
+      {/* Edit Dialogs */}
+      {heroContent && (
+        <ContentEditor
+          open={editingHero}
+          onOpenChange={setEditingHero}
+          title="Edit Hero Section"
+          content={heroContent}
+          fields={[
+            { key: 'title', label: 'Title', type: 'text' },
+            { key: 'description', label: 'Description', type: 'textarea' }
+          ]}
+          onSave={updateHero}
+        />
+      )}
+
+      {servicesContent && (
+        <ServicesEditor
+          open={editingServices}
+          onOpenChange={setEditingServices}
+          content={servicesContent}
+          onSave={updateServices}
+        />
+      )}
     </div>
   );
 };

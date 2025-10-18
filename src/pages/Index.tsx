@@ -1,27 +1,22 @@
+import { useState } from 'react';
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
-import PartnerCarousel from "@/components/PartnerCarousel";
 import { CheckCircle } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { usePageContent } from "@/hooks/usePageContent";
+import { EditButton } from "@/components/admin/EditButton";
+import { ContentEditor } from "@/components/admin/ContentEditor";
 
 const Index = () => {
+  const { content: statsContent, updateContent: updateStats } = usePageContent('home', 'stats');
+  const [editingStats, setEditingStats] = useState(false);
+
   const features = [
     "Worldwide Sourcing",
     "Broad Range of IT Products and Services",
     "Flexible Logistics",
     "Right Price",
     "Speedy Service"
-  ];
-
-  const services = [
-    "Speed",
-    "Consistency",
-    "Reliability",
-    "Technical Competence",
-    "Virtual Integration",
-    "Adaptability"
   ];
 
   const partners = [
@@ -70,6 +65,35 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <Hero />
+
+      {/* Stats Section */}
+      {statsContent && (
+        <section className="py-12 bg-primary text-primary-foreground">
+          <div className="container mx-auto px-4">
+            <div className="flex justify-end mb-4">
+              <EditButton onClick={() => setEditingStats(true)} className="text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10" />
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div className="text-center">
+                <div className="text-4xl font-bold mb-2">{statsContent.years}</div>
+                <div className="text-primary-foreground/80">{statsContent.yearsLabel}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold mb-2">{statsContent.clients}</div>
+                <div className="text-primary-foreground/80">{statsContent.clientsLabel}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold mb-2">{statsContent.products}</div>
+                <div className="text-primary-foreground/80">{statsContent.productsLabel}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold mb-2">{statsContent.satisfaction}</div>
+                <div className="text-primary-foreground/80">{statsContent.satisfactionLabel}</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Welcome Section */}
       <section className="py-16 bg-secondary">
@@ -159,6 +183,27 @@ const Index = () => {
       </section>
 
       <Footer />
+
+      {/* Edit Stats Dialog */}
+      {statsContent && (
+        <ContentEditor
+          open={editingStats}
+          onOpenChange={setEditingStats}
+          title="Edit Statistics"
+          content={statsContent}
+          fields={[
+            { key: 'years', label: 'Years Value', type: 'text' },
+            { key: 'yearsLabel', label: 'Years Label', type: 'text' },
+            { key: 'clients', label: 'Clients Value', type: 'text' },
+            { key: 'clientsLabel', label: 'Clients Label', type: 'text' },
+            { key: 'products', label: 'Products Value', type: 'text' },
+            { key: 'productsLabel', label: 'Products Label', type: 'text' },
+            { key: 'satisfaction', label: 'Satisfaction Value', type: 'text' },
+            { key: 'satisfactionLabel', label: 'Satisfaction Label', type: 'text' }
+          ]}
+          onSave={updateStats}
+        />
+      )}
     </div>
   );
 };

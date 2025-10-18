@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      page_content: {
+        Row: {
+          content: Json
+          created_at: string | null
+          id: string
+          page: string
+          section: string
+          updated_at: string | null
+        }
+        Insert: {
+          content?: Json
+          created_at?: string | null
+          id?: string
+          page: string
+          section: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: Json
+          created_at?: string | null
+          id?: string
+          page?: string
+          section?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           brand: string

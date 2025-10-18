@@ -91,6 +91,11 @@ const AdminDashboard = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  // Settings state
+  const [primaryEmail, setPrimaryEmail] = useState('info@skenterprise.ae');
+  const [primaryWhatsApp, setPrimaryWhatsApp] = useState('9769805184');
+  const [primaryPhone, setPrimaryPhone] = useState('+971 563 569089');
+
   // Product form state
   const [name, setName] = useState('');
   const [brand, setBrand] = useState('');
@@ -112,6 +117,7 @@ const AdminDashboard = () => {
       fetchCategories();
       fetchBrands();
       fetchUsers();
+      fetchSettings();
     }
   }, [isAdmin]);
 
@@ -181,6 +187,23 @@ const AdminDashboard = () => {
       console.error('Error fetching user roles:', rolesError);
     } else {
       setUserRoles(rolesData || []);
+    }
+  };
+
+  const fetchSettings = async () => {
+    const { data, error } = await supabase
+      .from('settings')
+      .select('*')
+      .eq('key', 'primary_contact')
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error fetching settings:', error);
+    } else if (data) {
+      const value = data.value as any;
+      setPrimaryEmail(value.email || 'info@skenterprise.ae');
+      setPrimaryWhatsApp(value.whatsapp || '9769805184');
+      setPrimaryPhone(value.phone || '+971 563 569089');
     }
   };
 
@@ -757,6 +780,30 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleUpdateSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      const { error } = await supabase
+        .from('settings')
+        .update({
+          value: {
+            email: primaryEmail,
+            whatsapp: primaryWhatsApp,
+            phone: primaryPhone
+          }
+        })
+        .eq('key', 'primary_contact');
+
+      if (error) throw error;
+
+      toast.success('Primary contact settings updated successfully');
+    } catch (error) {
+      console.error('Error updating settings:', error);
+      toast.error('Failed to update settings');
+    }
+  };
+
   if (loading || loadingProducts) {
     return (
       <div className="min-h-screen bg-background">
@@ -779,11 +826,12 @@ const AdminDashboard = () => {
       
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="products" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-4">
+          <TabsList className="grid w-full grid-cols-5 mb-4">
             <TabsTrigger value="products">Products</TabsTrigger>
             <TabsTrigger value="categories">Categories</TabsTrigger>
             <TabsTrigger value="brands">Brands</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
           {/* Products Tab */}
@@ -1339,6 +1387,70 @@ const AdminDashboard = () => {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Settings Tab */}
+          <TabsContent value="settings">
+            <Card>
+              <CardHeader>
+                <CardTitle>Primary Contact Settings</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-6">
+                  Configure the primary contact details where all user enquiries and notifications will be sent.
+                </p>
+                <form onSubmit={handleUpdateSettings} className="space-y-4 max-w-xl">
+                  <div className="space-y-2">
+                    <Label htmlFor="primary-email">Primary Email</Label>
+                    <Input
+                      id="primary-email"
+                      type="email"
+                      value={primaryEmail}
+                      onChange={(e) => setPrimaryEmail(e.target.value)}
+                      placeholder="info@example.com"
+                      required
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      All contact form submissions and enquiries will be sent to this email
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="primary-whatsapp">WhatsApp Number</Label>
+                    <Input
+                      id="primary-whatsapp"
+                      type="tel"
+                      value={primaryWhatsApp}
+                      onChange={(e) => setPrimaryWhatsApp(e.target.value)}
+                      placeholder="9769805184"
+                      required
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Enter WhatsApp number without country code or special characters (e.g., 9769805184)
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="primary-phone">Display Phone Number</Label>
+                    <Input
+                      id="primary-phone"
+                      type="tel"
+                      value={primaryPhone}
+                      onChange={(e) => setPrimaryPhone(e.target.value)}
+                      placeholder="+971 XX XXX XXXX"
+                      required
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      This phone number will be displayed on the contact page
+                    </p>
+                  </div>
+
+                  <Button type="submit" className="w-full">
+                    Save Settings
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

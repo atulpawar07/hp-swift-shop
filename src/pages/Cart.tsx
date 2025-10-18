@@ -4,8 +4,31 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
 const Cart = () => {
+  const [primaryEmail, setPrimaryEmail] = useState('info@skenterprise.ae');
+  const [primaryWhatsApp, setPrimaryWhatsApp] = useState('9769805184');
+
+  useEffect(() => {
+    const fetchPrimaryContact = async () => {
+      const { data, error } = await supabase
+        .from('settings')
+        .select('*')
+        .eq('key', 'primary_contact')
+        .maybeSingle();
+
+      if (!error && data) {
+        const value = data.value as any;
+        setPrimaryEmail(value.email || 'info@skenterprise.ae');
+        setPrimaryWhatsApp(value.whatsapp || '9769805184');
+      }
+    };
+
+    fetchPrimaryContact();
+  }, []);
+
   // Sample cart data - will be managed with state/context
   const cartItems = [
     {
@@ -168,7 +191,7 @@ const Cart = () => {
                       `${item.name} (Qty: ${item.quantity}) - ₹${(item.price * item.quantity).toLocaleString()}`
                     ).join('%0D%0A');
                     const message = `Hi, I would like to place an order:%0D%0A%0D%0A${itemsList}%0D%0A%0D%0ASubtotal: ₹${subtotal.toLocaleString()}%0D%0AShipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}%0D%0AGST: ₹${tax.toLocaleString()}%0D%0ATotal: ₹${total.toLocaleString()}`;
-                    window.open(`https://wa.me/9769805184?text=${message}`, '_blank');
+                    window.open(`https://wa.me/${primaryWhatsApp}?text=${message}`, '_blank');
                   }}
                 >
                   Send Enquiry via WhatsApp
@@ -183,7 +206,7 @@ const Cart = () => {
                     ).join('%0D%0A');
                     const subject = 'Order Enquiry';
                     const body = `Hi,%0D%0A%0D%0AI would like to place an order for the following items:%0D%0A%0D%0A${itemsList}%0D%0A%0D%0ASubtotal: ₹${subtotal.toLocaleString()}%0D%0AShipping: ${shipping === 0 ? 'FREE' : `₹${shipping}`}%0D%0AGST: ₹${tax.toLocaleString()}%0D%0ATotal: ₹${total.toLocaleString()}%0D%0A%0D%0APlease confirm availability and payment details.%0D%0A%0D%0AThank you.`;
-                    window.location.href = `mailto:info@skenterprise.ae?subject=${subject}&body=${body}`;
+                    window.location.href = `mailto:${primaryEmail}?subject=${subject}&body=${body}`;
                   }}
                 >
                   Send Enquiry via Email

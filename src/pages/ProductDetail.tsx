@@ -25,6 +25,8 @@ const ProductDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [primaryEmail, setPrimaryEmail] = useState('info@skenterprise.ae');
+  const [primaryWhatsApp, setPrimaryWhatsApp] = useState('9769805184');
 
   // Get proper image URL - handle both Supabase storage URLs and local paths
   const getImageUrl = (imagePath: string): string => {
@@ -66,6 +68,25 @@ const ProductDetail = () => {
 
     fetchProduct();
   }, [id, navigate]);
+
+  // Fetch primary contact settings
+  useEffect(() => {
+    const fetchPrimaryContact = async () => {
+      const { data, error } = await supabase
+        .from('settings')
+        .select('*')
+        .eq('key', 'primary_contact')
+        .maybeSingle();
+
+      if (!error && data) {
+        const value = data.value as any;
+        setPrimaryEmail(value.email || 'info@skenterprise.ae');
+        setPrimaryWhatsApp(value.whatsapp || '9769805184');
+      }
+    };
+
+    fetchPrimaryContact();
+  }, []);
 
   if (loading) {
     return (
@@ -179,7 +200,7 @@ const ProductDetail = () => {
                 disabled={!product.in_stock}
                 onClick={() => {
                   const message = `Hi, I'm interested in ${product.name} (${product.brand}). ${product.price ? `Price: AED ${product.price}` : 'Please provide pricing.'}`;
-                  window.open(`https://wa.me/9769805184?text=${encodeURIComponent(message)}`, '_blank');
+                  window.open(`https://wa.me/${primaryWhatsApp}?text=${encodeURIComponent(message)}`, '_blank');
                 }}
               >
                 <ShoppingCart className="h-5 w-5" />
@@ -191,7 +212,7 @@ const ProductDetail = () => {
                 onClick={() => {
                   const subject = `Enquiry: ${product.name}`;
                   const body = `Hi,%0D%0A%0D%0AI'm interested in the following product:%0D%0A%0D%0AProduct: ${product.name}%0D%0ABrand: ${product.brand}%0D%0A${product.price ? `Price: AED ${product.price}` : ''}%0D%0A%0D%0APlease provide more details.%0D%0A%0D%0AThank you.`;
-                  window.location.href = `mailto:info@skenterprise.ae?subject=${subject}&body=${body}`;
+                  window.location.href = `mailto:${primaryEmail}?subject=${subject}&body=${body}`;
                 }}
               >
                 <Mail className="h-5 w-5" />

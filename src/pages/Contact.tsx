@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { usePageContent } from "@/hooks/usePageContent";
 import { EditButton } from "@/components/admin/EditButton";
 import { ContentEditor } from "@/components/admin/ContentEditor";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const { content: heroContent, updateContent: updateHero } = usePageContent('contact', 'hero');
@@ -15,6 +16,28 @@ const Contact = () => {
   
   const [editingHero, setEditingHero] = useState(false);
   const [editingInfo, setEditingInfo] = useState(false);
+  const [primaryEmail, setPrimaryEmail] = useState('info@skenterprise.ae');
+  const [primaryWhatsApp, setPrimaryWhatsApp] = useState('9769805184');
+  const [primaryPhone, setPrimaryPhone] = useState('+971 563 569089');
+
+  useEffect(() => {
+    fetchPrimaryContact();
+  }, []);
+
+  const fetchPrimaryContact = async () => {
+    const { data, error } = await supabase
+      .from('settings')
+      .select('*')
+      .eq('key', 'primary_contact')
+      .maybeSingle();
+
+    if (!error && data) {
+      const value = data.value as any;
+      setPrimaryEmail(value.email || 'info@skenterprise.ae');
+      setPrimaryWhatsApp(value.whatsapp || '9769805184');
+      setPrimaryPhone(value.phone || '+971 563 569089');
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -56,8 +79,8 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground mb-1">Phone</h3>
-                      <a href={`tel:${contactInfo?.phone}`} className="text-muted-foreground hover:text-primary">
-                        {contactInfo?.phone || '+971 563 569089'}
+                      <a href={`tel:${primaryPhone}`} className="text-muted-foreground hover:text-primary">
+                        {primaryPhone}
                       </a>
                     </div>
                   </div>
@@ -68,8 +91,8 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground mb-1">Email</h3>
-                      <a href={`mailto:${contactInfo?.email}`} className="text-muted-foreground hover:text-primary">
-                        {contactInfo?.email || 'info@skenterprise.ae'}
+                      <a href={`mailto:${primaryEmail}`} className="text-muted-foreground hover:text-primary">
+                        {primaryEmail}
                       </a>
                     </div>
                   </div>
@@ -118,13 +141,13 @@ const Contact = () => {
                     
                     // Send to WhatsApp
                     const whatsappMessage = `New Enquiry:%0D%0A%0D%0AName: ${name}%0D%0AEmail: ${email}%0D%0APhone: ${phone}%0D%0A%0D%0AMessage:%0D%0A${message}`;
-                    window.open(`https://wa.me/9769805184?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+                    window.open(`https://wa.me/${primaryWhatsApp}?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
                     
                     // Also send to email
                     const emailSubject = `New Enquiry from ${name}`;
                     const emailBody = `Name: ${name}%0D%0AEmail: ${email}%0D%0APhone: ${phone}%0D%0A%0D%0AMessage:%0D%0A${message}`;
                     setTimeout(() => {
-                      window.location.href = `mailto:info@skenterprise.ae?subject=${emailSubject}&body=${emailBody}`;
+                      window.location.href = `mailto:${primaryEmail}?subject=${emailSubject}&body=${emailBody}`;
                     }, 500);
                   }}
                 >

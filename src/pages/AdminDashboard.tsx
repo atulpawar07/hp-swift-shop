@@ -447,7 +447,7 @@ const AdminDashboard = () => {
         .single();
 
       if (userError || !userData) {
-        toast.error('User not found. They must sign up first.');
+        toast.error('Unable to process request. Please verify the email address.');
         return;
       }
 
@@ -460,7 +460,7 @@ const AdminDashboard = () => {
         .maybeSingle();
 
       if (existingRole) {
-        toast.error('User is already an admin');
+        toast.error('Unable to process request. Please verify the email address.');
         return;
       }
 
@@ -566,7 +566,7 @@ const AdminDashboard = () => {
   const handleDeleteUser = async (userId: string, userEmail: string) => {
     // Prevent deleting admin users
     if (isUserAdmin(userId)) {
-      toast.error('Cannot delete admin users');
+      toast.error('Unable to delete this user. Operation not permitted.');
       return;
     }
 
@@ -616,7 +616,7 @@ const AdminDashboard = () => {
         .maybeSingle();
 
       if (existingRole) {
-        toast.error(`User already has ${role} role`);
+        toast.error('Unable to process request. Operation not permitted.');
         return;
       }
 

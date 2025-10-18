@@ -143,12 +143,12 @@ const Index = () => {
               {partners.map((partner, index) => (
                 <div 
                   key={`first-${index}`}
-                  className="flex items-center justify-center flex-shrink-0"
+                  className="flex items-center justify-center flex-shrink-0 w-32"
                 >
                   <img 
                     src={partner.logo} 
                     alt={`${partner.name} logo`} 
-                    className="h-16 w-auto object-contain"
+                    className="h-16 w-auto max-w-full object-contain"
                     onError={(e) => {
                       e.currentTarget.onerror = null;
                       e.currentTarget.src = `https://via.placeholder.com/150x60?text=${partner.name}`;
@@ -160,12 +160,12 @@ const Index = () => {
               {partners.map((partner, index) => (
                 <div 
                   key={`second-${index}`}
-                  className="flex items-center justify-center flex-shrink-0"
+                  className="flex items-center justify-center flex-shrink-0 w-32"
                 >
                   <img 
                     src={partner.logo} 
                     alt={`${partner.name} logo`} 
-                    className="h-16 w-auto object-contain"
+                    className="h-16 w-auto max-w-full object-contain"
                     onError={(e) => {
                       e.currentTarget.onerror = null;
                       e.currentTarget.src = `https://via.placeholder.com/150x60?text=${partner.name}`;

@@ -61,6 +61,9 @@ const Index = () => {
     { name: "Kingston", logo: "/partner_logos_hd_transparent/34_kingston.png" },
     { name: "Iomega", logo: "/partner_logos_hd_transparent/35_iomega.png" },
     { name: "Polycom", logo: "/partner_logos_hd_transparent/36_polycom.png" },
+    { name: "Prysm", logo: "/partner_logos_hd_transparent/37_prysm.png" },
+    { name: "Aruba", logo: "/partner_logos_hd_transparent/38_aruba.png" },
+    { name: "Vaddio", logo: "/partner_logos_hd_transparent/39_vaddio.png" },
   ];
 
   return (

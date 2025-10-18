@@ -35,7 +35,7 @@ const Navbar = () => {
               <img 
                 src={logo} 
                 alt="SK Enterprise" 
-                className="h-14 md:h-20 lg:h-24 w-auto object-contain max-w-[200px] md:max-w-[280px]" 
+                className="h-12 md:h-16 w-auto object-contain max-w-[160px] md:max-w-[200px]" 
               />
             </Link>
 

@@ -27,8 +27,22 @@ const ProductCard = ({
 }: ProductCardProps) => {
   const discount = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
   
-  // Encode image URL to handle spaces and special characters
-  const encodedImage = image ? encodeURI(image) : '';
+  // Get proper image URL - handle both Supabase storage URLs and local paths
+  const getImageUrl = (imagePath: string): string => {
+    if (!imagePath) return '';
+    
+    // If it's already a full URL (Supabase storage), use it as-is
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return imagePath;
+    }
+    
+    // For local paths, ensure they start with /
+    const normalizedPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+    return normalizedPath;
+  };
+
+  const imageUrl = getImageUrl(image);
+  const encodedImage = imageUrl ? encodeURI(imageUrl) : '';
 
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-border">

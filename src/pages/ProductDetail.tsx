@@ -26,6 +26,20 @@ const ProductDetail = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Get proper image URL - handle both Supabase storage URLs and local paths
+  const getImageUrl = (imagePath: string): string => {
+    if (!imagePath) return '';
+    
+    // If it's already a full URL (Supabase storage), use it as-is
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return imagePath;
+    }
+    
+    // For local paths, ensure they start with /
+    const normalizedPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+    return normalizedPath;
+  };
+
   // Fetch product from database
   useEffect(() => {
     const fetchProduct = async () => {
@@ -100,7 +114,7 @@ const ProductDetail = () => {
           <div className="space-y-4">
             <div className="aspect-square bg-muted rounded-lg overflow-hidden">
               <img 
-                src={product.images[currentImageIndex] || ''} 
+                src={encodeURI(getImageUrl(product.images[currentImageIndex] || ''))}
                 alt={product.name}
                 className="w-full h-full object-contain"
                 onError={(e) => {
@@ -119,7 +133,7 @@ const ProductDetail = () => {
                     onClick={() => setCurrentImageIndex(idx)}
                   >
                     <img 
-                      src={img || ''} 
+                      src={encodeURI(getImageUrl(img || ''))}
                       alt={`${product.name} ${idx + 1}`} 
                       className="w-full h-full object-contain"
                       onError={(e) => {

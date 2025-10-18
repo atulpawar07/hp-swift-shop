@@ -41,6 +41,7 @@ interface User {
   id: string;
   email: string;
   full_name: string | null;
+  phone: string | null;
 }
 
 interface UserRole {
@@ -81,6 +82,10 @@ const AdminDashboard = () => {
   const [newUserPassword, setNewUserPassword] = useState('');
   const [newUserDialogOpen, setNewUserDialogOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<'admin' | 'moderator' | 'user'>('user');
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editUserDialogOpen, setEditUserDialogOpen] = useState(false);
+  const [editUserFullName, setEditUserFullName] = useState('');
+  const [editUserPhone, setEditUserPhone] = useState('');
 
   // Product form state
   const [name, setName] = useState('');
@@ -154,7 +159,7 @@ const AdminDashboard = () => {
     // Fetch all users from profiles
     const { data: profilesData, error: profilesError } = await supabase
       .from('profiles')
-      .select('id, email, full_name')
+      .select('id, email, full_name, phone')
       .order('email');
 
     if (profilesError) {
@@ -663,6 +668,38 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleEditUser = (userItem: User) => {
+    setEditingUser(userItem);
+    setEditUserFullName(userItem.full_name || '');
+    setEditUserPhone(userItem.phone || '');
+    setEditUserDialogOpen(true);
+  };
+
+  const handleUpdateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingUser) return;
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: editUserFullName.trim() || null,
+          phone: editUserPhone.trim() || null,
+        })
+        .eq('id', editingUser.id);
+
+      if (error) throw error;
+
+      toast.success('User updated successfully');
+      setEditUserDialogOpen(false);
+      setEditingUser(null);
+      fetchUsers();
+    } catch (error) {
+      console.error('Error updating user:', error);
+      toast.error('Failed to update user');
+    }
+  };
+
   if (loading || loadingProducts) {
     return (
       <div className="min-h-screen bg-background">
@@ -1113,6 +1150,7 @@ const AdminDashboard = () => {
                       <TableRow>
                         <TableHead>Email</TableHead>
                         <TableHead>Full Name</TableHead>
+                        <TableHead>Phone</TableHead>
                         <TableHead>Roles</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
@@ -1126,6 +1164,7 @@ const AdminDashboard = () => {
                           <TableRow key={userItem.id}>
                             <TableCell>{userItem.email}</TableCell>
                             <TableCell>{userItem.full_name || '-'}</TableCell>
+                            <TableCell>{userItem.phone || '-'}</TableCell>
                             <TableCell>
                               <div className="flex flex-wrap gap-1">
                                 {roles.length > 0 ? (
@@ -1154,6 +1193,15 @@ const AdminDashboard = () => {
                               ) : (
                                 <div className="flex flex-col gap-2">
                                   <div className="flex gap-2 flex-wrap">
+                                    {/* Edit User Button */}
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => handleEditUser(userItem)}
+                                    >
+                                      <Edit className="h-3 w-3 mr-1" />
+                                      Edit Details
+                                    </Button>
                                     {/* Grant Role Buttons */}
                                     {!roles.includes('admin') && (
                                       <Button
@@ -1222,6 +1270,49 @@ const AdminDashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Edit User Dialog */}
+      <Dialog open={editUserDialogOpen} onOpenChange={setEditUserDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit User Details</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleUpdateUser} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-user-email">Email (Read-only)</Label>
+              <Input
+                id="edit-user-email"
+                type="email"
+                value={editingUser?.email || ''}
+                disabled
+                className="bg-muted"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-user-fullname">Full Name</Label>
+              <Input
+                id="edit-user-fullname"
+                value={editUserFullName}
+                onChange={(e) => setEditUserFullName(e.target.value)}
+                placeholder="Enter full name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-user-phone">Phone Number</Label>
+              <Input
+                id="edit-user-phone"
+                type="tel"
+                value={editUserPhone}
+                onChange={(e) => setEditUserPhone(e.target.value)}
+                placeholder="+971 XX XXX XXXX"
+              />
+            </div>
+            <Button type="submit" className="w-full">
+              Update User
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
       
       <Footer />
     </div>

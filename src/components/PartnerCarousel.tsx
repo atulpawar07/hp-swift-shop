@@ -17,7 +17,7 @@ const PartnerCarousel = ({ partners }: PartnerCarouselProps) => {
     if (!carousel) return;
 
     let rotation = 0;
-    const speed = 0.2; // Rotation speed
+    const speed = 0.5; // Rotation speed
 
     const animate = () => {
       rotation += speed;

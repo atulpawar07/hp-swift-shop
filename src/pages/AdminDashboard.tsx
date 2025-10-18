@@ -37,6 +37,19 @@ interface Brand {
   logo_url: string | null;
 }
 
+interface User {
+  id: string;
+  email: string;
+  full_name: string | null;
+}
+
+interface UserRole {
+  id: string;
+  user_id: string;
+  role: string;
+  created_at: string;
+}
+
 const AdminDashboard = () => {
   const { user, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
@@ -60,6 +73,11 @@ const AdminDashboard = () => {
   const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
   const [brandName, setBrandName] = useState('');
 
+  // Users state
+  const [users, setUsers] = useState<User[]>([]);
+  const [userRoles, setUserRoles] = useState<UserRole[]>([]);
+  const [newAdminEmail, setNewAdminEmail] = useState('');
+
   // Product form state
   const [name, setName] = useState('');
   const [brand, setBrand] = useState('');
@@ -80,6 +98,7 @@ const AdminDashboard = () => {
       fetchProducts();
       fetchCategories();
       fetchBrands();
+      fetchUsers();
     }
   }, [isAdmin]);
 
@@ -124,6 +143,31 @@ const AdminDashboard = () => {
       console.error(error);
     } else {
       setBrands(data || []);
+    }
+  };
+
+  const fetchUsers = async () => {
+    // Fetch all users from profiles
+    const { data: profilesData, error: profilesError } = await supabase
+      .from('profiles')
+      .select('id, email, full_name')
+      .order('email');
+
+    if (profilesError) {
+      console.error('Error fetching users:', profilesError);
+    } else {
+      setUsers(profilesData || []);
+    }
+
+    // Fetch user roles
+    const { data: rolesData, error: rolesError } = await supabase
+      .from('user_roles')
+      .select('*');
+
+    if (rolesError) {
+      console.error('Error fetching user roles:', rolesError);
+    } else {
+      setUserRoles(rolesData || []);
     }
   };
 
@@ -359,6 +403,82 @@ const AdminDashboard = () => {
     setEditingBrand(null);
   };
 
+  // User Management
+  const handleGrantAdmin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      // First check if user exists
+      const { data: userData, error: userError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', newAdminEmail.trim())
+        .single();
+
+      if (userError || !userData) {
+        toast.error('User not found. They must sign up first.');
+        return;
+      }
+
+      // Check if already admin
+      const { data: existingRole } = await supabase
+        .from('user_roles')
+        .select('*')
+        .eq('user_id', userData.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      if (existingRole) {
+        toast.error('User is already an admin');
+        return;
+      }
+
+      // Grant admin role
+      const { error } = await supabase
+        .from('user_roles')
+        .insert([{ user_id: userData.id, role: 'admin' }]);
+
+      if (error) throw error;
+
+      toast.success('Admin access granted successfully');
+      setNewAdminEmail('');
+      fetchUsers();
+    } catch (error) {
+      console.error('Error granting admin access:', error);
+      toast.error('Failed to grant admin access');
+    }
+  };
+
+  const handleRevokeAdmin = async (userId: string) => {
+    if (!confirm('Are you sure you want to revoke admin access for this user?')) return;
+
+    // Prevent revoking own admin access
+    if (userId === user?.id) {
+      toast.error('You cannot revoke your own admin access');
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', userId)
+        .eq('role', 'admin');
+
+      if (error) throw error;
+
+      toast.success('Admin access revoked successfully');
+      fetchUsers();
+    } catch (error) {
+      console.error('Error revoking admin access:', error);
+      toast.error('Failed to revoke admin access');
+    }
+  };
+
+  const isUserAdmin = (userId: string) => {
+    return userRoles.some(role => role.user_id === userId && role.role === 'admin');
+  };
+
   if (loading || loadingProducts) {
     return (
       <div className="min-h-screen bg-background">
@@ -381,10 +501,11 @@ const AdminDashboard = () => {
       
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="products" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-4">
+          <TabsList className="grid w-full grid-cols-4 mb-4">
             <TabsTrigger value="products">Products</TabsTrigger>
             <TabsTrigger value="categories">Categories</TabsTrigger>
             <TabsTrigger value="brands">Brands</TabsTrigger>
+            <TabsTrigger value="users">Users</TabsTrigger>
           </TabsList>
 
           {/* Products Tab */}
@@ -687,6 +808,90 @@ const AdminDashboard = () => {
                 </Table>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Users Tab */}
+          <TabsContent value="users">
+            <div className="grid gap-6">
+              {/* Grant Admin Access */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Grant Admin Access</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleGrantAdmin} className="flex gap-4">
+                    <Input
+                      type="email"
+                      placeholder="Enter user email"
+                      value={newAdminEmail}
+                      onChange={(e) => setNewAdminEmail(e.target.value)}
+                      required
+                      className="flex-1"
+                    />
+                    <Button type="submit">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Grant Admin
+                    </Button>
+                  </form>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Note: User must have an account first. Enter their registered email address.
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* All Users List */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>All Users</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Full Name</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {users.map((userItem) => (
+                        <TableRow key={userItem.id}>
+                          <TableCell>{userItem.email}</TableCell>
+                          <TableCell>{userItem.full_name || '-'}</TableCell>
+                          <TableCell>
+                            {isUserAdmin(userItem.id) ? (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                                Admin
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
+                                User
+                              </span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {isUserAdmin(userItem.id) && userItem.id !== user?.id && (
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => handleRevokeAdmin(userItem.id)}
+                              >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Revoke Admin
+                              </Button>
+                            )}
+                            {userItem.id === user?.id && (
+                              <span className="text-sm text-muted-foreground">You</span>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>

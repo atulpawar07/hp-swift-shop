@@ -26,14 +26,21 @@ const ProductCard = ({
   specs = []
 }: ProductCardProps) => {
   const discount = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
+  
+  // Encode image URL to handle spaces and special characters
+  const encodedImage = image ? encodeURI(image) : '';
 
   return (
     <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-border">
       <div className="relative overflow-hidden bg-muted aspect-square">
         <img 
-          src={image} 
+          src={encodedImage} 
           alt={name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+          onError={(e) => {
+            // Fallback to placeholder if image fails to load
+            e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23f0f0f0" width="400" height="400"/%3E%3Ctext fill="%23999" font-family="sans-serif" font-size="24" dy="10.5" font-weight="bold" x="50%25" y="50%25" text-anchor="middle"%3ENo Image%3C/text%3E%3C/svg%3E';
+          }}
         />
         {discount > 0 && (
           <Badge className="absolute top-3 left-3 bg-destructive text-destructive-foreground">
@@ -72,11 +79,17 @@ const ProductCard = ({
         )}
 
         <div className="mt-3 flex items-baseline gap-2">
-          <span className="text-2xl font-bold text-primary">₹{price.toLocaleString()}</span>
-          {originalPrice && (
-            <span className="text-sm text-muted-foreground line-through">
-              ₹{originalPrice.toLocaleString()}
-            </span>
+          {price > 0 ? (
+            <>
+              <span className="text-2xl font-bold text-primary">AED {price.toLocaleString()}</span>
+              {originalPrice && (
+                <span className="text-sm text-muted-foreground line-through">
+                  AED {originalPrice.toLocaleString()}
+                </span>
+              )}
+            </>
+          ) : (
+            <span className="text-sm text-muted-foreground">Contact for price</span>
           )}
         </div>
       </CardContent>

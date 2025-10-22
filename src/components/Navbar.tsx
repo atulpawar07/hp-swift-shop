@@ -1,4 +1,4 @@
-import { ShoppingCart, Phone, Home as HomeIcon, Info, Package, Wrench, Mail, User, LogOut, Shield, Menu, X } from "lucide-react";
+import { ShoppingCart, Phone, Home as HomeIcon, Info, Package, Wrench, Mail, User, LogOut, Shield, Menu, X, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -41,11 +41,27 @@ const Navbar = () => {
 
             {/* Contact Info & Actions */}
             <div className="flex items-center gap-2 md:gap-4">
-              {/* Phone - Hidden on very small screens */}
-              <a href="tel:+971563569089" className="hidden sm:flex items-center gap-2 text-foreground hover:text-primary transition-colors">
-                <Phone className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
-                <span className="font-semibold text-sm md:text-base whitespace-nowrap">+971 563 569089</span>
-              </a>
+              {/* Contact Buttons - Hidden on very small screens */}
+              <div className="hidden sm:flex items-center gap-2">
+                <a 
+                  href="tel:+971563569089" 
+                  className="flex items-center gap-2 px-3 py-2 rounded-md bg-primary/10 text-foreground hover:bg-primary/20 transition-colors"
+                  title="Call us"
+                >
+                  <Phone className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
+                  <span className="font-semibold text-sm md:text-base whitespace-nowrap">+971 563 569089</span>
+                </a>
+                <a 
+                  href="https://wa.me/971563569089" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-2 rounded-md bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-colors"
+                  title="WhatsApp us"
+                >
+                  <MessageCircle className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
+                  <span className="font-semibold text-sm md:text-base whitespace-nowrap">WhatsApp</span>
+                </a>
+              </div>
               
               {/* User Actions - Compact on mobile */}
               {user ? (
@@ -92,11 +108,24 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Phone Number Row for very small screens */}
-          <div className="sm:hidden mt-2 flex items-center gap-2 text-foreground">
-            <Phone className="h-4 w-4 flex-shrink-0" />
-            <a href="tel:+971563569089" className="font-semibold text-sm hover:text-primary">
-              +971 563 569089
+          {/* Contact Row for very small screens */}
+          <div className="sm:hidden mt-2 flex items-center gap-2">
+            <a 
+              href="tel:+971563569089" 
+              className="flex items-center gap-2 px-3 py-2 rounded-md bg-primary/10 text-foreground hover:bg-primary/20 transition-colors flex-1"
+              title="Call us"
+            >
+              <Phone className="h-4 w-4 flex-shrink-0" />
+              <span className="font-semibold text-sm">+971 563 569089</span>
+            </a>
+            <a 
+              href="https://wa.me/971563569089" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3 py-2 rounded-md bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-colors"
+              title="WhatsApp us"
+            >
+              <MessageCircle className="h-4 w-4 flex-shrink-0" />
             </a>
           </div>
         </div>

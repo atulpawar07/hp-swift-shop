@@ -7,9 +7,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const authSchema = z.object({
-  email: z.string().trim().email({ message: 'Invalid email address' }).max(255),
+  email: z.string().trim().min(1, { message: 'Email is required' }).email({ message: 'Please enter a valid email address (e.g., user@example.com)' }).max(255),
   password: z.string().min(6, { message: 'Password must be at least 6 characters' }).max(100),
 });
 
@@ -18,8 +19,26 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [touched, setTouched] = useState<{ email?: boolean; password?: boolean }>({});
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
+
+  const validateField = (field: 'email' | 'password', value: string) => {
+    try {
+      if (field === 'email') {
+        authSchema.shape.email.parse(value);
+      } else {
+        authSchema.shape.password.parse(value);
+      }
+      setErrors(prev => ({ ...prev, [field]: undefined }));
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setErrors(prev => ({ ...prev, [field]: error.errors[0]?.message }));
+      }
+      return false;
+    }
+  };
 
   const validateForm = () => {
     try {
@@ -35,9 +54,29 @@ const Auth = () => {
           }
         });
         setErrors(formattedErrors);
+        toast.error('Please fix the validation errors');
       }
       return false;
     }
+  };
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    if (touched.email) {
+      validateField('email', value);
+    }
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    if (touched.password) {
+      validateField('password', value);
+    }
+  };
+
+  const handleBlur = (field: 'email' | 'password') => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    validateField(field, field === 'email' ? email : password);
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -93,10 +132,17 @@ const Auth = () => {
                     type="email"
                     placeholder="your@email.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+                    onChange={(e) => handleEmailChange(e.target.value)}
+                    onBlur={() => handleBlur('email')}
+                    className={errors.email ? 'border-destructive focus-visible:ring-destructive' : ''}
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? 'signin-email-error' : undefined}
                   />
-                  {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+                  {errors.email && (
+                    <p id="signin-email-error" className="text-sm text-destructive font-medium">
+                      {errors.email}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signin-password">Password</Label>
@@ -105,10 +151,17 @@ const Auth = () => {
                     type="password"
                     placeholder="••••••••"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
+                    onChange={(e) => handlePasswordChange(e.target.value)}
+                    onBlur={() => handleBlur('password')}
+                    className={errors.password ? 'border-destructive focus-visible:ring-destructive' : ''}
+                    aria-invalid={!!errors.password}
+                    aria-describedby={errors.password ? 'signin-password-error' : undefined}
                   />
-                  {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+                  {errors.password && (
+                    <p id="signin-password-error" className="text-sm text-destructive font-medium">
+                      {errors.password}
+                    </p>
+                  )}
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? 'Signing in...' : 'Sign In'}
@@ -125,10 +178,17 @@ const Auth = () => {
                     type="email"
                     placeholder="your@email.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+                    onChange={(e) => handleEmailChange(e.target.value)}
+                    onBlur={() => handleBlur('email')}
+                    className={errors.email ? 'border-destructive focus-visible:ring-destructive' : ''}
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? 'signup-email-error' : undefined}
                   />
-                  {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+                  {errors.email && (
+                    <p id="signup-email-error" className="text-sm text-destructive font-medium">
+                      {errors.email}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-password">Password</Label>
@@ -137,10 +197,17 @@ const Auth = () => {
                     type="password"
                     placeholder="••••••••"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
+                    onChange={(e) => handlePasswordChange(e.target.value)}
+                    onBlur={() => handleBlur('password')}
+                    className={errors.password ? 'border-destructive focus-visible:ring-destructive' : ''}
+                    aria-invalid={!!errors.password}
+                    aria-describedby={errors.password ? 'signup-password-error' : undefined}
                   />
-                  {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+                  {errors.password && (
+                    <p id="signup-password-error" className="text-sm text-destructive font-medium">
+                      {errors.password}
+                    </p>
+                  )}
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? 'Creating account...' : 'Create Account'}

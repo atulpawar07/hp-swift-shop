@@ -46,11 +46,11 @@ const Navbar = () => {
                 href="https://wa.me/971563569089" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-md bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-colors"
-                title="WhatsApp us"
+                className="hidden sm:flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-all hover:scale-105 shadow-sm"
+                title="Chat with us on WhatsApp"
               >
-                <MessageCircle className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
-                <span className="font-semibold text-sm md:text-base whitespace-nowrap">+971 563 569089</span>
+                <MessageCircle className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" fill="currentColor" />
+                <span className="font-semibold text-sm md:text-base whitespace-nowrap">WhatsApp us</span>
               </a>
               
               {/* User Actions - Compact on mobile */}
@@ -104,11 +104,11 @@ const Navbar = () => {
               href="https://wa.me/971563569089" 
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-2 rounded-md bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-colors w-full"
-              title="WhatsApp us"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-all active:scale-95 shadow-sm"
+              title="Chat with us on WhatsApp"
             >
-              <MessageCircle className="h-4 w-4 flex-shrink-0" />
-              <span className="font-semibold text-sm">+971 563 569089</span>
+              <MessageCircle className="h-5 w-5 flex-shrink-0" fill="currentColor" />
+              <span className="font-semibold text-sm">WhatsApp us</span>
             </a>
           </div>
         </div>

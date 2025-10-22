@@ -41,27 +41,17 @@ const Navbar = () => {
 
             {/* Contact Info & Actions */}
             <div className="flex items-center gap-2 md:gap-4">
-              {/* Contact Buttons - Hidden on very small screens */}
-              <div className="hidden sm:flex items-center gap-2">
-                <a 
-                  href="tel:+971563569089" 
-                  className="flex items-center gap-2 px-3 py-2 rounded-md bg-primary/10 text-foreground hover:bg-primary/20 transition-colors"
-                  title="Call us"
-                >
-                  <Phone className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
-                  <span className="font-semibold text-sm md:text-base whitespace-nowrap">+971 563 569089</span>
-                </a>
-                <a 
-                  href="https://wa.me/971563569089" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-3 py-2 rounded-md bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-colors"
-                  title="WhatsApp us"
-                >
-                  <MessageCircle className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
-                  <span className="font-semibold text-sm md:text-base whitespace-nowrap">WhatsApp</span>
-                </a>
-              </div>
+              {/* WhatsApp Contact - Hidden on very small screens */}
+              <a 
+                href="https://wa.me/971563569089" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-md bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-colors"
+                title="WhatsApp us"
+              >
+                <MessageCircle className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
+                <span className="font-semibold text-sm md:text-base whitespace-nowrap">+971 563 569089</span>
+              </a>
               
               {/* User Actions - Compact on mobile */}
               {user ? (
@@ -108,24 +98,17 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Contact Row for very small screens */}
-          <div className="sm:hidden mt-2 flex items-center gap-2">
-            <a 
-              href="tel:+971563569089" 
-              className="flex items-center gap-2 px-3 py-2 rounded-md bg-primary/10 text-foreground hover:bg-primary/20 transition-colors flex-1"
-              title="Call us"
-            >
-              <Phone className="h-4 w-4 flex-shrink-0" />
-              <span className="font-semibold text-sm">+971 563 569089</span>
-            </a>
+          {/* WhatsApp Contact for very small screens */}
+          <div className="sm:hidden mt-2">
             <a 
               href="https://wa.me/971563569089" 
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-2 rounded-md bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-colors"
+              className="flex items-center gap-2 px-3 py-2 rounded-md bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-colors w-full"
               title="WhatsApp us"
             >
               <MessageCircle className="h-4 w-4 flex-shrink-0" />
+              <span className="font-semibold text-sm">+971 563 569089</span>
             </a>
           </div>
         </div>

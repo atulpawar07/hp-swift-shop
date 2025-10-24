@@ -191,4 +191,38 @@ const Navbar = () => {
                     <Info className="h-4 w-4" /> About Us
                   </div>
                 </Link>
-                <Link to="/products" onClick={() => setMobileOpen(false)} className="
+                <Link to="/products" onClick={() => setMobileOpen(false)} className="px-3">
+                  <div className={`py-2 rounded-md ${isActive("/products") ? "bg-primary/90" : "hover:bg-primary/80"} text-white flex items-center gap-2`}>
+                    <Package className="h-4 w-4" /> Products
+                  </div>
+                </Link>
+                <Link to="/services" onClick={() => setMobileOpen(false)} className="px-3">
+                  <div className={`py-2 rounded-md ${isActive("/services") ? "bg-primary/90" : "hover:bg-primary/80"} text-white flex items-center gap-2`}>
+                    <Wrench className="h-4 w-4" /> Services
+                  </div>
+                </Link>
+                <Link to="/contact" onClick={() => setMobileOpen(false)} className="px-3">
+                  <div className={`py-2 rounded-md ${isActive("/contact") ? "bg-primary/90" : "hover:bg-primary/80"} text-white flex items-center gap-2`}>
+                    <Mail className="h-4 w-4" /> Contact Us
+                  </div>
+                </Link>
+                <a
+                  href="https://wa.me/971563569089"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3"
+                >
+                  <div className="py-2 rounded-md bg-green-600 text-white flex items-center gap-2">
+                    <MessageCircle className="h-4 w-4" /> WhatsApp
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </>
+  );
+};
+
+export default Navbar;

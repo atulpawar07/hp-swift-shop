@@ -58,35 +58,42 @@ const Navbar = () => {
               </a>
               
               {/* User Actions - Compact on mobile */}
-              {user ? (
-                <div className="flex items-center gap-1 md:gap-2">
-                  {isAdmin && (
-                    <Link to="/admin/dashboard">
-                      <Button variant="outline" size="sm" className="gap-1 md:gap-2 text-xs md:text-sm px-2 md:px-3">
-                        <Shield className="h-3 w-3 md:h-4 md:w-4" />
-                        <span className="hidden md:inline">Admin Panel</span>
-                        <span className="md:hidden">Admin</span>
-                      </Button>
-                    </Link>
-                  )}
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => signOut()}
-                    className="gap-1 md:gap-2 text-xs md:text-sm px-2 md:px-3"
-                  >
-                    <LogOut className="h-3 w-3 md:h-4 md:w-4" />
-                    <span className="hidden sm:inline">Sign Out</span>
-                  </Button>
-                </div>
-              ) : (
-                <Link to="/auth">
-                  <Button variant="outline" size="sm" className="gap-1 md:gap-2 text-xs md:text-sm px-2 md:px-3">
-                    <User className="h-3 w-3 md:h-4 md:w-4" />
-                    <span className="hidden sm:inline">Sign In</span>
-                  </Button>
-                </Link>
-              )}
+             {user ? (
+  <div className="flex items-center gap-1 md:gap-2">
+    {isAdmin && (
+      <Link to="/admin/dashboard">
+        <Button
+          size="sm"
+          className="gap-1 md:gap-2 text-xs md:text-sm px-2 md:px-3 bg-blue-600 hover:bg-blue-500 text-white border border-blue-500 transition-colors"
+        >
+          <Shield className="h-3 w-3 md:h-4 md:w-4" />
+          <span className="hidden md:inline">Admin Panel</span>
+          <span className="md:hidden">Admin</span>
+        </Button>
+      </Link>
+    )}
+
+    <Button
+      size="sm"
+      onClick={() => signOut()}
+      className="gap-1 md:gap-2 text-xs md:text-sm px-2 md:px-3 bg-red-600 hover:bg-red-500 text-white border border-red-500 transition-colors"
+    >
+      <LogOut className="h-3 w-3 md:h-4 md:w-4" />
+      <span className="hidden sm:inline">Sign Out</span>
+    </Button>
+  </div>
+) : (
+  <Link to="/auth">
+    <Button
+      size="sm"
+      className="gap-1 md:gap-2 text-xs md:text-sm px-2 md:px-3 bg-blue-600 hover:bg-blue-500 text-white border border-blue-500 transition-colors"
+    >
+      <User className="h-3 w-3 md:h-4 md:w-4" />
+      <span className="hidden sm:inline">Sign In</span>
+    </Button>
+  </Link>
+)}
+
               
               {/* Cart */}
               <Link to="/cart">

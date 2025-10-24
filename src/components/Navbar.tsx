@@ -48,7 +48,7 @@ const Navbar = () => {
                 className="logo-box rounded-md flex items-center justify-center shadow-sm flex-shrink-0 overflow-hidden"
                 style={{
                   backgroundColor: "#fff",
-                  height: "56px",     // top-bar height
+                  height: "75px",     // top-bar height
                   width: "auto",
                   padding: "6px 8px",
                 }}

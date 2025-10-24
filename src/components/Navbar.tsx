@@ -1,236 +1,192 @@
-import {
-  Home as HomeIcon,
-  Info,
-  Package,
-  Wrench,
-  Mail,
-  MessageCircle,
-  Menu,
-  X,
-  Shield,
-} from "lucide-react";
+import { ShoppingCart, Phone, Home as HomeIcon, Info, Package, Wrench, Mail, User, LogOut, Shield, Menu, X, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import logo from "@/assets/logo-light.jpeg";
+import { useAuth } from "@/hooks/useAuth";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import logo from "@/assets/logo-light.png";
 
 const Navbar = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [cartCount] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const isActive = (path: string) => location.pathname === path;
+  const { user, isAdmin, signOut } = useAuth();
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const navigationItems = [
+    { path: '/', label: 'Home', icon: HomeIcon },
+    { path: '/about', label: 'About Us', icon: Info },
+    { path: '/products', label: 'Products', icon: Package },
+    { path: '/services', label: 'Services', icon: Wrench },
+    { path: '/contact', label: 'Contact Us', icon: Mail },
+  ];
 
   return (
-    <>
-      {/* Scoped CSS to avoid theme overrides */}
-      <style>{`
-        #site-navbar { background-color: #000 !important; color: #fff !important; }
-        #site-navbar .top-bar { background-color: #000 !important; border-color: rgba(255,255,255,0.06) !important; }
-        #site-navbar .logo-box { background: #fff !important; }
-        #site-navbar .primary-nav { background-color: var(--primary-color, #bf0d0d) !important; }
-      `}</style>
+    <nav className="bg-background sticky top-0 z-50 shadow-sm">
+      {/* Top Bar with Logo and Contact */}
+      <div className="border-b border-border">
+        <div className="container mx-auto px-4 py-3 md:py-4">
+          <div className="flex justify-between items-center gap-4">
+            {/* Logo */}
+            <Link to="/" className="flex items-center flex-shrink-0">
+              <img 
+                src={logo} 
+                alt="SK Enterprise" 
+                className="h-20 md:h-28 lg:h-32 w-auto object-contain max-w-[280px] md:max-w-[400px]" 
+              />
+            </Link>
 
-      <nav
-        id="site-navbar"
-        className="sticky top-0 z-50"
-        aria-label="Primary Navigation"
-        style={{ backgroundColor: "#000", color: "#fff" }}
-      >
-        {/* Top Bar */}
-        <div
-          className="top-bar border-b"
-          style={{ backgroundColor: "#000", borderColor: "rgba(255,255,255,0.06)" }}
-        >
-          <div className="container mx-auto px-4 py-2">
-            <div className="flex items-center justify-between gap-3">
-              {/* Logo (white box). Fixed height box, image fills height */}
-              <Link
-  to="/"
-  className="logo-box rounded-md flex items-center justify-center shadow-sm flex-shrink-0 overflow-hidden"
-  style={{
-    backgroundColor: "#fff",
-    height: "75px", // keep tall logo area
-    width: "auto",
-    padding: "2px", // reduced padding for full fit
-  }}
-  aria-label="SK Enterprise Home"
->
-  <img
-    src={logo}
-    alt="SK Enterprise"
-    className="w-full h-full object-contain"
-    style={{
-      display: "block",
-      objectFit: "contain",
-      objectPosition: "center",
-      maxWidth: "100%",
-      maxHeight: "100%",
-    }}
-  />
-              </Link>
-
-              {/* Spacer to push actions to right */}
-              <div className="flex-1" />
-
-              {/* Right Side actions: phone removed per request */}
-              <div className="flex items-center gap-2">
-                {/* WhatsApp button: always show text on mobile */}
-                <a
-                  href="https://wa.me/971563569089?text=Hello%20SK%20Enterprise!%20I%20would%20like%20to%20know%20more%20about%20your%20products."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded-md transition text-sm"
-                  style={{ boxShadow: "none" }}
-                  aria-label="WhatsApp SK Enterprise"
-                >
-                  <MessageCircle className="h-4 w-4" />
-                  <span>WhatsApp us</span>
-                </a>
-
-                {/* Admin small button — optional, hidden on smallest screens */}
-                <Link to="/admin" aria-label="Admin">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="hidden sm:inline-flex items-center gap-2 text-white hover:bg-gray-800 px-2 py-1"
+            {/* Contact Info & Actions */}
+            <div className="flex items-center gap-2 md:gap-4">
+              {/* WhatsApp Contact - Hidden on very small screens */}
+              <a 
+                href="https://wa.me/971563569089" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden sm:flex items-center gap-1.5 px-2.5 md:px-3 py-1.5 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-all hover:scale-105 shadow-sm"
+                title="Chat with us on WhatsApp"
+              >
+                <MessageCircle className="h-4 w-4 flex-shrink-0" fill="currentColor" />
+                <span className="font-semibold text-xs md:text-sm whitespace-nowrap">WhatsApp</span>
+              </a>
+              
+              {/* User Actions - Compact on mobile */}
+              {user ? (
+                <div className="flex items-center gap-1 md:gap-2">
+                  {isAdmin && (
+                    <Link to="/admin/dashboard">
+                      <Button variant="outline" size="sm" className="gap-1 md:gap-2 text-xs md:text-sm px-2 md:px-3">
+                        <Shield className="h-3 w-3 md:h-4 md:w-4" />
+                        <span className="hidden md:inline">Admin Panel</span>
+                        <span className="md:hidden">Admin</span>
+                      </Button>
+                    </Link>
+                  )}
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => signOut()}
+                    className="gap-1 md:gap-2 text-xs md:text-sm px-2 md:px-3"
                   >
-                    <Shield className="h-4 w-4" />
-                    <span className="text-sm">Admin</span>
+                    <LogOut className="h-3 w-3 md:h-4 md:w-4" />
+                    <span className="hidden sm:inline">Sign Out</span>
+                  </Button>
+                </div>
+              ) : (
+                <Link to="/auth">
+                  <Button variant="outline" size="sm" className="gap-1 md:gap-2 text-xs md:text-sm px-2 md:px-3">
+                    <User className="h-3 w-3 md:h-4 md:w-4" />
+                    <span className="hidden sm:inline">Sign In</span>
                   </Button>
                 </Link>
-
-                {/* Hamburger for mobile */}
-                <button
-                  onClick={() => setMobileOpen((s) => !s)}
-                  className="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-2"
-                  aria-label={mobileOpen ? "Close menu" : "Open menu"}
-                >
-                  {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-                </button>
-              </div>
+              )}
+              
+              {/* Cart */}
+              <Link to="/cart">
+                <Button variant="ghost" size="icon" className="relative h-8 w-8 md:h-10 md:w-10">
+                  <ShoppingCart className="h-4 w-4 md:h-5 md:w-5" />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full w-4 h-4 md:w-5 md:h-5 text-[10px] md:text-xs flex items-center justify-center font-bold">
+                      {cartCount}
+                    </span>
+                  )}
+                </Button>
+              </Link>
             </div>
           </div>
-        </div>
 
-        {/* Primary Navigation Bar (red) */}
-        <div
-          className="primary-nav bg-primary text-primary-foreground"
-          style={{ backgroundColor: "var(--primary-color, #bf0d0d)" }}
-          role="navigation"
-          aria-label="Main menu"
-        >
-          <div className="container mx-auto px-4">
-            {/* Desktop links */}
-            <div className="hidden sm:flex items-center gap-1">
-              <Link to="/">
-                <Button
-                  variant="ghost"
-                  className={`text-primary-foreground hover:bg-primary/90 font-medium rounded-none px-6 py-4 ${
-                    isActive("/") ? "bg-primary/90" : ""
-                  }`}
-                >
-                  <HomeIcon className="h-4 w-4 mr-2" />
-                  Home
-                </Button>
-              </Link>
-
-              <Link to="/about">
-                <Button
-                  variant="ghost"
-                  className={`text-primary-foreground hover:bg-primary/90 font-medium rounded-none px-6 py-4 ${
-                    isActive("/about") ? "bg-primary/90" : ""
-                  }`}
-                >
-                  <Info className="h-4 w-4 mr-2" />
-                  About Us
-                </Button>
-              </Link>
-
-              <Link to="/products">
-                <Button
-                  variant="ghost"
-                  className={`text-primary-foreground hover:bg-primary/90 font-medium rounded-none px-6 py-4 ${
-                    isActive("/products") ? "bg-primary/90" : ""
-                  }`}
-                >
-                  <Package className="h-4 w-4 mr-2" />
-                  Products
-                </Button>
-              </Link>
-
-              <Link to="/services">
-                <Button
-                  variant="ghost"
-                  className={`text-primary-foreground hover:bg-primary/90 font-medium rounded-none px-6 py-4 ${
-                    isActive("/services") ? "bg-primary/90" : ""
-                  }`}
-                >
-                  <Wrench className="h-4 w-4 mr-2" />
-                  Services
-                </Button>
-              </Link>
-
-              <Link to="/contact">
-                <Button
-                  variant="ghost"
-                  className={`text-primary-foreground hover:bg-primary/90 font-medium rounded-none px-6 py-4 ${
-                    isActive("/contact") ? "bg-primary/90" : ""
-                  }`}
-                >
-                  <Mail className="h-4 w-4 mr-2" />
-                  Contact Us
-                </Button>
-              </Link>
-            </div>
-
-            {/* Mobile menu (slides down) */}
-            <div className={`sm:hidden ${mobileOpen ? "block" : "hidden"} py-2`}>
-              <div className="flex flex-col gap-2 pb-3">
-                <Link to="/" onClick={() => setMobileOpen(false)} className="px-3">
-                  <div className={`py-2 rounded-md ${isActive("/") ? "bg-primary/90" : "hover:bg-primary/80"} text-white flex items-center gap-2`}>
-                    <HomeIcon className="h-4 w-4" /> Home
-                  </div>
-                </Link>
-
-                <Link to="/about" onClick={() => setMobileOpen(false)} className="px-3">
-                  <div className={`py-2 rounded-md ${isActive("/about") ? "bg-primary/90" : "hover:bg-primary/80"} text-white flex items-center gap-2`}>
-                    <Info className="h-4 w-4" /> About Us
-                  </div>
-                </Link>
-
-                <Link to="/products" onClick={() => setMobileOpen(false)} className="px-3">
-                  <div className={`py-2 rounded-md ${isActive("/products") ? "bg-primary/90" : "hover:bg-primary/80"} text-white flex items-center gap-2`}>
-                    <Package className="h-4 w-4" /> Products
-                  </div>
-                </Link>
-
-                <Link to="/services" onClick={() => setMobileOpen(false)} className="px-3">
-                  <div className={`py-2 rounded-md ${isActive("/services") ? "bg-primary/90" : "hover:bg-primary/80"} text-white flex items-center gap-2`}>
-                    <Wrench className="h-4 w-4" /> Services
-                  </div>
-                </Link>
-
-                <Link to="/contact" onClick={() => setMobileOpen(false)} className="px-3">
-                  <div className={`py-2 rounded-md ${isActive("/contact") ? "bg-primary/90" : "hover:bg-primary/80"} text-white flex items-center gap-2`}>
-                    <Mail className="h-4 w-4" /> Contact Us
-                  </div>
-                </Link>
-
-                <a
-                  href="https://wa.me/971563569089"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3"
-                >
-                  <div className="py-2 rounded-md bg-green-600 text-white flex items-center gap-2">
-                    <MessageCircle className="h-4 w-4" /> WhatsApp
-                  </div>
-                </a>
-              </div>
-            </div>
+          {/* WhatsApp Contact for very small screens */}
+          <div className="sm:hidden mt-2">
+            <a 
+              href="https://wa.me/971563569089" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-all active:scale-95 shadow-sm"
+              title="Chat with us on WhatsApp"
+            >
+              <MessageCircle className="h-4 w-4 flex-shrink-0" fill="currentColor" />
+              <span className="font-semibold text-sm">WhatsApp</span>
+            </a>
           </div>
         </div>
-      </nav>
-    </>
+      </div>
+
+      {/* Desktop Navigation Bar */}
+      <div className="bg-primary text-primary-foreground hidden lg:block">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-1">
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link key={item.path} to={item.path}>
+                  <Button 
+                    variant="ghost" 
+                    className={`text-primary-foreground hover:bg-primary-hover font-medium rounded-none px-6 py-6 ${isActive(item.path) ? 'bg-primary-hover' : ''}`}
+                  >
+                    <Icon className="h-4 w-4 mr-2" />
+                    {item.label}
+                  </Button>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Navigation Bar */}
+      <div className="bg-primary text-primary-foreground lg:hidden">
+        <div className="container mx-auto px-4">
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button 
+                variant="ghost" 
+                className="text-primary-foreground hover:bg-primary-hover font-medium rounded-none w-full justify-start px-4 py-4"
+              >
+                <Menu className="h-5 w-5 mr-2" />
+                Menu
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[280px] bg-background p-0">
+              <div className="flex flex-col h-full">
+                <div className="p-4 border-b border-border flex items-center justify-between">
+                  <h2 className="font-semibold text-lg">Navigation</h2>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+                <div className="flex-1 overflow-y-auto py-4">
+                  {navigationItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link 
+                        key={item.path} 
+                        to={item.path}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Button 
+                          variant="ghost" 
+                          className={`w-full justify-start px-6 py-6 rounded-none font-medium ${isActive(item.path) ? 'bg-accent' : ''}`}
+                        >
+                          <Icon className="h-5 w-5 mr-3" />
+                          {item.label}
+                        </Button>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
+    </nav>
   );
 };
 

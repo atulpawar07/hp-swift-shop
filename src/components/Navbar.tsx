@@ -41,19 +41,19 @@ const Navbar = () => {
       <div className="border-b border-border">
         <div className="container mx-auto px-4 py-2 md:py-3">
           <div className="flex items-center justify-between gap-3">
-            {/* LEFT: Larger Logo */}
-            <div className="flex items-center flex-shrink-0 p-1">
-              <Link to="/" className="block">
-                <img
-                  src={logo}
-                  alt="SK Enterprise"
-                  className="object-contain"
-                  style={{
-                    height: "85px", // taller logo height
-                    width: "auto",
-                    maxWidth: "170px", // slightly wider for visibility
-                    display: "block",
-                  }}
+           {/* LEFT: Responsive Logo - Larger and clearer on mobile */}
+<div className="flex items-center flex-shrink-0 p-1">
+  <Link to="/" className="block">
+    <img
+      src={logo}
+      alt="SK Enterprise"
+      className="object-contain"
+      style={{
+        height: "100px", // ✅ increased height for mobile readability
+        width: "auto",
+        maxWidth: "200px", // ✅ allows more space for the full logo
+        display: "block",
+      }}
                 />
               </Link>
             </div>

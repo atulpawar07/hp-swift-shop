@@ -25,7 +25,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-background sticky top-0 z-50 shadow-sm">
+    <nav className="bg-black text-white sticky top-0 z-50 shadow-sm">
       {/* Top Bar with Logo and Contact */}
       <div className="border-b border-border">
         <div className="container mx-auto px-4 py-3 md:py-4">

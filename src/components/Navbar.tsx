@@ -44,19 +44,29 @@ const Navbar = () => {
           <div className="container mx-auto px-4 py-3">
             <div className="flex items-center justify-between gap-3">
               {/* Logo (white box). Use flex-shrink-0 and responsive height so it fits */}
-              <Link
-                to="/"
-                className="logo-box p-2 rounded-md flex items-center justify-center shadow-sm flex-shrink-0"
-                style={{ backgroundColor: "#fff" }}
-                aria-label="SK Enterprise Home"
-              >
-                <img
-                  src={logo}
-                  alt="SK Enterprise"
-                  className="h-12 md:h-16 w-auto object-contain"
-                  style={{ display: "block" }}
-                />
-              </Link>
+            <Link
+  to="/"
+  className="logo-box rounded-md flex items-center justify-center shadow-sm flex-shrink-0 overflow-hidden"
+  style={{
+    backgroundColor: "#fff",
+    height: "60px",          // consistent height
+    width: "auto",
+    padding: "6px 8px",      // small padding
+  }}
+  aria-label="SK Enterprise Home"
+>
+  <img
+    src={logo}
+    alt="SK Enterprise"
+    className="w-full h-full object-contain"
+    style={{
+      display: "block",
+      maxHeight: "100%",
+      maxWidth: "100%",
+    }}
+  />
+</Link>
+
 
               {/* Middle spacer keeps top bar compact */}
               <div className="flex-1" />

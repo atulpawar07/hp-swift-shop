@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
@@ -9,54 +9,28 @@ import { usePageContent } from "@/hooks/usePageContent";
 import { EditButton } from "@/components/admin/EditButton";
 import { ContentEditor } from "@/components/admin/ContentEditor";
 import { supabase } from "@/integrations/supabase/client";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { toast } from "sonner";
-
-const contactFormSchema = z.object({
-  name: z.string()
-    .trim()
-    .min(2, { message: "Name must be at least 2 characters" })
-    .max(100, { message: "Name must be less than 100 characters" })
-    .regex(/^[a-zA-Z\s'-]+$/, { message: "Name can only contain letters, spaces, hyphens and apostrophes" }),
-  email: z.string()
-    .trim()
-    .email({ message: "Invalid email address" })
-    .max(255, { message: "Email must be less than 255 characters" }),
-  phone: z.string()
-    .trim()
-    .min(8, { message: "Phone number must be at least 8 digits" })
-    .max(20, { message: "Phone number must be less than 20 characters" })
-    .regex(/^[+\d\s()-]+$/, { message: "Invalid phone number format" }),
-  message: z.string()
-    .trim()
-    .min(10, { message: "Message must be at least 10 characters" })
-    .max(1000, { message: "Message must be less than 1000 characters" })
-});
-
-type ContactFormData = z.infer<typeof contactFormSchema>;
 
 const Contact = () => {
-  const { content: heroContent, updateContent: updateHero } = usePageContent('contact', 'hero');
-  const { content: contactInfo, updateContent: updateInfo } = usePageContent('contact', 'info');
-  
+  const { content: heroContent, updateContent: updateHero } = usePageContent(
+    "contact",
+    "hero"
+  );
+  const { content: contactInfo, updateContent: updateInfo } = usePageContent(
+    "contact",
+    "info"
+  );
+
   const [editingHero, setEditingHero] = useState(false);
   const [editingInfo, setEditingInfo] = useState(false);
-  const [primaryEmail, setPrimaryEmail] = useState('info@skenterprise.ae');
-  const [primaryWhatsApp, setPrimaryWhatsApp] = useState('9769805184');
-  const [primaryPhone, setPrimaryPhone] = useState('+971 563 569089');
 
-  const form = useForm<ContactFormData>({
-    resolver: zodResolver(contactFormSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
-    },
-  });
+  const [primaryEmail, setPrimaryEmail] = useState("info@skenterprise.ae");
+  const [primaryWhatsApp, setPrimaryWhatsApp] = useState("9769805184");
+  const [primaryPhone, setPrimaryPhone] = useState("+971 563 569089");
+
+  // channel: 'whatsapp' | 'email' | 'both'
+  const [sendChannel, setSendChannel] = useState<"whatsapp" | "email" | "both">(
+    "whatsapp"
+  );
 
   useEffect(() => {
     fetchPrimaryContact();
@@ -64,59 +38,101 @@ const Contact = () => {
 
   const fetchPrimaryContact = async () => {
     const { data, error } = await supabase
-      .from('settings')
-      .select('*')
-      .eq('key', 'primary_contact')
+      .from("settings")
+      .select("*")
+      .eq("key", "primary_contact")
       .maybeSingle();
 
     if (!error && data) {
-      const value = data.value as any;
-      setPrimaryEmail(value.email || 'info@skenterprise.ae');
-      setPrimaryWhatsApp(value.whatsapp || '9769805184');
-      setPrimaryPhone(value.phone || '+971 563 569089');
+      let value = data.value;
+      // value might be stored as JSON string or object — handle both
+      try {
+        if (typeof value === "string") {
+          value = JSON.parse(value);
+        }
+      } catch (e) {
+        // keep original if JSON parse fails
+      }
+
+      setPrimaryEmail(
+        (value && (value.email || value?.email_address)) || "sales@skenterpriseuae.com"
+      );
+
+      // normalize whatsapp: remove non-digit chars
+      const wp =
+        (value && (value.whatsapp || value?.whatsapp_number || value?.phone)) ||
+        "+971563569089";
+      setPrimaryWhatsApp(wp);
+
+      setPrimaryPhone((value && (value.phone || value?.telephone)) || "+971563569089");
     }
   };
 
-  const onSubmit = (data: ContactFormData) => {
-    try {
-      // Sanitize and encode data for WhatsApp
-      const whatsappMessage = `New Enquiry:
+  const sanitizeWhatsappNumber = (raw: string) => {
+    // Remove spaces, plus, dashes, parentheses, leading zeros if needed.
+    const digits = String(raw).replace(/\D+/g, "");
+    // If number starts with 0 and length looks local, don't strip country code — assume provided number is correct.
+    return digits;
+  };
 
-Name: ${data.name}
-Email: ${data.email}
-Phone: ${data.phone}
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const name = String(formData.get("name") || "").trim();
+    const email = String(formData.get("email") || "").trim();
+    const phone = String(formData.get("phone") || "").trim();
+    const message = String(formData.get("message") || "").trim();
 
-Message:
-${data.message}`;
-      
-      const encodedWhatsApp = encodeURIComponent(whatsappMessage);
-      window.open(`https://wa.me/${primaryWhatsApp}?text=${encodedWhatsApp}`, '_blank');
-      
-      // Sanitize and encode data for email
-      const emailSubject = encodeURIComponent(`New Enquiry from ${data.name}`);
-      const emailBody = encodeURIComponent(`Name: ${data.name}
-Email: ${data.email}
-Phone: ${data.phone}
+    if (!name || !email || !phone || !message) {
+      // Basic client-side check — you can replace this with nicer UI validation
+      alert("Please fill all required fields.");
+      return;
+    }
 
-Message:
-${data.message}`);
-      
+    const plainMessage = [
+      "New Enquiry:",
+      `Name: ${name}`,
+      `Email: ${email}`,
+      `Phone: ${phone}`,
+      "",
+      "Message:",
+      message,
+    ].join("\n");
+
+    const encodedForWhatsApp = encodeURIComponent(plainMessage);
+    const emailSubject = encodeURIComponent(`New Enquiry from ${name}`);
+    const emailBody = encodeURIComponent(plainMessage);
+
+    const wpNumber = sanitizeWhatsappNumber(primaryWhatsApp);
+
+    // Based on selected channel, open corresponding handlers.
+    if (sendChannel === "whatsapp") {
+      // Open WhatsApp chat
+      window.open(`https://wa.me/${wpNumber}?text=${encodedForWhatsApp}`, "_blank");
+      return;
+    }
+
+    if (sendChannel === "email") {
+      // Use mailto
+      window.location.href = `mailto:${primaryEmail}?subject=${emailSubject}&body=${emailBody}`;
+      return;
+    }
+
+    if (sendChannel === "both") {
+      // Open WhatsApp in a new tab and then open mailto after a short delay (so both actions occur)
+      window.open(`https://wa.me/${wpNumber}?text=${encodedForWhatsApp}`, "_blank");
+      // small delay to allow whatsapp tab to open first, then trigger mailto
       setTimeout(() => {
         window.location.href = `mailto:${primaryEmail}?subject=${emailSubject}&body=${emailBody}`;
-      }, 500);
-
-      // Reset form and show success message
-      form.reset();
-      toast.success("Your enquiry has been submitted successfully!");
-    } catch (error) {
-      toast.error("Failed to submit enquiry. Please try again.");
+      }, 600);
+      return;
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
+
       <main className="flex-1">
         {/* Hero Section */}
         <section className="bg-secondary py-16">
@@ -124,10 +140,11 @@ ${data.message}`);
             <div className="flex justify-between items-start gap-4">
               <div>
                 <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-                  {heroContent?.title || 'Contact Us'}
+                  {heroContent?.title || "Contact Us"}
                 </h1>
                 <p className="text-lg text-muted-foreground max-w-3xl">
-                  {heroContent?.description || 'Get in touch with our team for any inquiries or support'}
+                  {heroContent?.description ||
+                    "Get in touch with our team for any inquiries or support"}
                 </p>
               </div>
               <EditButton onClick={() => setEditingHero(true)} />
@@ -145,7 +162,7 @@ ${data.message}`);
                   <h2 className="text-3xl font-bold text-foreground">Get In Touch</h2>
                   <EditButton onClick={() => setEditingInfo(true)} />
                 </div>
-                
+
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -178,7 +195,7 @@ ${data.message}`);
                     <div>
                       <h3 className="font-semibold text-foreground mb-1">Location</h3>
                       <p className="text-muted-foreground">
-                        {contactInfo?.address || 'Dubai, United Arab Emirates'}
+                        {contactInfo?.address || "Dubai, United Arab Emirates"}
                       </p>
                     </div>
                   </div>
@@ -190,9 +207,7 @@ ${data.message}`);
                       </div>
                       <div>
                         <h3 className="font-semibold text-foreground mb-1">Business Hours</h3>
-                        <p className="text-muted-foreground whitespace-pre-line">
-                          {contactInfo.hours}
-                        </p>
+                        <p className="text-muted-foreground whitespace-pre-line">{contactInfo.hours}</p>
                       </div>
                     </div>
                   )}
@@ -202,77 +217,78 @@ ${data.message}`);
               {/* Contact Form */}
               <div className="bg-card border border-border rounded-lg p-8">
                 <h2 className="text-2xl font-bold text-foreground mb-6">Send us a Message</h2>
-                
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Name *</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Your name" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
 
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email *</FormLabel>
-                          <FormControl>
-                            <Input type="email" placeholder="your.email@example.com" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                <form className="space-y-4" onSubmit={handleSubmit}>
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">Name *</label>
+                    <Input name="name" placeholder="Your name" required />
+                  </div>
 
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Phone *</FormLabel>
-                          <FormControl>
-                            <Input type="tel" placeholder="+971 XX XXX XXXX" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">Email *</label>
+                    <Input name="email" type="email" placeholder="your.email@example.com" required />
+                  </div>
 
-                    <FormField
-                      control={form.control}
-                      name="message"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Message *</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              placeholder="Tell us about your requirements..." 
-                              className="min-h-32"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">Phone *</label>
+                    <Input name="phone" type="tel" placeholder="+971 XX XXX XXXX" required />
+                  </div>
 
-                    <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-                      {form.formState.isSubmitting ? "Sending..." : "Send Enquiry"}
-                    </Button>
-                    <p className="text-xs text-muted-foreground text-center">
-                      Your enquiry will be sent via WhatsApp and Email
-                    </p>
-                  </form>
-                </Form>
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">Message *</label>
+                    <Textarea name="message" placeholder="Tell us about your requirements..." className="min-h-[8rem]" required />
+                  </div>
+
+                  {/* Channel selector */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    <p className="text-sm font-medium text-foreground mr-2">Send via:</p>
+                    <div className="flex items-center gap-3">
+                      <label className="inline-flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="sendChannel"
+                          value="whatsapp"
+                          checked={sendChannel === "whatsapp"}
+                          onChange={() => setSendChannel("whatsapp")}
+                          className="accent-primary"
+                        />
+                        <span className="text-sm">WhatsApp</span>
+                      </label>
+
+                      <label className="inline-flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="sendChannel"
+                          value="email"
+                          checked={sendChannel === "email"}
+                          onChange={() => setSendChannel("email")}
+                          className="accent-primary"
+                        />
+                        <span className="text-sm">Email</span>
+                      </label>
+
+                      <label className="inline-flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="sendChannel"
+                          value="both"
+                          checked={sendChannel === "both"}
+                          onChange={() => setSendChannel("both")}
+                          className="accent-primary"
+                        />
+                        <span className="text-sm">Both</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <Button type="submit" className="w-full">
+                    Send Enquiry
+                  </Button>
+
+                  <p className="text-xs text-muted-foreground text-center">
+                    Your enquiry will be sent via the selected method.
+                  </p>
+                </form>
               </div>
             </div>
           </div>
@@ -289,8 +305,8 @@ ${data.message}`);
           title="Edit Contact Hero"
           content={heroContent}
           fields={[
-            { key: 'title', label: 'Title', type: 'text' },
-            { key: 'description', label: 'Description', type: 'textarea' }
+            { key: "title", label: "Title", type: "text" },
+            { key: "description", label: "Description", type: "textarea" },
           ]}
           onSave={updateHero}
         />
@@ -303,10 +319,10 @@ ${data.message}`);
           title="Edit Contact Information"
           content={contactInfo}
           fields={[
-            { key: 'phone', label: 'Phone Number', type: 'text' },
-            { key: 'email', label: 'Email Address', type: 'text' },
-            { key: 'address', label: 'Address', type: 'textarea' },
-            { key: 'hours', label: 'Business Hours', type: 'textarea', multiline: true }
+            { key: "phone", label: "Phone Number", type: "text" },
+            { key: "email", label: "Email Address", type: "text" },
+            { key: "address", label: "Address", type: "textarea" },
+            { key: "hours", label: "Business Hours", type: "textarea", multiline: true },
           ]}
           onSave={updateInfo}
         />

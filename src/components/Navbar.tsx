@@ -30,32 +30,33 @@ const Navbar = () => {
       <div className="border-b border-border">
         <div className="container mx-auto px-4 py-3 md:py-4">
           <div className="flex justify-between items-center gap-4">
-            {/* Logo */}
-            <Link to="/" className="flex items-center flex-shrink-0">
-              <img 
-                src={logo} 
-                alt="SK Enterprise" 
-                className="h-16 md:h-20 lg:h-24 w-auto object-contain max-w-[240px] md:max-w-[320px]" 
-              />
-            </Link>
+            {/* Logo & WhatsApp - Single Row on Mobile */}
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <Link to="/" className="flex items-center flex-shrink-0">
+                <img 
+                  src={logo} 
+                  alt="SK Enterprise" 
+                  className="h-12 sm:h-16 md:h-20 lg:h-24 w-auto object-contain max-w-[160px] sm:max-w-[240px] md:max-w-[320px]" 
+                />
+              </Link>
 
-            {/* Contact Info & Actions */}
-            <div className="flex items-center gap-2 md:gap-4">
-              {/* WhatsApp Contact - Hidden on very small screens */}
+              {/* WhatsApp Button - Always visible, compact on mobile */}
               <a 
                 href="https://wa.me/971563569089" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-all hover:scale-105 shadow-sm"
+                className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-all hover:scale-105 shadow-sm flex-shrink-0"
                 title="Chat with us on WhatsApp"
               >
-                <MessageCircle className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" fill="currentColor" />
-                <span className="font-semibold text-sm md:text-base whitespace-nowrap">WhatsApp us</span>
+                <MessageCircle className="h-4 w-4 sm:h-4 sm:w-4 md:h-5 md:w-5" fill="currentColor" />
+                <span className="font-semibold text-xs sm:text-sm md:text-base whitespace-nowrap">WhatsApp</span>
               </a>
-              
-              {/* User Actions - Compact on mobile */}
+            </div>
+            
+            {/* User Actions - Compact on mobile */}
+            <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
               {user ? (
-                <div className="flex items-center gap-1 md:gap-2">
+                <>
                   {isAdmin && (
                     <Link to="/admin/dashboard">
                       <Button variant="outline" size="sm" className="gap-1 md:gap-2 text-xs md:text-sm px-2 md:px-3">
@@ -74,7 +75,7 @@ const Navbar = () => {
                     <LogOut className="h-3 w-3 md:h-4 md:w-4" />
                     <span className="hidden sm:inline">Sign Out</span>
                   </Button>
-                </div>
+                </>
               ) : (
                 <Link to="/auth">
                   <Button variant="outline" size="sm" className="gap-1 md:gap-2 text-xs md:text-sm px-2 md:px-3">
@@ -96,20 +97,6 @@ const Navbar = () => {
                 </Button>
               </Link>
             </div>
-          </div>
-
-          {/* WhatsApp Contact for very small screens */}
-          <div className="sm:hidden mt-2">
-            <a 
-              href="https://wa.me/971563569089" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-all active:scale-95 shadow-sm"
-              title="Chat with us on WhatsApp"
-            >
-              <MessageCircle className="h-5 w-5 flex-shrink-0" fill="currentColor" />
-              <span className="font-semibold text-sm">WhatsApp us</span>
-            </a>
           </div>
         </div>
       </div>

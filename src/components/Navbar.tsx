@@ -43,46 +43,51 @@ const Navbar = () => {
         >
           <div className="container mx-auto px-4 py-3">
             <div className="flex items-center justify-between gap-3">
-              {/* Logo (white box) */}
+              {/* Logo (white box). Use flex-shrink-0 and responsive height so it fits */}
               <Link
                 to="/"
                 className="logo-box p-2 rounded-md flex items-center justify-center shadow-sm flex-shrink-0"
                 style={{ backgroundColor: "#fff" }}
                 aria-label="SK Enterprise Home"
               >
-                <img src={logo} alt="SK Enterprise" className="h-16 w-auto object-contain" />
+                <img
+                  src={logo}
+                  alt="SK Enterprise"
+                  className="h-12 md:h-16 w-auto object-contain"
+                  style={{ display: "block" }}
+                />
               </Link>
 
-              {/* Middle area: empty to help center nav below on wide screens */}
+              {/* Middle spacer keeps top bar compact */}
               <div className="flex-1" />
 
               {/* Right Side actions */}
-              <div className="flex items-center gap-3">
-                {/* Phone (hidden on small screens) */}
+              <div className="flex items-center gap-2">
+                {/* Phone: only visible on md+ */}
                 <div className="hidden md:flex items-center gap-2" style={{ color: "#e6e6e6" }}>
                   <Phone className="h-5 w-5 text-primary" />
                   <span className="font-semibold">+971 563 569089</span>
                 </div>
 
-                {/* WhatsApp button */}
+                {/* WhatsApp button: text visible on mobile and desktop */}
                 <a
                   href="https://wa.me/971563569089?text=Hello%20SK%20Enterprise!%20I%20would%20like%20to%20know%20more%20about%20your%20products."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded-md transition"
+                  className="flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-3 py-2 rounded-md transition text-sm"
                   style={{ boxShadow: "none" }}
                   aria-label="WhatsApp SK Enterprise"
                 >
                   <MessageCircle className="h-4 w-4" />
-                  <span className="hidden sm:inline text-sm">WhatsApp us</span>
+                  <span>WhatsApp us</span> {/* always visible on all sizes now */}
                 </a>
 
-                {/* Optional small admin/shield icon (keeps layout stable) */}
+                {/* Small Admin button (optional), hidden on smallest screens */}
                 <Link to="/admin" aria-label="Admin">
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="hidden sm:inline-flex items-center gap-2 text-white hover:bg-gray-800"
+                    className="hidden sm:inline-flex items-center gap-2 text-white hover:bg-gray-800 px-2 py-1"
                   >
                     <Shield className="h-4 w-4" />
                     <span className="text-sm">Admin</span>
@@ -186,38 +191,4 @@ const Navbar = () => {
                     <Info className="h-4 w-4" /> About Us
                   </div>
                 </Link>
-                <Link to="/products" onClick={() => setMobileOpen(false)} className="px-3">
-                  <div className={`py-2 rounded-md ${isActive("/products") ? "bg-primary/90" : "hover:bg-primary/80"} text-white flex items-center gap-2`}>
-                    <Package className="h-4 w-4" /> Products
-                  </div>
-                </Link>
-                <Link to="/services" onClick={() => setMobileOpen(false)} className="px-3">
-                  <div className={`py-2 rounded-md ${isActive("/services") ? "bg-primary/90" : "hover:bg-primary/80"} text-white flex items-center gap-2`}>
-                    <Wrench className="h-4 w-4" /> Services
-                  </div>
-                </Link>
-                <Link to="/contact" onClick={() => setMobileOpen(false)} className="px-3">
-                  <div className={`py-2 rounded-md ${isActive("/contact") ? "bg-primary/90" : "hover:bg-primary/80"} text-white flex items-center gap-2`}>
-                    <Mail className="h-4 w-4" /> Contact Us
-                  </div>
-                </Link>
-                <a
-                  href="https://wa.me/971563569089"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3"
-                >
-                  <div className="py-2 rounded-md bg-green-600 text-white flex items-center gap-2">
-                    <MessageCircle className="h-4 w-4" /> WhatsApp
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
-    </>
-  );
-};
-
-export default Navbar;
+                <Link to="/products" onClick={() => setMobileOpen(false)} className="

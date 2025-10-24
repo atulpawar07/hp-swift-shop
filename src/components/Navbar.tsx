@@ -31,13 +31,17 @@ const Navbar = () => {
         <div className="container mx-auto px-4 py-3 md:py-4">
           <div className="flex justify-between items-center gap-4">
             {/* Logo */}
-            <Link to="/" className="flex items-center flex-shrink-0">
-              <img 
-                src={logo} 
-                alt="SK Enterprise" 
-                className="h-20 md:h-28 lg:h-32 w-auto object-contain max-w-[280px] md:max-w-[400px]" 
-              />
-            </Link>
+            <Link
+  to="/"
+  className="flex items-center flex-shrink-0 bg-white rounded-md p-1"
+  style={{ boxShadow: "0 0 4px rgba(0,0,0,0.1)" }}
+>
+  <img
+    src={logo}
+    alt="SK Enterprise"
+    className="h-20 md:h-28 lg:h-32 w-auto object-contain max-w-[280px] md:max-w-[400px]"
+  />
+</Link>
 
             {/* Contact Info & Actions */}
             <div className="flex items-center gap-2 md:gap-4">

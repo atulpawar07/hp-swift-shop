@@ -35,7 +35,7 @@ const Navbar = () => {
               <img 
                 src={logo} 
                 alt="SK Enterprise" 
-                className="h-16 md:h-20 lg:h-24 w-auto object-contain max-w-[240px] md:max-w-[320px]" 
+                className="h-20 md:h-28 lg:h-32 w-auto object-contain max-w-[280px] md:max-w-[400px]" 
               />
             </Link>
 
@@ -46,11 +46,11 @@ const Navbar = () => {
                 href="https://wa.me/971563569089" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-all hover:scale-105 shadow-sm"
+                className="hidden sm:flex items-center gap-1.5 px-2.5 md:px-3 py-1.5 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-all hover:scale-105 shadow-sm"
                 title="Chat with us on WhatsApp"
               >
-                <MessageCircle className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" fill="currentColor" />
-                <span className="font-semibold text-sm md:text-base whitespace-nowrap">WhatsApp us</span>
+                <MessageCircle className="h-4 w-4 flex-shrink-0" fill="currentColor" />
+                <span className="font-semibold text-xs md:text-sm whitespace-nowrap">WhatsApp</span>
               </a>
               
               {/* User Actions - Compact on mobile */}
@@ -104,11 +104,11 @@ const Navbar = () => {
               href="https://wa.me/971563569089" 
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-all active:scale-95 shadow-sm"
+              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-all active:scale-95 shadow-sm"
               title="Chat with us on WhatsApp"
             >
-              <MessageCircle className="h-5 w-5 flex-shrink-0" fill="currentColor" />
-              <span className="font-semibold text-sm">WhatsApp us</span>
+              <MessageCircle className="h-4 w-4 flex-shrink-0" fill="currentColor" />
+              <span className="font-semibold text-sm">WhatsApp</span>
             </a>
           </div>
         </div>

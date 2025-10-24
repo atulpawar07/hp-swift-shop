@@ -7,7 +7,6 @@ import {
   MessageCircle,
   Menu,
   X,
-  Phone,
   Shield,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,45 +40,34 @@ const Navbar = () => {
           className="top-bar border-b"
           style={{ backgroundColor: "#000", borderColor: "rgba(255,255,255,0.06)" }}
         >
-          <div className="container mx-auto px-4 py-3">
+          <div className="container mx-auto px-4 py-2">
             <div className="flex items-center justify-between gap-3">
-              {/* Logo (white box). Use flex-shrink-0 and responsive height so it fits */}
-            <Link
-  to="/"
-  className="logo-box rounded-md flex items-center justify-center shadow-sm flex-shrink-0 overflow-hidden"
-  style={{
-    backgroundColor: "#fff",
-    height: "60px",          // consistent height
-    width: "auto",
-    padding: "6px 8px",      // small padding
-  }}
-  aria-label="SK Enterprise Home"
->
-  <img
-    src={logo}
-    alt="SK Enterprise"
-    className="w-full h-full object-contain"
-    style={{
-      display: "block",
-      maxHeight: "100%",
-      maxWidth: "100%",
-    }}
-  />
-</Link>
+              {/* Logo (white box). Fixed height box, image fills height */}
+              <Link
+                to="/"
+                className="logo-box rounded-md flex items-center justify-center shadow-sm flex-shrink-0 overflow-hidden"
+                style={{
+                  backgroundColor: "#fff",
+                  height: "56px",     // top-bar height
+                  width: "auto",
+                  padding: "6px 8px",
+                }}
+                aria-label="SK Enterprise Home"
+              >
+                <img
+                  src={logo}
+                  alt="SK Enterprise"
+                  className="h-full w-auto object-contain"
+                  style={{ display: "block" }}
+                />
+              </Link>
 
-
-              {/* Middle spacer keeps top bar compact */}
+              {/* Spacer to push actions to right */}
               <div className="flex-1" />
 
-              {/* Right Side actions */}
+              {/* Right Side actions: phone removed per request */}
               <div className="flex items-center gap-2">
-                {/* Phone: only visible on md+ */}
-                <div className="hidden md:flex items-center gap-2" style={{ color: "#e6e6e6" }}>
-                  <Phone className="h-5 w-5 text-primary" />
-                  <span className="font-semibold">+971 563 569089</span>
-                </div>
-
-                {/* WhatsApp button: text visible on mobile and desktop */}
+                {/* WhatsApp button: always show text on mobile */}
                 <a
                   href="https://wa.me/971563569089?text=Hello%20SK%20Enterprise!%20I%20would%20like%20to%20know%20more%20about%20your%20products."
                   target="_blank"
@@ -89,10 +77,10 @@ const Navbar = () => {
                   aria-label="WhatsApp SK Enterprise"
                 >
                   <MessageCircle className="h-4 w-4" />
-                  <span>WhatsApp us</span> {/* always visible on all sizes now */}
+                  <span>WhatsApp us</span>
                 </a>
 
-                {/* Small Admin button (optional), hidden on smallest screens */}
+                {/* Admin small button — optional, hidden on smallest screens */}
                 <Link to="/admin" aria-label="Admin">
                   <Button
                     variant="ghost"
@@ -196,26 +184,31 @@ const Navbar = () => {
                     <HomeIcon className="h-4 w-4" /> Home
                   </div>
                 </Link>
+
                 <Link to="/about" onClick={() => setMobileOpen(false)} className="px-3">
                   <div className={`py-2 rounded-md ${isActive("/about") ? "bg-primary/90" : "hover:bg-primary/80"} text-white flex items-center gap-2`}>
                     <Info className="h-4 w-4" /> About Us
                   </div>
                 </Link>
+
                 <Link to="/products" onClick={() => setMobileOpen(false)} className="px-3">
                   <div className={`py-2 rounded-md ${isActive("/products") ? "bg-primary/90" : "hover:bg-primary/80"} text-white flex items-center gap-2`}>
                     <Package className="h-4 w-4" /> Products
                   </div>
                 </Link>
+
                 <Link to="/services" onClick={() => setMobileOpen(false)} className="px-3">
                   <div className={`py-2 rounded-md ${isActive("/services") ? "bg-primary/90" : "hover:bg-primary/80"} text-white flex items-center gap-2`}>
                     <Wrench className="h-4 w-4" /> Services
                   </div>
                 </Link>
+
                 <Link to="/contact" onClick={() => setMobileOpen(false)} className="px-3">
                   <div className={`py-2 rounded-md ${isActive("/contact") ? "bg-primary/90" : "hover:bg-primary/80"} text-white flex items-center gap-2`}>
                     <Mail className="h-4 w-4" /> Contact Us
                   </div>
                 </Link>
+
                 <a
                   href="https://wa.me/971563569089"
                   target="_blank"

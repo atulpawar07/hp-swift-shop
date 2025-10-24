@@ -44,22 +44,28 @@ const Navbar = () => {
             <div className="flex items-center justify-between gap-3">
               {/* Logo (white box). Fixed height box, image fills height */}
               <Link
-                to="/"
-                className="logo-box rounded-md flex items-center justify-center shadow-sm flex-shrink-0 overflow-hidden"
-                style={{
-                  backgroundColor: "#fff",
-                  height: "75px",     // top-bar height
-                  width: "auto",
-                  padding: "6px 8px",
-                }}
-                aria-label="SK Enterprise Home"
-              >
-                <img
-                  src={logo}
-                  alt="SK Enterprise"
-                  className="h-full w-auto object-contain"
-                  style={{ display: "block" }}
-                />
+  to="/"
+  className="logo-box rounded-md flex items-center justify-center shadow-sm flex-shrink-0 overflow-hidden"
+  style={{
+    backgroundColor: "#fff",
+    height: "75px", // keep tall logo area
+    width: "auto",
+    padding: "2px", // reduced padding for full fit
+  }}
+  aria-label="SK Enterprise Home"
+>
+  <img
+    src={logo}
+    alt="SK Enterprise"
+    className="w-full h-full object-contain"
+    style={{
+      display: "block",
+      objectFit: "contain",
+      objectPosition: "center",
+      maxWidth: "100%",
+      maxHeight: "100%",
+    }}
+  />
               </Link>
 
               {/* Spacer to push actions to right */}

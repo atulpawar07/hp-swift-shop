@@ -9,6 +9,34 @@ import { usePageContent } from "@/hooks/usePageContent";
 import { EditButton } from "@/components/admin/EditButton";
 import { ContentEditor } from "@/components/admin/ContentEditor";
 import { supabase } from "@/integrations/supabase/client";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { toast } from "sonner";
+
+const contactFormSchema = z.object({
+  name: z.string()
+    .trim()
+    .min(2, { message: "Name must be at least 2 characters" })
+    .max(100, { message: "Name must be less than 100 characters" })
+    .regex(/^[a-zA-Z\s'-]+$/, { message: "Name can only contain letters, spaces, hyphens and apostrophes" }),
+  email: z.string()
+    .trim()
+    .email({ message: "Invalid email address" })
+    .max(255, { message: "Email must be less than 255 characters" }),
+  phone: z.string()
+    .trim()
+    .min(8, { message: "Phone number must be at least 8 digits" })
+    .max(20, { message: "Phone number must be less than 20 characters" })
+    .regex(/^[+\d\s()-]+$/, { message: "Invalid phone number format" }),
+  message: z.string()
+    .trim()
+    .min(10, { message: "Message must be at least 10 characters" })
+    .max(1000, { message: "Message must be less than 1000 characters" })
+});
+
+type ContactFormData = z.infer<typeof contactFormSchema>;
 
 const Contact = () => {
   const { content: heroContent, updateContent: updateHero } = usePageContent('contact', 'hero');
@@ -19,6 +47,16 @@ const Contact = () => {
   const [primaryEmail, setPrimaryEmail] = useState('info@skenterprise.ae');
   const [primaryWhatsApp, setPrimaryWhatsApp] = useState('9769805184');
   const [primaryPhone, setPrimaryPhone] = useState('+971 563 569089');
+
+  const form = useForm<ContactFormData>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+    },
+  });
 
   useEffect(() => {
     fetchPrimaryContact();
@@ -36,6 +74,42 @@ const Contact = () => {
       setPrimaryEmail(value.email || 'info@skenterprise.ae');
       setPrimaryWhatsApp(value.whatsapp || '9769805184');
       setPrimaryPhone(value.phone || '+971 563 569089');
+    }
+  };
+
+  const onSubmit = (data: ContactFormData) => {
+    try {
+      // Sanitize and encode data for WhatsApp
+      const whatsappMessage = `New Enquiry:
+
+Name: ${data.name}
+Email: ${data.email}
+Phone: ${data.phone}
+
+Message:
+${data.message}`;
+      
+      const encodedWhatsApp = encodeURIComponent(whatsappMessage);
+      window.open(`https://wa.me/${primaryWhatsApp}?text=${encodedWhatsApp}`, '_blank');
+      
+      // Sanitize and encode data for email
+      const emailSubject = encodeURIComponent(`New Enquiry from ${data.name}`);
+      const emailBody = encodeURIComponent(`Name: ${data.name}
+Email: ${data.email}
+Phone: ${data.phone}
+
+Message:
+${data.message}`);
+      
+      setTimeout(() => {
+        window.location.href = `mailto:${primaryEmail}?subject=${emailSubject}&body=${emailBody}`;
+      }, 500);
+
+      // Reset form and show success message
+      form.reset();
+      toast.success("Your enquiry has been submitted successfully!");
+    } catch (error) {
+      toast.error("Failed to submit enquiry. Please try again.");
     }
   };
 
@@ -129,68 +203,76 @@ const Contact = () => {
               <div className="bg-card border border-border rounded-lg p-8">
                 <h2 className="text-2xl font-bold text-foreground mb-6">Send us a Message</h2>
                 
-                <form 
-                  className="space-y-4"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const formData = new FormData(e.currentTarget);
-                    const name = formData.get('name');
-                    const email = formData.get('email');
-                    const phone = formData.get('phone');
-                    const message = formData.get('message');
-                    
-                    // Send to WhatsApp
-                    const whatsappMessage = `New Enquiry:%0D%0A%0D%0AName: ${name}%0D%0AEmail: ${email}%0D%0APhone: ${phone}%0D%0A%0D%0AMessage:%0D%0A${message}`;
-                    window.open(`https://wa.me/${primaryWhatsApp}?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-                    
-                    // Also send to email
-                    const emailSubject = `New Enquiry from ${name}`;
-                    const emailBody = `Name: ${name}%0D%0AEmail: ${email}%0D%0APhone: ${phone}%0D%0A%0D%0AMessage:%0D%0A${message}`;
-                    setTimeout(() => {
-                      window.location.href = `mailto:${primaryEmail}?subject=${emailSubject}&body=${emailBody}`;
-                    }, 500);
-                  }}
-                >
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">
-                      Name *
-                    </label>
-                    <Input name="name" placeholder="Your name" required />
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">
-                      Email *
-                    </label>
-                    <Input name="email" type="email" placeholder="your.email@example.com" required />
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">
-                      Phone *
-                    </label>
-                    <Input name="phone" type="tel" placeholder="+971 XX XXX XXXX" required />
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">
-                      Message *
-                    </label>
-                    <Textarea 
-                      name="message"
-                      placeholder="Tell us about your requirements..." 
-                      className="min-h-32"
-                      required
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Name *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Your name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
 
-                  <Button type="submit" className="w-full">
-                    Send Enquiry
-                  </Button>
-                  <p className="text-xs text-muted-foreground text-center">
-                    Your enquiry will be sent via WhatsApp and Email
-                  </p>
-                </form>
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email *</FormLabel>
+                          <FormControl>
+                            <Input type="email" placeholder="your.email@example.com" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone *</FormLabel>
+                          <FormControl>
+                            <Input type="tel" placeholder="+971 XX XXX XXXX" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Message *</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Tell us about your requirements..." 
+                              className="min-h-32"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                      {form.formState.isSubmitting ? "Sending..." : "Send Enquiry"}
+                    </Button>
+                    <p className="text-xs text-muted-foreground text-center">
+                      Your enquiry will be sent via WhatsApp and Email
+                    </p>
+                  </form>
+                </Form>
               </div>
             </div>
           </div>

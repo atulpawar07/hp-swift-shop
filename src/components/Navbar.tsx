@@ -25,102 +25,104 @@ const Navbar = () => {
   return (
     <nav className="bg-background sticky top-0 z-50 shadow-sm">
       {/* Top Bar */}
-      <div className="border-b border-border">
-        <div className="container mx-auto px-4 py-2 md:py-3">
-          <div className="flex items-center gap-3">
+     {/* Top Bar */}
+<div className="border-b border-border">
+  <div className="container mx-auto px-4 py-2 md:py-3">
+    <div className="flex items-center justify-between gap-3">
 
-            {/* LEFT: Larger fixed logo box to appear noticeably bigger on mobile */}
-            <div
-              className="flex items-center flex-shrink-0 p-1 rounded-sm border border-transparent"
-              style={{ width: '120px' }} // fixed visual "box" width; tweak value if needed
-            >
-              <Link to="/" className="block w-full">
-                <img
-                  src={logo}
-                  alt="SK Enterprise"
-                  className="w-full h-auto object-contain"
-                  // extra inline style to enforce visible height on small screens
-                  style={{ maxHeight: '88px', display: 'block' }}
-                />
-              </Link>
-            </div>
+      {/* LEFT: Larger logo box */}
+      <div className="flex items-center flex-shrink-0 p-1">
+        <Link to="/" className="block">
+          <img
+            src={logo}
+            alt="SK Enterprise"
+            className="object-contain"
+            style={{
+              height: "85px", // taller logo height
+              width: "auto",
+              maxWidth: "160px", // gives a bit more width for visibility
+              display: "block",
+            }}
+          />
+        </Link>
+      </div>
 
-            {/* CENTER: flexible spacer / optional search placeholder */}
-            <div className="flex-1 min-w-0">
-              {/* keeps the header balanced; replace with search if you have one */}
-              <div className="hidden sm:block">
-                <div className="w-full max-w-xl h-10 border border-border rounded-md"></div>
-              </div>
-            </div>
+      {/* RIGHT: WhatsApp + Auth + Cart + Menu */}
+      <div className="flex items-center gap-3">
+        {/* WhatsApp Button - moved closer to Sign In */}
+        <a
+          href="https://wa.me/971563569089?text=Hello"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-500/10 text-green-800 dark:text-green-300 hover:bg-green-500/20 transition-all shadow-sm"
+          title="Chat with us on WhatsApp"
+        >
+          <MessageCircle className="h-4 w-4" />
+          <span className="font-semibold text-sm whitespace-nowrap">WhatsApp us</span>
+        </a>
 
-            {/* RIGHT: actions group (WhatsApp us, Auth, Cart, Mobile Menu) */}
-            <div className="flex items-center gap-2">
-              {/* WhatsApp: full text "WhatsApp us" + icon - visible on all screens per your request */}
-              <a
-                href="https://wa.me/971563569089"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 text-green-800 dark:text-green-300 hover:bg-green-500/20 transition-all shadow-sm flex-shrink-0"
-                title="Chat with us on WhatsApp"
+        {/* Auth / Admin / Sign Out / Sign In */}
+        <div className="flex items-center gap-2">
+          {user ? (
+            <>
+              {isAdmin && (
+                <Link to="/admin/dashboard">
+                  <Button variant="outline" size="sm" className="gap-1 text-xs md:text-sm px-2">
+                    <Shield className="h-3 w-3 md:h-4 md:w-4" />
+                    <span className="hidden md:inline">Admin</span>
+                  </Button>
+                </Link>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => signOut()}
+                className="gap-1 text-xs md:text-sm px-2"
               >
-                <MessageCircle className="h-4 w-4" />
-                <span className="font-semibold text-sm">WhatsApp us</span>
-              </a>
+                <LogOut className="h-3 w-3 md:h-4 md:w-4" />
+                <span className="hidden sm:inline">Sign Out</span>
+              </Button>
+            </>
+          ) : (
+            <Link to="/auth">
+              <Button variant="outline" size="sm" className="gap-1 text-xs md:text-sm px-2">
+                <User className="h-3 w-3 md:h-4 md:w-4" />
+                <span className="hidden sm:inline">Sign In</span>
+              </Button>
+            </Link>
+          )}
+        </div>
 
-              {/* Auth / Admin / Sign Out / Sign In */}
-              <div className="flex items-center gap-2">
-                {user ? (
-                  <>
-                    {isAdmin && (
-                      <Link to="/admin/dashboard">
-                        <Button variant="outline" size="sm" className="gap-1 text-xs md:text-sm px-2">
-                          <Shield className="h-3 w-3 md:h-4 md:w-4" />
-                          <span className="hidden md:inline">Admin</span>
-                        </Button>
-                      </Link>
-                    )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => signOut()}
-                      className="gap-1 text-xs md:text-sm px-2"
-                    >
-                      <LogOut className="h-3 w-3 md:h-4 md:w-4" />
-                      <span className="hidden sm:inline">Sign Out</span>
-                    </Button>
-                  </>
-                ) : (
-                  <Link to="/auth">
-                    <Button variant="outline" size="sm" className="gap-1 text-xs md:text-sm px-2">
-                      <User className="h-3 w-3 md:h-4 md:w-4" />
-                      <span className="hidden sm:inline">Sign In</span>
-                    </Button>
-                  </Link>
-                )}
-              </div>
+        {/* Cart */}
+        <Link to="/cart">
+          <Button variant="ghost" size="icon" className="relative h-9 w-9 md:h-10 md:w-10">
+            <ShoppingCart className="h-4 w-4 md:h-5 md:w-5" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full w-4 h-4 md:w-5 md:h-5 text-[10px] md:text-xs flex items-center justify-center font-bold">
+                {cartCount}
+              </span>
+            )}
+          </Button>
+        </Link>
 
-              {/* Cart */}
-              <Link to="/cart">
-                <Button variant="ghost" size="icon" className="relative h-9 w-9 md:h-10 md:w-10">
-                  <ShoppingCart className="h-4 w-4 md:h-5 md:w-5" />
-                  {cartCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full w-4 h-4 md:w-5 md:h-5 text-[10px] md:text-xs flex items-center justify-center font-bold">
-                      {cartCount}
-                    </span>
-                  )}
-                </Button>
-              </Link>
+        {/* Mobile Menu */}
+        <div className="lg:hidden">
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" className="p-2 rounded-md">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[280px] bg-background p-0">
+              {/* (keep your existing mobile menu content) */}
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-              {/* Mobile sheet/hamburger */}
-              <div className="lg:hidden">
-                <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-                  <SheetTrigger asChild>
-                    <Button variant="ghost" className="p-2 rounded-md">
-                      <Menu className="h-6 w-6" />
-                    </Button>
-                  </SheetTrigger>
-
-                  <SheetContent side="left" className="w-[280px] bg-background p-0">
                     <div className="flex flex-col h-full">
                       <div className="p-4 border-b border-border flex items-center justify-between">
                         <h2 className="font-semibold text-lg">Navigation</h2>

@@ -1,4 +1,4 @@
-import { ShoppingCart, Phone, Home as HomeIcon, Info, Package, Wrench, Mail, User, LogOut, Shield, Menu, X, MessageCircle } from "lucide-react";
+import { ShoppingCart, Home as HomeIcon, Info, Package, Wrench, Mail, User, LogOut, Shield, Menu, X, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -28,42 +28,43 @@ const Navbar = () => {
       <div className="border-b border-border">
         <div className="container mx-auto px-4 py-2 md:py-3">
           <div className="flex items-center gap-3">
-            {/* ========== LEFT: Fixed logo box ========= */}
-            <div className="flex items-center flex-shrink-0 w-[86px] sm:w-28 md:w-36 lg:w-44 p-1 rounded-sm border border-transparent">
-              {/* fixed-width container prevents logo shrinking; image is responsive inside it */}
+
+            {/* LEFT: Larger fixed logo box to appear noticeably bigger on mobile */}
+            <div
+              className="flex items-center flex-shrink-0 p-1 rounded-sm border border-transparent"
+              style={{ width: '120px' }} // fixed visual "box" width; tweak value if needed
+            >
               <Link to="/" className="block w-full">
                 <img
                   src={logo}
                   alt="SK Enterprise"
                   className="w-full h-auto object-contain"
-                  style={{ display: 'block' }}
+                  // extra inline style to enforce visible height on small screens
+                  style={{ maxHeight: '88px', display: 'block' }}
                 />
               </Link>
             </div>
 
-            {/* ========== CENTER: flexible area (search / spacing) ========= */}
+            {/* CENTER: flexible spacer / optional search placeholder */}
             <div className="flex-1 min-w-0">
-              {/* If you have a search box, place it here. For now this keeps the header balanced. */}
-              {/* Example placeholder (hide on very small screens) */}
+              {/* keeps the header balanced; replace with search if you have one */}
               <div className="hidden sm:block">
                 <div className="w-full max-w-xl h-10 border border-border rounded-md"></div>
               </div>
             </div>
 
-            {/* ========== RIGHT: actions group (WhatsApp, Auth, Cart, Mobile Menu) ========= */}
+            {/* RIGHT: actions group (WhatsApp us, Auth, Cart, Mobile Menu) */}
             <div className="flex items-center gap-2">
-              {/* WhatsApp: grouped with auth so it stays close to Sign In */}
+              {/* WhatsApp: full text "WhatsApp us" + icon - visible on all screens per your request */}
               <a
                 href="https://wa.me/971563569089"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 text-green-700 dark:text-green-300 hover:bg-green-500/20 transition-all shadow-sm flex-shrink-0"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 text-green-800 dark:text-green-300 hover:bg-green-500/20 transition-all shadow-sm flex-shrink-0"
                 title="Chat with us on WhatsApp"
               >
-                {/* icon always visible */}
                 <MessageCircle className="h-4 w-4" />
-                {/* show text from small screens up; on xs show only icon */}
-                <span className="hidden sm:inline font-semibold text-sm">WhatsApp</span>
+                <span className="font-semibold text-sm">WhatsApp us</span>
               </a>
 
               {/* Auth / Admin / Sign Out / Sign In */}
@@ -110,7 +111,7 @@ const Navbar = () => {
                 </Button>
               </Link>
 
-              {/* Mobile sheet/hamburger (visible on small screens) */}
+              {/* Mobile sheet/hamburger */}
               <div className="lg:hidden">
                 <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                   <SheetTrigger asChild>
@@ -144,7 +145,6 @@ const Navbar = () => {
                           );
                         })}
 
-                        {/* mobile account/cart controls */}
                         <div className="px-6 mt-2">
                           {user ? (
                             <>

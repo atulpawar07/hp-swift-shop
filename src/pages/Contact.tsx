@@ -54,17 +54,19 @@ const Contact = () => {
         // keep original if JSON parse fails
       }
 
-      setPrimaryEmail(
-        (value && (value.email || value?.email_address)) || "sales@skenterpriseuae.com"
-      );
+      // Type guard to check if value is an object with string properties
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        const obj = value as Record<string, any>;
+        setPrimaryEmail(
+          (obj.email || obj.email_address) || "sales@skenterpriseuae.com"
+        );
 
-      // normalize whatsapp: remove non-digit chars
-      const wp =
-        (value && (value.whatsapp || value?.whatsapp_number || value?.phone)) ||
-        "+971563569089";
-      setPrimaryWhatsApp(wp);
+        // normalize whatsapp: remove non-digit chars
+        const wp = (obj.whatsapp || obj.whatsapp_number || obj.phone) || "+971563569089";
+        setPrimaryWhatsApp(wp);
 
-      setPrimaryPhone((value && (value.phone || value?.telephone)) || "+971563569089");
+        setPrimaryPhone((obj.phone || obj.telephone) || "+971563569089");
+      }
     }
   };
 

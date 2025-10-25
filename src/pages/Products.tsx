@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { Search, SlidersHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -33,6 +34,12 @@ const Products = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("relevance");
   const [currentPage, setCurrentPage] = useState(1);
+  
+  // Temporary filter states for mobile (applied only when "Apply" is clicked)
+  const [tempSearchQuery, setTempSearchQuery] = useState("");
+  const [tempSelectedBrands, setTempSelectedBrands] = useState<string[]>([]);
+  const [tempSelectedCategories, setTempSelectedCategories] = useState<string[]>([]);
+  const [tempPriceRange, setTempPriceRange] = useState([0, 3000]);
   
   const ITEMS_PER_PAGE = 10;
 
@@ -191,6 +198,42 @@ const Products = () => {
     setCurrentPage(1);
   };
 
+  const applyMobileFilters = () => {
+    setSearchQuery(tempSearchQuery);
+    setSelectedBrands(tempSelectedBrands);
+    setSelectedCategories(tempSelectedCategories);
+    setPriceRange(tempPriceRange);
+    setShowFilters(false);
+  };
+
+  const openMobileFilters = () => {
+    // Sync temp states with current filters when opening
+    setTempSearchQuery(searchQuery);
+    setTempSelectedBrands(selectedBrands);
+    setTempSelectedCategories(selectedCategories);
+    setTempPriceRange(priceRange);
+    setShowFilters(true);
+  };
+
+  const clearMobileFilters = () => {
+    setTempSearchQuery("");
+    setTempSelectedBrands([]);
+    setTempSelectedCategories([]);
+    setTempPriceRange([0, 3000]);
+  };
+
+  const toggleTempBrand = (brand: string) => {
+    setTempSelectedBrands(prev =>
+      prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand]
+    );
+  };
+
+  const toggleTempCategory = (category: string) => {
+    setTempSelectedCategories(prev =>
+      prev.includes(category) ? prev.filter(c => c !== category) : [...prev, category]
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -208,8 +251,8 @@ const Products = () => {
         </div>
 
         <div className="flex gap-8">
-          {/* Filters Sidebar */}
-          <aside className={`${showFilters ? 'block' : 'hidden'} lg:block w-full lg:w-64 flex-shrink-0`}>
+          {/* Desktop Filters Sidebar */}
+          <aside className="hidden lg:block w-64 flex-shrink-0">
             <div className="bg-card border border-border rounded-lg p-6 sticky top-24">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="font-semibold text-lg">Filters</h2>
@@ -295,6 +338,100 @@ const Products = () => {
             </div>
           </aside>
 
+          {/* Mobile Filters Sheet */}
+          <Sheet open={showFilters} onOpenChange={setShowFilters}>
+            <SheetContent side="left" className="w-full sm:w-96 overflow-y-auto">
+              <SheetHeader>
+                <SheetTitle>Filters</SheetTitle>
+              </SheetHeader>
+              
+              <div className="py-6 space-y-6">
+                {/* Search */}
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Search</label>
+                  <div className="relative">
+                    <Input 
+                      placeholder="Search products..." 
+                      className="pr-10"
+                      value={tempSearchQuery}
+                      onChange={(e) => setTempSearchQuery(e.target.value)}
+                    />
+                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  </div>
+                </div>
+
+                {/* Brand */}
+                <div>
+                  <label className="text-sm font-medium mb-3 block">Brand</label>
+                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                    {brands.map(brand => (
+                      <div key={brand} className="flex items-center">
+                        <Checkbox 
+                          id={`mobile-${brand.toLowerCase()}`}
+                          checked={tempSelectedBrands.includes(brand)}
+                          onCheckedChange={() => toggleTempBrand(brand)}
+                        />
+                        <label 
+                          htmlFor={`mobile-${brand.toLowerCase()}`}
+                          className="ml-2 text-sm cursor-pointer"
+                        >
+                          {brand}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Category */}
+                <div>
+                  <label className="text-sm font-medium mb-3 block">Category</label>
+                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                    {categories.map(category => (
+                      <div key={category} className="flex items-center">
+                        <Checkbox 
+                          id={`mobile-${category.toLowerCase().replace(/\s+/g, '-')}`}
+                          checked={tempSelectedCategories.includes(category)}
+                          onCheckedChange={() => toggleTempCategory(category)}
+                        />
+                        <label 
+                          htmlFor={`mobile-${category.toLowerCase().replace(/\s+/g, '-')}`}
+                          className="ml-2 text-sm cursor-pointer"
+                        >
+                          {category}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Price Range */}
+                <div>
+                  <label className="text-sm font-medium mb-3 block">Price Range (AED)</label>
+                  <Slider
+                    max={3000}
+                    step={50}
+                    value={tempPriceRange}
+                    onValueChange={setTempPriceRange}
+                    className="mb-3"
+                  />
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>AED {tempPriceRange[0]}</span>
+                    <span>AED {tempPriceRange[1]}</span>
+                  </div>
+                </div>
+              </div>
+
+              <SheetFooter className="flex-row gap-2">
+                <Button variant="outline" onClick={clearMobileFilters} className="flex-1">
+                  Clear All
+                </Button>
+                <Button onClick={applyMobileFilters} className="flex-1">
+                  Apply Filters
+                </Button>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+
           {/* Main Content */}
           <main className="flex-1">
             {/* Toolbar */}
@@ -307,7 +444,7 @@ const Products = () => {
                 <Button 
                   variant="outline" 
                   className="lg:hidden gap-2"
-                  onClick={() => setShowFilters(!showFilters)}
+                  onClick={openMobileFilters}
                 >
                   <SlidersHorizontal className="h-4 w-4" />
                   Filters

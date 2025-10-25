@@ -39,11 +39,11 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-black text-white sticky top-0 z-50 shadow-sm" id="site-navbar">
+    <nav className="bg-white text-foreground sticky top-0 z-50 shadow-sm" id="site-navbar">
       {/* Scoped CSS to avoid theme overrides and ensure no border between bars */}
       <style>{`
         /* remove any unexpected border on the top-bar and ensure primary-nav sits flush */
-        #site-navbar .top-bar { border-bottom: none !important; background-color: #000 !important; }
+        #site-navbar .top-bar { border-bottom: none !important; background-color: #fff !important; }
         #site-navbar .primary-nav { margin-top: 0 !important; background-color: var(--primary-color, #bf0d0d) !important; }
       `}</style>
 
@@ -54,8 +54,7 @@ const Navbar = () => {
             {/* Logo */}
             <Link
               to="/"
-              className="flex items-center flex-shrink-0 bg-white rounded-md p-1"
-              style={{ boxShadow: "0 0 4px rgba(0,0,0,0.1)" }}
+              className="flex items-center flex-shrink-0"
             >
               <img
                 src={logo}

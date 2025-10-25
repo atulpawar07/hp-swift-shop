@@ -18,7 +18,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import logo from "@/assets/logo-light.png";
+import logo from "@/assets/logo-light-new.png";
 
 const Navbar = () => {
   const [cartCount] = useState(0);
@@ -54,8 +54,7 @@ const Navbar = () => {
             {/* Logo */}
             <Link
               to="/"
-              className="flex items-center flex-shrink-0 bg-white rounded-md p-1"
-              style={{ boxShadow: "0 0 4px rgba(0,0,0,0.1)" }}
+              className="flex items-center flex-shrink-0 bg-black rounded-md p-2"
             >
               <img
                 src={logo}

@@ -96,7 +96,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-black text-white">
       <Navbar />
       <Hero />
 
@@ -133,7 +133,7 @@ const Index = () => {
       )}
 
       {/* Welcome Section */}
-      <section className="py-16 bg-secondary">
+      <section className="py-16 bg-black">
         <div className="container mx-auto px-4">
           <div className="flex justify-end mb-4">
             <EditButton 
@@ -180,7 +180,7 @@ const Index = () => {
       </section>
 
       {/* Our Brands Section - With Scrollbar */}
-      <section className="py-12 bg-secondary">
+      <section className="py-12 bg-black">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <div className="bg-primary text-primary-foreground px-6 py-3 inline-block">

@@ -132,12 +132,12 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-black text-white">
       <Navbar />
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-secondary py-16">
+        <section className="bg-black py-16">
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-start gap-4">
               <div>
@@ -155,7 +155,7 @@ const Contact = () => {
         </section>
 
         {/* Contact Content */}
-        <section className="py-16">
+        <section className="py-16 bg-black">
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-2 gap-12">
               {/* Contact Information */}

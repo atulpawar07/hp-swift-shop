@@ -20,12 +20,12 @@ const Services = () => {
   const [editingServices, setEditingServices] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-black text-white">
       <Navbar />
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-secondary py-16">
+        <section className="bg-black py-16">
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-start gap-4">
               <div>
@@ -42,7 +42,7 @@ const Services = () => {
         </section>
 
         {/* Services Grid */}
-        <section className="py-16">
+        <section className="py-16 bg-black">
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-3xl font-bold">What We Offer</h2>
@@ -67,7 +67,7 @@ const Services = () => {
         </section>
 
         {/* Contact CTA */}
-        <section className="py-16 bg-secondary">
+        <section className="py-16 bg-black">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-4">Need a Custom Solution?</h2>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">

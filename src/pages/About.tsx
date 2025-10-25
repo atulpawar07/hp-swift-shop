@@ -22,12 +22,12 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-black text-white">
       <Navbar />
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-secondary py-16">
+        <section className="bg-black py-16">
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-start gap-4">
               <div>
@@ -44,7 +44,7 @@ const About = () => {
         </section>
 
         {/* Company Info */}
-        <section className="py-16">
+        <section className="py-16 bg-black">
           <div className="container mx-auto px-4">
             <div className="flex flex-col lg:flex-row gap-12 items-center">
               <div className="lg:w-1/3">
@@ -83,7 +83,7 @@ const About = () => {
         </section>
 
         {/* Vision & Mission */}
-        <section className="py-16 bg-secondary">
+        <section className="py-16 bg-black">
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-2 gap-8">
               <div>

@@ -90,7 +90,7 @@ const ProductDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-black text-white">
         <Navbar />
         <div className="container mx-auto px-4 py-20 text-center">
           <p className="text-lg">Loading product...</p>
@@ -105,7 +105,7 @@ const ProductDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-black text-white">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">

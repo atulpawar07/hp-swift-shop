@@ -15,9 +15,8 @@ export const EditButton = ({ onClick, className = '' }: EditButtonProps) => {
   return (
     <Button
       size="sm"
-      variant="outline"
       onClick={onClick}
-      className={`gap-2 flex-shrink-0 cursor-pointer ${className}`}
+      className={`gap-2 flex-shrink-0 cursor-pointer bg-[#bf0d0d] text-white hover:bg-[#a60b0b] border border-[#a60b0b] shadow-sm transition-all ${className}`}
     >
       <Edit className="h-4 w-4" />
       Edit

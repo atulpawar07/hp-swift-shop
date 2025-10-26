@@ -219,108 +219,107 @@ const Contact = () => {
               </div>
 
               {/* Contact Form */}
-              <div className="bg-card border border-border rounded-lg p-8">
-                <h2 className="text-2xl font-bold text-white mb-6">
-                  Send us a Message
-                </h2>
+              {/* Contact Form */}
+<div className="bg-black border border-gray-800 rounded-lg p-8 shadow-lg">
+  <h2 className="text-2xl font-bold text-white mb-6">
+    Send us a Message
+  </h2>
 
-                <form className="space-y-4" onSubmit={handleSubmit}>
-                  <div>
-                    <label className="form-label text-sm mb-2 block">
-                      Name *
-                    </label>
-                    <Input name="name" placeholder="Your name" required />
-                  </div>
+  <form className="space-y-4" onSubmit={handleSubmit}>
+    <div>
+      <label className="form-label text-sm mb-2 block">Name *</label>
+      <Input
+        name="name"
+        placeholder="Your name"
+        required
+        className="bg-neutral-900 text-white border-gray-700 placeholder:text-gray-400"
+      />
+    </div>
 
-                  <div>
-                    <label className="form-label text-sm mb-2 block">
-                      Email *
-                    </label>
-                    <Input
-                      name="email"
-                      type="email"
-                      placeholder="your.email@example.com"
-                      required
-                    />
-                  </div>
+    <div>
+      <label className="form-label text-sm mb-2 block">Email *</label>
+      <Input
+        name="email"
+        type="email"
+        placeholder="your.email@example.com"
+        required
+        className="bg-neutral-900 text-white border-gray-700 placeholder:text-gray-400"
+      />
+    </div>
 
-                  <div>
-                    <label className="form-label text-sm mb-2 block">
-                      Phone *
-                    </label>
-                    <Input
-                      name="phone"
-                      type="tel"
-                      placeholder="+971 XX XXX XXXX"
-                      required
-                    />
-                  </div>
+    <div>
+      <label className="form-label text-sm mb-2 block">Phone *</label>
+      <Input
+        name="phone"
+        type="tel"
+        placeholder="+971 XX XXX XXXX"
+        required
+        className="bg-neutral-900 text-white border-gray-700 placeholder:text-gray-400"
+      />
+    </div>
 
-                  <div>
-                    <label className="form-label text-sm mb-2 block">
-                      Message *
-                    </label>
-                    <Textarea
-                      name="message"
-                      placeholder="Tell us about your requirements..."
-                      className="min-h-[8rem]"
-                      required
-                    />
-                  </div>
+    <div>
+      <label className="form-label text-sm mb-2 block">Message *</label>
+      <Textarea
+        name="message"
+        placeholder="Tell us about your requirements..."
+        className="bg-neutral-900 text-white border-gray-700 placeholder:text-gray-400 min-h-[8rem]"
+        required
+      />
+    </div>
 
-                  {/* Channel selector */}
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                    <label className="form-label text-sm font-medium mr-2">
-                      Send via:
-                    </label>
-                    <div className="flex items-center gap-3">
-                      <label className="inline-flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="sendChannel"
-                          value="whatsapp"
-                          checked={sendChannel === "whatsapp"}
-                          onChange={() => setSendChannel("whatsapp")}
-                          className="accent-primary"
-                        />
-                        <span className="form-label-inline">WhatsApp</span>
-                      </label>
+    {/* Channel selector */}
+    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <label className="form-label text-sm font-medium mr-2">Send via:</label>
+      <div className="flex items-center gap-3">
+        <label className="inline-flex items-center gap-2 cursor-pointer text-white">
+          <input
+            type="radio"
+            name="sendChannel"
+            value="whatsapp"
+            checked={sendChannel === "whatsapp"}
+            onChange={() => setSendChannel("whatsapp")}
+            className="accent-primary"
+          />
+          <span className="form-label-inline">WhatsApp</span>
+        </label>
 
-                      <label className="inline-flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="sendChannel"
-                          value="email"
-                          checked={sendChannel === "email"}
-                          onChange={() => setSendChannel("email")}
-                          className="accent-primary"
-                        />
-                        <span className="form-label-inline">Email</span>
-                      </label>
+        <label className="inline-flex items-center gap-2 cursor-pointer text-white">
+          <input
+            type="radio"
+            name="sendChannel"
+            value="email"
+            checked={sendChannel === "email"}
+            onChange={() => setSendChannel("email")}
+            className="accent-primary"
+          />
+          <span className="form-label-inline">Email</span>
+        </label>
 
-                      <label className="inline-flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="sendChannel"
-                          value="both"
-                          checked={sendChannel === "both"}
-                          onChange={() => setSendChannel("both")}
-                          className="accent-primary"
-                        />
-                        <span className="form-label-inline">Both</span>
-                      </label>
-                    </div>
-                  </div>
+        <label className="inline-flex items-center gap-2 cursor-pointer text-white">
+          <input
+            type="radio"
+            name="sendChannel"
+            value="both"
+            checked={sendChannel === "both"}
+            onChange={() => setSendChannel("both")}
+            className="accent-primary"
+          />
+          <span className="form-label-inline">Both</span>
+        </label>
+      </div>
+    </div>
 
-                  <Button type="submit" className="w-full">
-                    Send Enquiry
-                  </Button>
+    <Button type="submit" className="w-full bg-red-700 hover:bg-red-600 text-white font-semibold">
+      Send Enquiry
+    </Button>
 
-                  <p className="text-xs text-gray-300 text-center">
-                    Your enquiry will be sent via the selected method.
-                  </p>
-                </form>
-              </div>
+    <p className="text-xs text-gray-400 text-center">
+      Your enquiry will be sent via the selected method.
+    </p>
+  </form>
+</div>
+
             </div>
           </div>
         </section>

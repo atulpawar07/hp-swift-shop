@@ -24,56 +24,71 @@ const Contact = () => {
   const [editingInfo, setEditingInfo] = useState(false);
 
   const [primaryEmail, setPrimaryEmail] = useState("info@skenterprise.ae");
-  const [primaryWhatsApp, setPrimaryWhatsApp] = useState("9769805184");
-  const [primaryPhone, setPrimaryPhone] = useState("+971 563 569089");
+  const [primaryWhatsApp, setPrimaryWhatsApp] = useState("+971563569089");
+  const [primaryPhone, setPrimaryPhone] = useState("+971563569089");
 
   // channel: 'whatsapp' | 'email' | 'both'
-  const [sendChannel, setSendChannel] = useState<"whatsapp" | "email" | "both">(
-    "whatsapp"
-  );
+  const [sendChannel, setSendChannel] = useState<
+    "whatsapp" | "email" | "both"
+  >("whatsapp");
 
   useEffect(() => {
     fetchPrimaryContact();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchPrimaryContact = async () => {
-    const { data, error } = await supabase
-      .from("settings")
-      .select("*")
-      .eq("key", "primary_contact")
-      .maybeSingle();
+    try {
+      const { data, error } = await supabase
+        .from("settings")
+        .select("*")
+        .eq("key", "primary_contact")
+        .maybeSingle();
 
-    if (!error && data) {
-      let value = data.value;
-      // value might be stored as JSON string or object — handle both
-      try {
-        if (typeof value === "string") {
+      if (error) {
+        console.error("Error fetching primary contact:", error);
+        return;
+      }
+
+      if (!data) return;
+
+      let value: any = data.value;
+
+      // value might be JSON string or object — handle both
+      if (typeof value === "string") {
+        try {
           value = JSON.parse(value);
+        } catch (e) {
+          // leave as-is
         }
-      } catch (e) {
-        // keep original if JSON parse fails
       }
 
-      // Type guard to check if value is an object with string properties
-      if (value && typeof value === 'object' && !Array.isArray(value)) {
+      if (value && typeof value === "object" && !Array.isArray(value)) {
         const obj = value as Record<string, any>;
-        setPrimaryEmail(
-          (obj.email || obj.email_address) || "sales@skenterpriseuae.com"
-        );
+        const email =
+          (obj.email || obj.email_address || obj.contact_email) ||
+          "sales@skenterpriseuae.com";
+        const phone =
+          (obj.phone || obj.telephone || obj.contact_phone) ||
+          "+971563569089";
+        const whatsapp =
+          (obj.whatsapp || obj.whatsapp_number || obj.contact_whatsapp) ||
+          phone;
 
-        // normalize whatsapp: remove non-digit chars
-        const wp = (obj.whatsapp || obj.whatsapp_number || obj.phone) || "+971563569089";
-        setPrimaryWhatsApp(wp);
-
-        setPrimaryPhone((obj.phone || obj.telephone) || "+971563569089");
+        setPrimaryEmail(String(email));
+        setPrimaryPhone(String(phone));
+        setPrimaryWhatsApp(String(whatsapp));
       }
+    } catch (err) {
+      console.error("Unexpected error fetching contact settings:", err);
     }
   };
 
   const sanitizeWhatsappNumber = (raw: string) => {
-    // Remove spaces, plus, dashes, parentheses, leading zeros if needed.
+    if (!raw) return "";
+    // Remove everything except digits
     const digits = String(raw).replace(/\D+/g, "");
-    // If number starts with 0 and length looks local, don't strip country code — assume provided number is correct.
+    // If the number looks like local (8-10 digits) and doesn't have country code, you may need to add it externally.
     return digits;
   };
 
@@ -86,7 +101,6 @@ const Contact = () => {
     const message = String(formData.get("message") || "").trim();
 
     if (!name || !email || !phone || !message) {
-      // Basic client-side check — you can replace this with nicer UI validation
       alert("Please fill all required fields.");
       return;
     }
@@ -105,27 +119,38 @@ const Contact = () => {
     const emailSubject = encodeURIComponent(`New Enquiry from ${name}`);
     const emailBody = encodeURIComponent(plainMessage);
 
-    const wpNumber = sanitizeWhatsappNumber(primaryWhatsApp);
+    const wpNumberDigits = sanitizeWhatsappNumber(primaryWhatsApp || primaryPhone);
 
-    // Based on selected channel, open corresponding handlers.
+    // Build URLs
+    const waUrl = wpNumberDigits
+      ? `https://wa.me/${wpNumberDigits}?text=${encodedForWhatsApp}`
+      : null;
+    const mailtoUrl = `mailto:${encodeURIComponent(primaryEmail)}?subject=${emailSubject}&body=${emailBody}`;
+
     if (sendChannel === "whatsapp") {
-      // Open WhatsApp chat
-      window.open(`https://wa.me/${wpNumber}?text=${encodedForWhatsApp}`, "_blank");
+      if (!waUrl) {
+        alert("WhatsApp number not configured.");
+        return;
+      }
+      window.open(waUrl, "_blank");
       return;
     }
 
     if (sendChannel === "email") {
-      // Use mailto
-      window.location.href = `mailto:${primaryEmail}?subject=${emailSubject}&body=${emailBody}`;
+      window.location.href = mailtoUrl;
       return;
     }
 
     if (sendChannel === "both") {
-      // Open WhatsApp in a new tab and then open mailto after a short delay (so both actions occur)
-      window.open(`https://wa.me/${wpNumber}?text=${encodedForWhatsApp}`, "_blank");
-      // small delay to allow whatsapp tab to open first, then trigger mailto
+      if (!waUrl) {
+        // fallback to email if whatsapp missing
+        window.location.href = mailtoUrl;
+        return;
+      }
+      window.open(waUrl, "_blank");
+      // slight delay to allow the new tab to open first
       setTimeout(() => {
-        window.location.href = `mailto:${primaryEmail}?subject=${emailSubject}&body=${emailBody}`;
+        window.location.href = mailtoUrl;
       }, 600);
       return;
     }
@@ -172,7 +197,10 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-white mb-1">Phone</h3>
-                      <a href={`tel:${primaryPhone}`} className="text-gray-200 hover:text-primary">
+                      <a
+                        href={`tel:${primaryPhone}`}
+                        className="text-gray-200 hover:text-primary"
+                      >
                         {primaryPhone}
                       </a>
                     </div>
@@ -184,7 +212,10 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold text-white mb-1">Email</h3>
-                      <a href={`mailto:${primaryEmail}`} className="text-gray-200 hover:text-primary">
+                      <a
+                        href={`mailto:${primaryEmail}`}
+                        className="text-gray-200 hover:text-primary"
+                      >
                         {primaryEmail}
                       </a>
                     </div>
@@ -220,25 +251,64 @@ const Contact = () => {
               <div className="bg-card border border-border rounded-lg p-8">
                 <h2 className="text-2xl font-bold text-white mb-6">Send us a Message</h2>
 
-                <form className="space-y-4" onSubmit={handleSubmit}>
+                <form
+                  className="space-y-4"
+                  onSubmit={handleSubmit}
+                  aria-label="Contact form"
+                  role="form"
+                >
                   <div>
-                    <label className="text-sm font-medium text-white mb-2 block">Name *</label>
-                    <Input name="name" placeholder="Your name" required />
+                    <label className="text-sm font-medium text-white mb-2 block">
+                      Name *
+                    </label>
+                    <Input
+                      name="name"
+                      placeholder="Your name"
+                      required
+                      className="bg-white text-black"
+                      aria-required="true"
+                    />
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-white mb-2 block">Email *</label>
-                    <Input name="email" type="email" placeholder="your.email@example.com" required />
+                    <label className="text-sm font-medium text-white mb-2 block">
+                      Email *
+                    </label>
+                    <Input
+                      name="email"
+                      type="email"
+                      placeholder="your.email@example.com"
+                      required
+                      className="bg-white text-black"
+                      aria-required="true"
+                    />
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-white mb-2 block">Phone *</label>
-                    <Input name="phone" type="tel" placeholder="+971 XX XXX XXXX" required />
+                    <label className="text-sm font-medium text-white mb-2 block">
+                      Phone *
+                    </label>
+                    <Input
+                      name="phone"
+                      type="tel"
+                      placeholder="+971 XX XXX XXXX"
+                      required
+                      className="bg-white text-black"
+                      aria-required="true"
+                    />
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-white mb-2 block">Message *</label>
-                    <Textarea name="message" placeholder="Tell us about your requirements..." className="min-h-[8rem]" required />
+                    <label className="text-sm font-medium text-white mb-2 block">
+                      Message *
+                    </label>
+                    <Textarea
+                      name="message"
+                      placeholder="Tell us about your requirements..."
+                      className="min-h-[8rem] bg-white text-black"
+                      required
+                      aria-required="true"
+                    />
                   </div>
 
                   {/* Channel selector */}
@@ -253,6 +323,7 @@ const Contact = () => {
                           checked={sendChannel === "whatsapp"}
                           onChange={() => setSendChannel("whatsapp")}
                           className="accent-primary"
+                          aria-checked={sendChannel === "whatsapp"}
                         />
                         <span className="text-sm">WhatsApp</span>
                       </label>
@@ -265,6 +336,7 @@ const Contact = () => {
                           checked={sendChannel === "email"}
                           onChange={() => setSendChannel("email")}
                           className="accent-primary"
+                          aria-checked={sendChannel === "email"}
                         />
                         <span className="text-sm">Email</span>
                       </label>
@@ -277,13 +349,18 @@ const Contact = () => {
                           checked={sendChannel === "both"}
                           onChange={() => setSendChannel("both")}
                           className="accent-primary"
+                          aria-checked={sendChannel === "both"}
                         />
                         <span className="text-sm">Both</span>
                       </label>
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full">
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    aria-label="Send enquiry"
+                  >
                     Send Enquiry
                   </Button>
 

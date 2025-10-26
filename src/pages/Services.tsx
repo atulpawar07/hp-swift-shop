@@ -1,7 +1,20 @@
 import { useState } from 'react';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Package, Building, Wrench, Network, Users, ShoppingCart, Settings, Database, Shield, Zap, Globe, Smartphone } from "lucide-react";
+import {
+  Package,
+  Building,
+  Wrench,
+  Network,
+  Users,
+  ShoppingCart,
+  Settings,
+  Database,
+  Shield,
+  Zap,
+  Globe,
+  Smartphone
+} from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
 import { EditButton } from "@/components/admin/EditButton";
 import { ContentEditor } from "@/components/admin/ContentEditor";
@@ -53,12 +66,23 @@ const Services = () => {
               {servicesContent?.services?.map((service: any, index: number) => {
                 const Icon = iconMap[service.icon] || Package;
                 return (
-                  <div key={index} className="bg-card border border-border rounded-lg p-6 hover:shadow-lg transition-all">
+                  <div
+                    key={index}
+                    className="bg-white border border-border rounded-lg p-6 hover:shadow-lg transition-all"
+                  >
                     <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                       <Icon className="h-6 w-6 text-primary" />
                     </div>
-                    <h3 className="text-xl font-semibold mb-3 text-white">{service.title}</h3>
-                    <p className="text-gray-200">{service.description}</p>
+
+                    {/* Title in pure black */}
+                    <h3 className="text-xl font-semibold mb-3 text-black">
+                      {service.title}
+                    </h3>
+
+                    {/* Description in matte black */}
+                    <p className="text-[#1a1a1a] leading-relaxed">
+                      {service.description}
+                    </p>
                   </div>
                 );
               })}

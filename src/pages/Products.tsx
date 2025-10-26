@@ -253,17 +253,17 @@ const Products = () => {
         <div className="flex gap-8">
           {/* Desktop Filters Sidebar */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="bg-card border border-border rounded-lg p-6 sticky top-24">
+            <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-24">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="font-semibold text-lg">Filters</h2>
-                <Button variant="ghost" size="sm" className="text-primary" onClick={clearFilters}>
+                <h2 className="font-semibold text-lg text-gray-900">Filters</h2>
+                <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700" onClick={clearFilters}>
                   Clear All
                 </Button>
               </div>
 
               {/* Search */}
               <div className="mb-6">
-                <label className="text-sm font-medium mb-2 block">Search</label>
+                <label className="text-sm font-medium mb-2 block text-gray-900">Search</label>
                 <div className="relative">
                   <Input 
                     placeholder="Search products..." 
@@ -277,7 +277,7 @@ const Products = () => {
 
               {/* Brand */}
               <div className="mb-6">
-                <label className="text-sm font-medium mb-3 block">Brand</label>
+                <label className="text-sm font-medium mb-3 block text-gray-900">Brand</label>
                 <div className="space-y-2">
                   {brands.map(brand => (
                     <div key={brand} className="flex items-center">
@@ -286,12 +286,12 @@ const Products = () => {
                         checked={selectedBrands.includes(brand)}
                         onCheckedChange={() => toggleBrand(brand)}
                       />
-                      <label 
-                        htmlFor={brand.toLowerCase()} 
-                        className="ml-2 text-sm cursor-pointer"
-                      >
-                        {brand}
-                      </label>
+                    <label 
+                      htmlFor={brand.toLowerCase()} 
+                      className="ml-2 text-sm cursor-pointer text-gray-700"
+                    >
+                      {brand}
+                    </label>
                     </div>
                   ))}
                 </div>
@@ -299,7 +299,7 @@ const Products = () => {
 
               {/* Category */}
               <div className="mb-6">
-                <label className="text-sm font-medium mb-3 block">Category</label>
+                <label className="text-sm font-medium mb-3 block text-gray-900">Category</label>
                 <div className="space-y-2">
                   {categories.map(category => (
                     <div key={category} className="flex items-center">
@@ -308,12 +308,12 @@ const Products = () => {
                         checked={selectedCategories.includes(category)}
                         onCheckedChange={() => toggleCategory(category)}
                       />
-                      <label 
-                        htmlFor={category.toLowerCase().replace(/\s+/g, '-')} 
-                        className="ml-2 text-sm cursor-pointer"
-                      >
-                        {category}
-                      </label>
+                    <label 
+                      htmlFor={category.toLowerCase().replace(/\s+/g, '-')} 
+                      className="ml-2 text-sm cursor-pointer text-gray-700"
+                    >
+                      {category}
+                    </label>
                     </div>
                   ))}
                 </div>
@@ -321,7 +321,7 @@ const Products = () => {
 
               {/* Price Range */}
               <div className="mb-6">
-                <label className="text-sm font-medium mb-3 block">Price Range (AED)</label>
+                <label className="text-sm font-medium mb-3 block text-gray-900">Price Range (AED)</label>
                 <Slider
                   defaultValue={[0, 3000]}
                   max={3000}
@@ -330,7 +330,7 @@ const Products = () => {
                   onValueChange={setPriceRange}
                   className="mb-3"
                 />
-                <div className="flex justify-between text-sm text-muted-foreground">
+                <div className="flex justify-between text-sm text-gray-600">
                   <span>AED {priceRange[0]}</span>
                   <span>AED {priceRange[1]}</span>
                 </div>

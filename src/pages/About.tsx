@@ -31,10 +31,10 @@ const About = () => {
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-start gap-4">
               <div>
-                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+                <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                   {heroContent?.title || 'About SK Enterprise'}
                 </h1>
-                <p className="text-lg text-muted-foreground max-w-3xl">
+                <p className="text-lg text-gray-200 max-w-3xl">
                   {heroContent?.description || 'Your trusted partner in IT distribution across UAE'}
                 </p>
               </div>
@@ -57,23 +57,23 @@ const About = () => {
 
               <div className="lg:w-2/3">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-3xl font-bold text-foreground">
+                  <h2 className="text-3xl font-bold text-white">
                     {storyContent?.title || 'Who We Are'}
                   </h2>
                   <EditButton onClick={() => setEditingStory(true)} />
                 </div>
                 
-                <p className="text-muted-foreground mb-6 leading-relaxed whitespace-pre-line">
+                <p className="text-gray-200 mb-6 leading-relaxed whitespace-pre-line">
                   {storyContent?.content || 'In today\'s demanding and dynamic world of IT Distribution, it takes a special kind of organization to deliver consistently on all key business metrics: availability, right price, prompt delivery, efficient logistics and top-class service. With decades of experience in worldwide sourcing of IT products and services and robust relationships across the IT value-chain, SK Enterprise is ideally positioned to be your supplier of choice.'}
                 </p>
 
-                <h3 className="text-xl font-semibold text-foreground mb-4">Our Key USPs:</h3>
+                <h3 className="text-xl font-semibold text-white mb-4">Our Key USPs:</h3>
 
                 <div className="grid md:grid-cols-2 gap-4">
                   {features.map((feature, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                      <span className="text-foreground">{feature}</span>
+                      <span className="text-white">{feature}</span>
                     </div>
                   ))}
                 </div>
@@ -87,14 +87,14 @@ const About = () => {
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-2xl font-bold text-foreground mb-4">Our Vision</h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <h3 className="text-2xl font-bold text-white mb-4">Our Vision</h3>
+                <p className="text-gray-200 leading-relaxed">
                   To be the most trusted and reliable IT distribution partner in the UAE region, known for excellence in service delivery and customer satisfaction.
                 </p>
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-foreground mb-4">Our Mission</h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <h3 className="text-2xl font-bold text-white mb-4">Our Mission</h3>
+                <p className="text-gray-200 leading-relaxed">
                   To provide world-class IT products and services with competitive pricing, efficient logistics, and exceptional customer support to businesses across all sectors.
                 </p>
               </div>

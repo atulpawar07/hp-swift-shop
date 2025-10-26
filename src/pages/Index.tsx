@@ -156,21 +156,21 @@ const Index = () => {
               <h2 className="text-sm text-primary font-semibold mb-2">
                 {welcomeContent?.subtitle || 'Welcome to'}
               </h2>
-              <h3 className="text-3xl font-bold text-foreground mb-6">
+              <h3 className="text-3xl font-bold text-white mb-6">
                 {welcomeContent?.title || 'SK Enterprise'}
               </h3>
               
-              <p className="text-muted-foreground mb-6 leading-relaxed">
+              <p className="text-gray-200 mb-6 leading-relaxed">
                 {welcomeContent?.description || 'In today\'s demanding and dynamic world of IT Distribution, it takes a special kind of organization to deliver consistently on all key business metrics: availability, right price, prompt delivery, efficient logistics and top-class service. With decades of experience in worldwide sourcing of IT products and services and robust relationships across the IT value-chain, SK Enterprise is ideally positioned to be your supplier of choice. Whether your needs are a one-time fulfillment or on-going run-rate purchases, you will find the right partner in SK Enterprise.'}
               </p>
 
-              <p className="text-muted-foreground mb-8">These are some of our key USPs:</p>
+              <p className="text-gray-200 mb-8">These are some of our key USPs:</p>
 
               <div className="grid md:grid-cols-2 gap-4 mb-8">
                 {features.map((feature, index) => (
                   <div key={index} className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-foreground">{feature}</span>
+                    <span className="text-white">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -207,8 +207,8 @@ const Index = () => {
                 />
               </div>
               <div>
-                <h4 className="text-xl font-bold text-foreground mb-1">Microsoft Cloud Services</h4>
-                <p className="text-sm text-muted-foreground">
+                <h4 className="text-xl font-bold text-white mb-1">Microsoft Cloud Services</h4>
+                <p className="text-sm text-gray-200">
                   Authorized partner for Microsoft cloud solutions, Azure, Microsoft 365, and enterprise services
                 </p>
               </div>
@@ -289,7 +289,7 @@ const Index = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-300">
               You can add, edit, and upload partner logos from the Admin Dashboard. 
               Click the button below to navigate to the Brands management section.
             </p>

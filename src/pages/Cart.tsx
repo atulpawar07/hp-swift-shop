@@ -44,8 +44,8 @@ const Cart = () => {
         <div className="container mx-auto px-4 py-16">
           <div className="text-center max-w-md mx-auto">
             <ShoppingBag className="h-24 w-24 mx-auto text-muted-foreground mb-6" />
-            <h1 className="text-3xl font-bold mb-4">Your Cart is Empty</h1>
-            <p className="text-muted-foreground mb-8">
+            <h1 className="text-3xl font-bold mb-4 text-white">Your Cart is Empty</h1>
+            <p className="text-gray-200 mb-8">
               Looks like you haven't added any items to your cart yet.
             </p>
             <Link to="/products">

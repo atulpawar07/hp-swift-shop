@@ -141,10 +141,10 @@ const Contact = () => {
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-start gap-4">
               <div>
-                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+                <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                   {heroContent?.title || "Contact Us"}
                 </h1>
-                <p className="text-lg text-muted-foreground max-w-3xl">
+                <p className="text-lg text-gray-200 max-w-3xl">
                   {heroContent?.description ||
                     "Get in touch with our team for any inquiries or support"}
                 </p>
@@ -161,7 +161,7 @@ const Contact = () => {
               {/* Contact Information */}
               <div>
                 <div className="flex justify-between items-center mb-8">
-                  <h2 className="text-3xl font-bold text-foreground">Get In Touch</h2>
+                  <h2 className="text-3xl font-bold text-white">Get In Touch</h2>
                   <EditButton onClick={() => setEditingInfo(true)} />
                 </div>
 
@@ -171,8 +171,8 @@ const Contact = () => {
                       <Phone className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground mb-1">Phone</h3>
-                      <a href={`tel:${primaryPhone}`} className="text-muted-foreground hover:text-primary">
+                      <h3 className="font-semibold text-white mb-1">Phone</h3>
+                      <a href={`tel:${primaryPhone}`} className="text-gray-200 hover:text-primary">
                         {primaryPhone}
                       </a>
                     </div>
@@ -183,8 +183,8 @@ const Contact = () => {
                       <Mail className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground mb-1">Email</h3>
-                      <a href={`mailto:${primaryEmail}`} className="text-muted-foreground hover:text-primary">
+                      <h3 className="font-semibold text-white mb-1">Email</h3>
+                      <a href={`mailto:${primaryEmail}`} className="text-gray-200 hover:text-primary">
                         {primaryEmail}
                       </a>
                     </div>
@@ -195,8 +195,8 @@ const Contact = () => {
                       <MapPin className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground mb-1">Location</h3>
-                      <p className="text-muted-foreground">
+                      <h3 className="font-semibold text-white mb-1">Location</h3>
+                      <p className="text-gray-200">
                         {contactInfo?.address || "Dubai, United Arab Emirates"}
                       </p>
                     </div>
@@ -208,8 +208,8 @@ const Contact = () => {
                         <Clock className="h-6 w-6 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-foreground mb-1">Business Hours</h3>
-                        <p className="text-muted-foreground whitespace-pre-line">{contactInfo.hours}</p>
+                        <h3 className="font-semibold text-white mb-1">Business Hours</h3>
+                        <p className="text-gray-200 whitespace-pre-line">{contactInfo.hours}</p>
                       </div>
                     </div>
                   )}
@@ -218,32 +218,32 @@ const Contact = () => {
 
               {/* Contact Form */}
               <div className="bg-card border border-border rounded-lg p-8">
-                <h2 className="text-2xl font-bold text-foreground mb-6">Send us a Message</h2>
+                <h2 className="text-2xl font-bold text-white mb-6">Send us a Message</h2>
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">Name *</label>
+                    <label className="text-sm font-medium text-white mb-2 block">Name *</label>
                     <Input name="name" placeholder="Your name" required />
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">Email *</label>
+                    <label className="text-sm font-medium text-white mb-2 block">Email *</label>
                     <Input name="email" type="email" placeholder="your.email@example.com" required />
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">Phone *</label>
+                    <label className="text-sm font-medium text-white mb-2 block">Phone *</label>
                     <Input name="phone" type="tel" placeholder="+971 XX XXX XXXX" required />
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">Message *</label>
+                    <label className="text-sm font-medium text-white mb-2 block">Message *</label>
                     <Textarea name="message" placeholder="Tell us about your requirements..." className="min-h-[8rem]" required />
                   </div>
 
                   {/* Channel selector */}
                   <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                    <p className="text-sm font-medium text-foreground mr-2">Send via:</p>
+                    <p className="text-sm font-medium text-white mr-2">Send via:</p>
                     <div className="flex items-center gap-3">
                       <label className="inline-flex items-center gap-2 cursor-pointer">
                         <input
@@ -287,7 +287,7 @@ const Contact = () => {
                     Send Enquiry
                   </Button>
 
-                  <p className="text-xs text-muted-foreground text-center">
+                  <p className="text-xs text-gray-300 text-center">
                     Your enquiry will be sent via the selected method.
                   </p>
                 </form>

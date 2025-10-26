@@ -436,14 +436,14 @@ const Products = () => {
           <main className="flex-1">
             {/* Toolbar */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-              <p className="text-muted-foreground">
-                Showing <span className="font-semibold text-foreground">{startIndex + 1}-{Math.min(endIndex, filteredProducts.length)}</span> of {filteredProducts.length} products
+              <p className="text-gray-400">
+                Showing <span className="font-semibold text-white">{startIndex + 1}-{Math.min(endIndex, filteredProducts.length)}</span> of {filteredProducts.length} products
               </p>
 
               <div className="flex gap-3 w-full sm:w-auto">
                 <Button 
                   variant="outline" 
-                  className="lg:hidden gap-2"
+                  className="lg:hidden gap-2 bg-white text-black border-white hover:bg-gray-100"
                   onClick={openMobileFilters}
                 >
                   <SlidersHorizontal className="h-4 w-4" />
@@ -451,10 +451,10 @@ const Products = () => {
                 </Button>
                 
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-full sm:w-48">
+                  <SelectTrigger className="w-full sm:w-48 bg-white text-black border-white">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     <SelectItem value="relevance">Most Relevant</SelectItem>
                     <SelectItem value="price-low">Price: Low to High</SelectItem>
                     <SelectItem value="price-high">Price: High to Low</SelectItem>
@@ -481,8 +481,8 @@ const Products = () => {
               </div>
             ) : (
               <div className="text-center py-12">
-                <p className="text-muted-foreground text-lg">No products found matching your filters.</p>
-                <Button onClick={clearFilters} className="mt-4">Clear Filters</Button>
+                <p className="text-gray-400 text-lg">No products found matching your filters.</p>
+                <Button onClick={clearFilters} className="mt-4 bg-white text-black hover:bg-gray-100">Clear Filters</Button>
               </div>
             )}
 
@@ -492,6 +492,7 @@ const Products = () => {
                 <Button 
                   variant="outline" 
                   size="icon"
+                  className="bg-white text-black border-white hover:bg-gray-100 disabled:bg-gray-600 disabled:text-gray-400 disabled:border-gray-600"
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   aria-label="Previous page"
@@ -505,12 +506,13 @@ const Products = () => {
                       key={index}
                       variant={currentPage === page ? "default" : "outline"}
                       size="icon"
+                      className={currentPage === page ? "bg-red-600 text-white hover:bg-red-700" : "bg-white text-black border-white hover:bg-gray-100"}
                       onClick={() => setCurrentPage(page)}
                     >
                       {page}
                     </Button>
                   ) : (
-                    <span key={index} className="px-2 text-muted-foreground">
+                    <span key={index} className="px-2 text-white">
                       {page}
                     </span>
                   )
@@ -519,6 +521,7 @@ const Products = () => {
                 <Button 
                   variant="outline" 
                   size="icon"
+                  className="bg-white text-black border-white hover:bg-gray-100 disabled:bg-gray-600 disabled:text-gray-400 disabled:border-gray-600"
                   disabled={currentPage === totalPages}
                   onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                   aria-label="Next page"

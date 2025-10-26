@@ -218,8 +218,7 @@ const Contact = () => {
                 </div>
               </div>
 
-              {/* Contact Form */}
-              {/* Contact Form */}
+             {/* Contact Form */}
 <div className="bg-black border border-gray-800 rounded-lg p-8 shadow-lg">
   <h2 className="text-2xl font-bold text-white mb-6">
     Send us a Message
@@ -268,7 +267,7 @@ const Contact = () => {
       />
     </div>
 
-    {/* Channel selector */}
+    {/* Send via selector — only WhatsApp and Email */}
     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
       <label className="form-label text-sm font-medium mr-2">Send via:</label>
       <div className="flex items-center gap-3">
@@ -295,22 +294,13 @@ const Contact = () => {
           />
           <span className="form-label-inline">Email</span>
         </label>
-
-        <label className="inline-flex items-center gap-2 cursor-pointer text-white">
-          <input
-            type="radio"
-            name="sendChannel"
-            value="both"
-            checked={sendChannel === "both"}
-            onChange={() => setSendChannel("both")}
-            className="accent-primary"
-          />
-          <span className="form-label-inline">Both</span>
-        </label>
       </div>
     </div>
 
-    <Button type="submit" className="w-full bg-red-700 hover:bg-red-600 text-white font-semibold">
+    <Button
+      type="submit"
+      className="w-full bg-red-700 hover:bg-red-600 text-white font-semibold"
+    >
       Send Enquiry
     </Button>
 

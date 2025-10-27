@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { Search, SlidersHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -23,6 +24,7 @@ interface Product {
 }
 
 const Products = () => {
+  const [searchParams] = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [brands, setBrands] = useState<string[]>([]);
@@ -86,6 +88,18 @@ const Products = () => {
 
     fetchData();
   }, []);
+
+  // Apply brand filter from URL params on initial load
+  useEffect(() => {
+    const brandParam = searchParams.get('brand');
+    if (brandParam && brands.length > 0) {
+      // Check if the brand exists in our brands list
+      const matchingBrand = brands.find(b => b.toLowerCase() === brandParam.toLowerCase());
+      if (matchingBrand && !selectedBrands.includes(matchingBrand)) {
+        setSelectedBrands([matchingBrand]);
+      }
+    }
+  }, [searchParams, brands]);
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {

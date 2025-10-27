@@ -249,8 +249,16 @@ const Index = () => {
               {partners.map((partner, index) => (
                 <div 
                   key={index}
-                  className="partner-tile flex items-center justify-center rounded-lg p-4 hover:shadow-lg transition-shadow"
+                  className="partner-tile flex items-center justify-center rounded-lg p-4 hover:shadow-lg transition-all cursor-pointer hover:scale-105"
                   style={{ width: '140px', height: '100px', border: '1px solid rgba(0,0,0,0.06)' }}
+                  onClick={() => navigate(`/products?brand=${encodeURIComponent(partner.name)}`)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      navigate(`/products?brand=${encodeURIComponent(partner.name)}`);
+                    }
+                  }}
                 >
                   <img 
                     src={partner.logo} 

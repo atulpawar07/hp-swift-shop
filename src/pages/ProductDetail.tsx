@@ -208,7 +208,7 @@ const ProductDetail = () => {
               </Button>
               <Button 
                 size="lg" 
-                variant="outline"
+                className="bg-white text-black border-white hover:bg-gray-100"
                 onClick={() => {
                   const subject = `Enquiry: ${product.name}`;
                   const body = `Hi,%0D%0A%0D%0AI'm interested in the following product:%0D%0A%0D%0AProduct: ${product.name}%0D%0ABrand: ${product.brand}%0D%0A${product.price ? `Price: AED ${product.price}` : ''}%0D%0A%0D%0APlease provide more details.%0D%0A%0D%0AThank you.`;
@@ -217,7 +217,20 @@ const ProductDetail = () => {
               >
                 <Mail className="h-5 w-5" />
               </Button>
-              <Button size="lg" variant="outline">
+              <Button 
+                size="lg" 
+                className="bg-white text-black border-white hover:bg-gray-100"
+                onClick={() => {
+                  navigator.share?.({
+                    title: product.name,
+                    text: `Check out ${product.name} - ${product.brand}`,
+                    url: window.location.href
+                  }).catch(() => {
+                    navigator.clipboard.writeText(window.location.href);
+                    toast.success('Link copied to clipboard!');
+                  });
+                }}
+              >
                 <Share2 className="h-5 w-5" />
               </Button>
             </div>

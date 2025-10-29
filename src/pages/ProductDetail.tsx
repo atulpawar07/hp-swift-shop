@@ -120,14 +120,14 @@ const ProductDetail = () => {
         </Button>
 
         {/* Breadcrumb */}
-        <nav className="text-sm text-muted-foreground mb-6">
+        <nav className="text-sm text-gray-300 mb-6">
           <button onClick={() => navigate('/')} className="hover:text-primary transition-colors">Home</button>
           {' / '}
           <button onClick={() => navigate('/products')} className="hover:text-primary transition-colors">Products</button>
           {' / '}
           {product.category}
           {' / '}
-          <span className="text-foreground">{product.name}</span>
+          <span className="text-white">{product.name}</span>
         </nav>
 
         <div className="grid lg:grid-cols-2 gap-12">
@@ -172,7 +172,7 @@ const ProductDetail = () => {
             <div>
               <Badge variant="outline" className="mb-2">{product.category}</Badge>
               <h1 className="text-4xl font-bold mb-2">{product.name}</h1>
-              <p className="text-muted-foreground">Brand: {product.brand}</p>
+              <p className="text-gray-200">Brand: {product.brand}</p>
             </div>
 
             {product.price ? (
@@ -180,14 +180,14 @@ const ProductDetail = () => {
                 <span className="text-4xl font-bold text-primary">AED {product.price.toLocaleString()}</span>
               </div>
             ) : (
-              <p className="text-lg text-muted-foreground">Contact for pricing</p>
+              <p className="text-lg text-gray-200">Contact for pricing</p>
             )}
 
             <Badge className={product.in_stock ? "bg-green-500 text-white" : "bg-red-500 text-white"}>
               {product.in_stock ? "✓ In Stock" : "Out of Stock"}
             </Badge>
 
-            <p className="text-muted-foreground leading-relaxed">
+            <p className="text-gray-200 leading-relaxed">
               High-quality {product.brand} {product.category.toLowerCase()} available at competitive prices. 
               Contact us for detailed specifications and bulk pricing options.
             </p>
@@ -239,15 +239,15 @@ const ProductDetail = () => {
             <div className="grid grid-cols-3 gap-4 pt-6 border-t border-border">
               <div className="text-center">
                 <Truck className="h-6 w-6 mx-auto mb-2 text-primary" />
-                <p className="text-xs text-muted-foreground">Fast Delivery</p>
+                <p className="text-xs text-gray-200">Fast Delivery</p>
               </div>
               <div className="text-center">
                 <Shield className="h-6 w-6 mx-auto mb-2 text-primary" />
-                <p className="text-xs text-muted-foreground">Warranty Included</p>
+                <p className="text-xs text-gray-200">Warranty Included</p>
               </div>
               <div className="text-center">
                 <Award className="h-6 w-6 mx-auto mb-2 text-primary" />
-                <p className="text-xs text-muted-foreground">Authorized Dealer</p>
+                <p className="text-xs text-gray-200">Authorized Dealer</p>
               </div>
             </div>
           </div>
@@ -267,13 +267,13 @@ const ProductDetail = () => {
 
             <TabsContent value="description" className="mt-6">
               <div className="prose max-w-none">
-                <h3 className="text-xl font-semibold mb-3">About this Product</h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <h3 className="text-xl font-semibold mb-3 text-white">About this Product</h3>
+                <p className="text-gray-200 leading-relaxed">
                   {product.brand} {product.name} - A reliable {product.category.toLowerCase()} solution 
                   for your business needs. We provide genuine products with full warranty support.
                 </p>
-                <h3 className="text-xl font-semibold mt-6 mb-3">Product Highlights</h3>
-                <ul className="space-y-2 text-muted-foreground">
+                <h3 className="text-xl font-semibold mt-6 mb-3 text-white">Product Highlights</h3>
+                <ul className="space-y-2 text-gray-200">
                   <li>• Genuine {product.brand} product</li>
                   <li>• Authorized distributor warranty</li>
                   <li>• Professional after-sales support</li>
@@ -284,8 +284,8 @@ const ProductDetail = () => {
             </TabsContent>
 
             <TabsContent value="shipping" className="mt-6">
-              <div className="prose max-w-none text-muted-foreground">
-                <h3 className="text-xl font-semibold mb-3 text-foreground">Shipping Information</h3>
+              <div className="prose max-w-none text-gray-200">
+                <h3 className="text-xl font-semibold mb-3 text-white">Shipping Information</h3>
                 <p>We offer fast and reliable shipping across UAE. Orders are typically processed within 1-2 business days.</p>
                 <ul className="space-y-2 mt-4">
                   <li>• Standard Delivery: 2-3 business days</li>
@@ -293,7 +293,7 @@ const ProductDetail = () => {
                   <li>• Free shipping on orders above AED 1,000</li>
                 </ul>
 
-                <h3 className="text-xl font-semibold mt-8 mb-3 text-foreground">Returns & Refunds</h3>
+                <h3 className="text-xl font-semibold mt-8 mb-3 text-white">Returns & Refunds</h3>
                 <p>We accept returns within 7 days of delivery. Product must be unused and in original packaging.</p>
                 <ul className="space-y-2 mt-4">
                   <li>• 7-day return policy</li>

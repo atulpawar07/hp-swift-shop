@@ -9,6 +9,43 @@ import { usePageContent } from "@/hooks/usePageContent";
 import { EditButton } from "@/components/admin/EditButton";
 import { ContentEditor } from "@/components/admin/ContentEditor";
 import { supabase } from "@/integrations/supabase/client";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { toast } from "sonner";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+// Form validation schema
+const contactFormSchema = z.object({
+  name: z.string()
+    .trim()
+    .min(1, { message: "Name is required" })
+    .max(100, { message: "Name must be less than 100 characters" }),
+  email: z.string()
+    .trim()
+    .min(1, { message: "Email is required" })
+    .email({ message: "Please enter a valid email address" })
+    .max(255, { message: "Email must be less than 255 characters" }),
+  phone: z.string()
+    .trim()
+    .min(1, { message: "Phone number is required" })
+    .regex(/^[\d\s+()-]+$/, { message: "Please enter a valid phone number (digits, spaces, +, -, () only)" })
+    .min(8, { message: "Phone number must be at least 8 digits" })
+    .max(20, { message: "Phone number must be less than 20 characters" }),
+  message: z.string()
+    .trim()
+    .min(1, { message: "Message is required" })
+    .max(2000, { message: "Message must be less than 2000 characters" })
+});
+
+type ContactFormValues = z.infer<typeof contactFormSchema>;
 
 const Contact = () => {
   const { content: heroContent, updateContent: updateHero } = usePageContent(
@@ -31,6 +68,17 @@ const Contact = () => {
   const [sendChannel, setSendChannel] = useState<"whatsapp" | "email" | "both">(
     "whatsapp"
   );
+
+  // Form setup with validation
+  const form = useForm<ContactFormValues>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+    },
+  });
 
   useEffect(() => {
     fetchPrimaryContact();
@@ -71,18 +119,8 @@ const Contact = () => {
     return digits;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const name = String(formData.get("name") || "").trim();
-    const email = String(formData.get("email") || "").trim();
-    const phone = String(formData.get("phone") || "").trim();
-    const message = String(formData.get("message") || "").trim();
-
-    if (!name || !email || !phone || !message) {
-      alert("Please fill all required fields.");
-      return;
-    }
+  const onSubmit = (data: ContactFormValues) => {
+    const { name, email, phone, message } = data;
 
     const plainMessage = [
       "New Enquiry:",
@@ -104,11 +142,15 @@ const Contact = () => {
         `https://wa.me/${wpNumber}?text=${encodedForWhatsApp}`,
         "_blank"
       );
+      toast.success("Opening WhatsApp...");
+      form.reset();
       return;
     }
 
     if (sendChannel === "email") {
       window.location.href = `mailto:${primaryEmail}?subject=${emailSubject}&body=${emailBody}`;
+      toast.success("Opening email client...");
+      form.reset();
       return;
     }
 
@@ -120,6 +162,8 @@ const Contact = () => {
       setTimeout(() => {
         window.location.href = `mailto:${primaryEmail}?subject=${emailSubject}&body=${emailBody}`;
       }, 600);
+      toast.success("Opening WhatsApp and Email...");
+      form.reset();
     }
   };
 
@@ -224,90 +268,125 @@ const Contact = () => {
     Send us a Message
   </h2>
 
-  <form className="space-y-4" onSubmit={handleSubmit}>
-    <div>
-      <label className="form-label text-sm mb-2 block">Name *</label>
-      <Input
+  <Form {...form}>
+    <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+      <FormField
+        control={form.control}
         name="name"
-        placeholder="Your name"
-        required
-        className="bg-neutral-900 text-white border-gray-700 placeholder:text-gray-400"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="text-white">Name *</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Your name"
+                className="bg-neutral-900 text-white border-gray-700 placeholder:text-gray-400"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
       />
-    </div>
 
-    <div>
-      <label className="form-label text-sm mb-2 block">Email *</label>
-      <Input
+      <FormField
+        control={form.control}
         name="email"
-        type="email"
-        placeholder="your.email@example.com"
-        required
-        className="bg-neutral-900 text-white border-gray-700 placeholder:text-gray-400"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="text-white">Email *</FormLabel>
+            <FormControl>
+              <Input
+                type="email"
+                placeholder="your.email@example.com"
+                className="bg-neutral-900 text-white border-gray-700 placeholder:text-gray-400"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
       />
-    </div>
 
-    <div>
-      <label className="form-label text-sm mb-2 block">Phone *</label>
-      <Input
+      <FormField
+        control={form.control}
         name="phone"
-        type="tel"
-        placeholder="+971 XX XXX XXXX"
-        required
-        className="bg-neutral-900 text-white border-gray-700 placeholder:text-gray-400"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="text-white">Phone *</FormLabel>
+            <FormControl>
+              <Input
+                type="tel"
+                placeholder="+971 XX XXX XXXX"
+                className="bg-neutral-900 text-white border-gray-700 placeholder:text-gray-400"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
       />
-    </div>
 
-    <div>
-      <label className="form-label text-sm mb-2 block">Message *</label>
-      <Textarea
+      <FormField
+        control={form.control}
         name="message"
-        placeholder="Tell us about your requirements..."
-        className="bg-neutral-900 text-white border-gray-700 placeholder:text-gray-400 min-h-[8rem]"
-        required
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="text-white">Message *</FormLabel>
+            <FormControl>
+              <Textarea
+                placeholder="Tell us about your requirements..."
+                className="bg-neutral-900 text-white border-gray-700 placeholder:text-gray-400 min-h-[8rem]"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
       />
-    </div>
 
-    {/* Send via selector — only WhatsApp and Email */}
-    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-      <label className="form-label text-sm font-medium mr-2">Send via:</label>
-      <div className="flex items-center gap-3">
-        <label className="inline-flex items-center gap-2 cursor-pointer text-white">
-          <input
-            type="radio"
-            name="sendChannel"
-            value="whatsapp"
-            checked={sendChannel === "whatsapp"}
-            onChange={() => setSendChannel("whatsapp")}
-            className="accent-primary"
-          />
-          <span className="form-label-inline">WhatsApp</span>
-        </label>
+      {/* Send via selector — only WhatsApp and Email */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <label className="text-sm font-medium mr-2 text-white">Send via:</label>
+        <div className="flex items-center gap-3">
+          <label className="inline-flex items-center gap-2 cursor-pointer text-white">
+            <input
+              type="radio"
+              name="sendChannel"
+              value="whatsapp"
+              checked={sendChannel === "whatsapp"}
+              onChange={() => setSendChannel("whatsapp")}
+              className="accent-primary"
+            />
+            <span>WhatsApp</span>
+          </label>
 
-        <label className="inline-flex items-center gap-2 cursor-pointer text-white">
-          <input
-            type="radio"
-            name="sendChannel"
-            value="email"
-            checked={sendChannel === "email"}
-            onChange={() => setSendChannel("email")}
-            className="accent-primary"
-          />
-          <span className="form-label-inline">Email</span>
-        </label>
+          <label className="inline-flex items-center gap-2 cursor-pointer text-white">
+            <input
+              type="radio"
+              name="sendChannel"
+              value="email"
+              checked={sendChannel === "email"}
+              onChange={() => setSendChannel("email")}
+              className="accent-primary"
+            />
+            <span>Email</span>
+          </label>
+        </div>
       </div>
-    </div>
 
-    <Button
-      type="submit"
-      className="w-full bg-red-700 hover:bg-red-600 text-white font-semibold"
-    >
-      Send Enquiry
-    </Button>
+      <Button
+        type="submit"
+        className="w-full bg-red-700 hover:bg-red-600 text-white font-semibold"
+        disabled={form.formState.isSubmitting}
+      >
+        Send Enquiry
+      </Button>
 
-    <p className="text-xs text-gray-400 text-center">
-      Your enquiry will be sent via the selected method.
-    </p>
-  </form>
+      <p className="text-xs text-gray-400 text-center">
+        Your enquiry will be sent via the selected method.
+      </p>
+    </form>
+  </Form>
 </div>
 
             </div>

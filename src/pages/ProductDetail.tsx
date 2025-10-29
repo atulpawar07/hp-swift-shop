@@ -170,7 +170,7 @@ const ProductDetail = () => {
           {/* Product Info */}
           <div className="space-y-6">
             <div>
-              <Badge variant="outline" className="mb-2">{product.category}</Badge>
+              <Badge variant="outline" className="mb-2 text-white">{product.category}</Badge>
               <h1 className="text-4xl font-bold mb-2">{product.name}</h1>
               <p className="text-gray-200">Brand: {product.brand}</p>
             </div>

@@ -71,6 +71,12 @@ const Navbar = () => {
           <div className="absolute top-[55%] right-[30%] w-20 h-20 md:w-28 md:h-28 opacity-10">
             <img src="/products/hp/HP M 236D Printer  600.00._ppppp.jpg" alt="" className="w-full h-full object-cover rounded-xl -rotate-[15deg] shadow-xl border-2 border-white/50" />
           </div>
+          <div className="absolute top-[15%] right-[40%] w-36 h-24 md:w-44 md:h-32 opacity-13">
+            <img src="/products/hp/HP M 4303FDW  1450.00_h.jpg" alt="" className="w-full h-full object-cover rounded-xl rotate-[10deg] shadow-xl border-2 border-white/50" />
+          </div>
+          <div className="absolute bottom-[35%] right-[12%] w-32 h-22 md:w-40 md:h-28 opacity-14">
+            <img src="/products/hp/HP M 28A  750.00..  1 QTY_HP-M-28A--750.00.--1-QTY.webp" alt="" className="w-full h-full object-cover rounded-xl -rotate-[8deg] shadow-xl border-2 border-white/50" />
+          </div>
           
           {/* Decorative circles/shapes */}
           <div className="absolute top-[20%] right-[2%] w-16 h-16 md:w-20 md:h-20 rounded-full bg-primary/5 blur-xl"></div>

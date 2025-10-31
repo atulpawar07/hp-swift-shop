@@ -48,8 +48,27 @@ const Navbar = () => {
       `}</style>
 
       {/* Top Bar with Logo and Contact */}
-      <div className="top-bar">
-        <div className="container mx-auto px-4 py-3 md:py-4">
+      <div className="top-bar relative overflow-hidden">
+        {/* Background Collage */}
+        <div className="absolute inset-0 opacity-[0.08] pointer-events-none">
+          <div className="absolute top-0 right-[5%] w-32 h-32 md:w-40 md:h-40">
+            <img src="/products/hp/HP M 102A Printer  600.00._hp52-e1755940257703.jpg" alt="" className="w-full h-full object-cover rounded-lg rotate-6 shadow-lg" />
+          </div>
+          <div className="absolute top-[20%] right-[25%] w-28 h-28 md:w-36 md:h-36">
+            <img src="/products/hp/HP M 178nw Printer  875.00._Untitled-design-12.jpg" alt="" className="w-full h-full object-cover rounded-lg -rotate-12 shadow-lg" />
+          </div>
+          <div className="absolute bottom-[10%] right-[10%] w-24 h-24 md:w-32 md:h-32">
+            <img src="/products/hp/HP M 182N Printer  900.00_Untitled-design-13.webp" alt="" className="w-full h-full object-cover rounded-lg rotate-3 shadow-lg" />
+          </div>
+          <div className="absolute top-[40%] right-[40%] w-20 h-20 md:w-28 md:h-28">
+            <img src="/products/hp/HP M 236D Printer  600.00._ppppp.jpg" alt="" className="w-full h-full object-cover rounded-lg -rotate-6 shadow-lg" />
+          </div>
+          <div className="absolute bottom-[30%] right-[20%] w-26 h-26 md:w-34 md:h-34">
+            <img src="/products/canon/Canon IJ MFP PIXMA G3410 EUME_Canon-IJ-MFP-PIXMA-G3410-EUMEMB-Printer.webp" alt="" className="w-full h-full object-cover rounded-lg rotate-12 shadow-lg" />
+          </div>
+        </div>
+
+        <div className="container mx-auto px-4 py-3 md:py-4 relative z-10">
           <div className="flex justify-between items-center gap-4">
             {/* Logo */}
             <Link

@@ -14,17 +14,37 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo-light.png";
 
 const Navbar = () => {
   const [cartCount] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [coverPhoto, setCoverPhoto] = useState<string>("");
   const location = useLocation();
   const { user, isAdmin, signOut } = useAuth();
+
+  useEffect(() => {
+    const fetchCoverPhoto = async () => {
+      const { data } = await supabase
+        .from("site_settings")
+        .select("setting_value")
+        .eq("setting_key", "cover_photo")
+        .maybeSingle();
+
+      if (data?.setting_value && typeof data.setting_value === 'object') {
+        const value = data.setting_value as { url?: string };
+        if (value.url) {
+          setCoverPhoto(value.url);
+        }
+      }
+    };
+    fetchCoverPhoto();
+  }, []);
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -48,41 +68,31 @@ const Navbar = () => {
       `}</style>
 
       {/* Top Bar with Logo and Contact */}
-      <div className="top-bar relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-blue-50">
-        {/* Decorative Pattern Background */}
-        <div className="absolute inset-0 opacity-[0.03]">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(0,0,0,.05) 35px, rgba(0,0,0,.05) 70px)`
-          }}></div>
-        </div>
+      <div className="top-bar relative overflow-hidden bg-white">
+        {/* Cover Photo Background */}
+        {coverPhoto ? (
+          <div className="absolute inset-0">
+            <img
+              src={coverPhoto}
+              alt="Cover"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/10 to-transparent"></div>
+          </div>
+        ) : (
+          <>
+            {/* Default gradient background if no cover photo */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-blue-50"></div>
+            <div className="absolute inset-0 opacity-[0.03]">
+              <div className="absolute inset-0" style={{
+                backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(0,0,0,.05) 35px, rgba(0,0,0,.05) 70px)`
+              }}></div>
+            </div>
+          </>
+        )}
 
-        {/* Product Collage - More visible */}
-        <div className="absolute inset-0 pointer-events-none">
-          {/* Laptop/Printer Images with better visibility */}
-          <div className="absolute top-[5%] right-[8%] w-28 h-28 md:w-36 md:h-36 opacity-15">
-            <img src="/products/hp/HP M 102A Printer  600.00._hp52-e1755940257703.jpg" alt="" className="w-full h-full object-cover rounded-xl rotate-[8deg] shadow-xl border-2 border-white/50" />
-          </div>
-          <div className="absolute top-[35%] right-[18%] w-32 h-32 md:w-40 md:h-40 opacity-12">
-            <img src="/products/hp/HP M 178nw Printer  875.00._Untitled-design-12.jpg" alt="" className="w-full h-full object-cover rounded-xl -rotate-[12deg] shadow-xl border-2 border-white/50" />
-          </div>
-          <div className="absolute bottom-[15%] right-[5%] w-24 h-24 md:w-32 md:h-32 opacity-15">
-            <img src="/products/canon/Canon IJ MFP PIXMA G3410 EUME_Canon-IJ-MFP-PIXMA-G3410-EUMEMB-Printer.webp" alt="" className="w-full h-full object-cover rounded-xl rotate-[6deg] shadow-xl border-2 border-white/50" />
-          </div>
-          <div className="absolute top-[55%] right-[30%] w-20 h-20 md:w-28 md:h-28 opacity-10">
-            <img src="/products/hp/HP M 236D Printer  600.00._ppppp.jpg" alt="" className="w-full h-full object-cover rounded-xl -rotate-[15deg] shadow-xl border-2 border-white/50" />
-          </div>
-          <div className="absolute top-[15%] right-[40%] w-36 h-24 md:w-44 md:h-32 opacity-13">
-            <img src="/products/hp/HP M 4303FDW  1450.00_h.jpg" alt="" className="w-full h-full object-cover rounded-xl rotate-[10deg] shadow-xl border-2 border-white/50" />
-          </div>
-          <div className="absolute bottom-[35%] right-[12%] w-32 h-22 md:w-40 md:h-28 opacity-14">
-            <img src="/products/hp/HP M 28A  750.00..  1 QTY_HP-M-28A--750.00.--1-QTY.webp" alt="" className="w-full h-full object-cover rounded-xl -rotate-[8deg] shadow-xl border-2 border-white/50" />
-          </div>
-          
-          {/* Decorative circles/shapes */}
-          <div className="absolute top-[20%] right-[2%] w-16 h-16 md:w-20 md:h-20 rounded-full bg-primary/5 blur-xl"></div>
-          <div className="absolute bottom-[25%] right-[25%] w-24 h-24 md:w-32 md:h-32 rounded-full bg-blue-500/5 blur-2xl"></div>
-          <div className="absolute top-[10%] right-[35%] w-20 h-20 rounded-full bg-red-500/5 blur-xl"></div>
-        </div>
+        {/* White background for logo area */}
+        <div className="absolute left-0 top-0 bottom-0 w-[320px] md:w-[450px] bg-white"></div>
 
         <div className="container mx-auto px-4 py-3 md:py-4 relative z-10">
           <div className="flex justify-between items-center gap-4">

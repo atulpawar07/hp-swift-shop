@@ -14,7 +14,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Plus, Edit, Trash2, Download, Upload } from 'lucide-react';
+import { Plus, Edit, Trash2, Download, Upload, Settings as SettingsIcon } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
 interface Product {
@@ -1747,11 +1747,28 @@ const AdminDashboard = () => {
 
           {/* Settings Tab */}
           <TabsContent value="settings">
-            <Card>
-              <CardHeader>
-                <CardTitle>Primary Contact Settings</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Site Settings</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Manage site-wide settings like navbar cover photo and more.
+                  </p>
+                  <Button asChild>
+                    <a href="/admin/settings">
+                      Go to Site Settings
+                    </a>
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Primary Contact Settings</CardTitle>
+                </CardHeader>
+                <CardContent>
                 <p className="text-sm text-muted-foreground mb-6">
                   Configure the primary contact details where all user enquiries and notifications will be sent.
                 </p>
@@ -1807,6 +1824,7 @@ const AdminDashboard = () => {
                 </form>
               </CardContent>
             </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>

@@ -48,24 +48,34 @@ const Navbar = () => {
       `}</style>
 
       {/* Top Bar with Logo and Contact */}
-      <div className="top-bar relative overflow-hidden">
-        {/* Background Collage */}
-        <div className="absolute inset-0 opacity-[0.08] pointer-events-none">
-          <div className="absolute top-0 right-[5%] w-32 h-32 md:w-40 md:h-40">
-            <img src="/products/hp/HP M 102A Printer  600.00._hp52-e1755940257703.jpg" alt="" className="w-full h-full object-cover rounded-lg rotate-6 shadow-lg" />
+      <div className="top-bar relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-blue-50">
+        {/* Decorative Pattern Background */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(0,0,0,.05) 35px, rgba(0,0,0,.05) 70px)`
+          }}></div>
+        </div>
+
+        {/* Product Collage - More visible */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Laptop/Printer Images with better visibility */}
+          <div className="absolute top-[5%] right-[8%] w-28 h-28 md:w-36 md:h-36 opacity-15">
+            <img src="/products/hp/HP M 102A Printer  600.00._hp52-e1755940257703.jpg" alt="" className="w-full h-full object-cover rounded-xl rotate-[8deg] shadow-xl border-2 border-white/50" />
           </div>
-          <div className="absolute top-[20%] right-[25%] w-28 h-28 md:w-36 md:h-36">
-            <img src="/products/hp/HP M 178nw Printer  875.00._Untitled-design-12.jpg" alt="" className="w-full h-full object-cover rounded-lg -rotate-12 shadow-lg" />
+          <div className="absolute top-[35%] right-[18%] w-32 h-32 md:w-40 md:h-40 opacity-12">
+            <img src="/products/hp/HP M 178nw Printer  875.00._Untitled-design-12.jpg" alt="" className="w-full h-full object-cover rounded-xl -rotate-[12deg] shadow-xl border-2 border-white/50" />
           </div>
-          <div className="absolute bottom-[10%] right-[10%] w-24 h-24 md:w-32 md:h-32">
-            <img src="/products/hp/HP M 182N Printer  900.00_Untitled-design-13.webp" alt="" className="w-full h-full object-cover rounded-lg rotate-3 shadow-lg" />
+          <div className="absolute bottom-[15%] right-[5%] w-24 h-24 md:w-32 md:h-32 opacity-15">
+            <img src="/products/canon/Canon IJ MFP PIXMA G3410 EUME_Canon-IJ-MFP-PIXMA-G3410-EUMEMB-Printer.webp" alt="" className="w-full h-full object-cover rounded-xl rotate-[6deg] shadow-xl border-2 border-white/50" />
           </div>
-          <div className="absolute top-[40%] right-[40%] w-20 h-20 md:w-28 md:h-28">
-            <img src="/products/hp/HP M 236D Printer  600.00._ppppp.jpg" alt="" className="w-full h-full object-cover rounded-lg -rotate-6 shadow-lg" />
+          <div className="absolute top-[55%] right-[30%] w-20 h-20 md:w-28 md:h-28 opacity-10">
+            <img src="/products/hp/HP M 236D Printer  600.00._ppppp.jpg" alt="" className="w-full h-full object-cover rounded-xl -rotate-[15deg] shadow-xl border-2 border-white/50" />
           </div>
-          <div className="absolute bottom-[30%] right-[20%] w-26 h-26 md:w-34 md:h-34">
-            <img src="/products/canon/Canon IJ MFP PIXMA G3410 EUME_Canon-IJ-MFP-PIXMA-G3410-EUMEMB-Printer.webp" alt="" className="w-full h-full object-cover rounded-lg rotate-12 shadow-lg" />
-          </div>
+          
+          {/* Decorative circles/shapes */}
+          <div className="absolute top-[20%] right-[2%] w-16 h-16 md:w-20 md:h-20 rounded-full bg-primary/5 blur-xl"></div>
+          <div className="absolute bottom-[25%] right-[25%] w-24 h-24 md:w-32 md:h-32 rounded-full bg-blue-500/5 blur-2xl"></div>
+          <div className="absolute top-[10%] right-[35%] w-20 h-20 rounded-full bg-red-500/5 blur-xl"></div>
         </div>
 
         <div className="container mx-auto px-4 py-3 md:py-4 relative z-10">

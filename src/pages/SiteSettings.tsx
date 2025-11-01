@@ -11,7 +11,7 @@ import { Upload, Image as ImageIcon, Info } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const SiteSettings = () => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, loading: authLoading } = useAuth();
   const [coverPhoto, setCoverPhoto] = useState<string>("");
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -103,6 +103,17 @@ const SiteSettings = () => {
       setUploading(false);
     }
   };
+
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAdmin) {
     return <Navigate to="/" replace />;

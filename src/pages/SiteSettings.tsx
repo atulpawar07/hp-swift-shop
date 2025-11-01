@@ -127,7 +127,7 @@ const SiteSettings = () => {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => navigate("/admin")}
+            onClick={() => navigate("/admin/dashboard")}
             className="hover:bg-accent"
           >
             <ArrowLeft className="h-5 w-5" />

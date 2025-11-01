@@ -24,26 +24,49 @@ import logo from "@/assets/logo-light.png";
 const Navbar = () => {
   const [cartCount] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [coverPhoto, setCoverPhoto] = useState<string>("");
+  const [coverPhotos, setCoverPhotos] = useState<{
+    desktop: { url: string; position: { x: number; y: number }; scale: number };
+    tablet: { url: string; position: { x: number; y: number }; scale: number };
+    mobile: { url: string; position: { x: number; y: number }; scale: number };
+  }>({
+    desktop: { url: "", position: { x: 0, y: 0 }, scale: 1 },
+    tablet: { url: "", position: { x: 0, y: 0 }, scale: 1 },
+    mobile: { url: "", position: { x: 0, y: 0 }, scale: 1 },
+  });
   const location = useLocation();
   const { user, isAdmin, signOut } = useAuth();
 
   useEffect(() => {
-    const fetchCoverPhoto = async () => {
-      const { data } = await supabase
-        .from("site_settings")
-        .select("setting_value")
-        .eq("setting_key", "cover_photo")
-        .maybeSingle();
+    const fetchCoverPhotos = async () => {
+      try {
+        const devices = ['desktop', 'tablet', 'mobile'] as const;
+        const newPhotos = { ...coverPhotos };
 
-      if (data?.setting_value && typeof data.setting_value === 'object') {
-        const value = data.setting_value as { url?: string };
-        if (value.url) {
-          setCoverPhoto(value.url);
+        for (const device of devices) {
+          const { data } = await supabase
+            .from("site_settings")
+            .select("setting_value")
+            .eq("setting_key", `cover_photo_${device}`)
+            .maybeSingle();
+
+          if (data?.setting_value) {
+            const value = data.setting_value as any;
+            if (value && typeof value === 'object' && 'url' in value) {
+              newPhotos[device] = {
+                url: value.url || "",
+                position: value.position || { x: 0, y: 0 },
+                scale: value.scale || 1,
+              };
+            }
+          }
         }
+
+        setCoverPhotos(newPhotos);
+      } catch (error) {
+        console.error("Error fetching cover photos:", error);
       }
     };
-    fetchCoverPhoto();
+    fetchCoverPhotos();
   }, []);
 
   const isActive = (path: string) => {
@@ -69,19 +92,58 @@ const Navbar = () => {
 
       {/* Top Bar with Logo and Contact */}
       <div className="top-bar relative overflow-hidden bg-white">
-        {/* Cover Photo Background */}
-        {coverPhoto ? (
-          <div className="absolute inset-0">
+        {/* Device-Specific Cover Photo Backgrounds */}
+        {/* Desktop Cover - hidden on tablet/mobile */}
+        {coverPhotos.desktop.url && (
+          <div className="absolute inset-0 hidden lg:block">
             <img
-              src={coverPhoto}
-              alt="Cover"
+              src={coverPhotos.desktop.url}
+              alt="Desktop Cover"
               className="w-full h-full object-cover"
+              style={{
+                transform: `scale(${coverPhotos.desktop.scale}) translate(${coverPhotos.desktop.position.x}%, ${coverPhotos.desktop.position.y}%)`,
+                transformOrigin: 'center center',
+              }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/10 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-black/5 to-transparent"></div>
           </div>
-        ) : (
+        )}
+
+        {/* Tablet Cover - shown on md to lg screens */}
+        {coverPhotos.tablet.url && (
+          <div className="absolute inset-0 hidden md:block lg:hidden">
+            <img
+              src={coverPhotos.tablet.url}
+              alt="Tablet Cover"
+              className="w-full h-full object-cover"
+              style={{
+                transform: `scale(${coverPhotos.tablet.scale}) translate(${coverPhotos.tablet.position.x}%, ${coverPhotos.tablet.position.y}%)`,
+                transformOrigin: 'center center',
+              }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/5 to-transparent"></div>
+          </div>
+        )}
+
+        {/* Mobile Cover - shown on small screens */}
+        {coverPhotos.mobile.url && (
+          <div className="absolute inset-0 md:hidden">
+            <img
+              src={coverPhotos.mobile.url}
+              alt="Mobile Cover"
+              className="w-full h-full object-cover"
+              style={{
+                transform: `scale(${coverPhotos.mobile.scale}) translate(${coverPhotos.mobile.position.x}%, ${coverPhotos.mobile.position.y}%)`,
+                transformOrigin: 'center center',
+              }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/5 to-transparent"></div>
+          </div>
+        )}
+
+        {/* Fallback gradient if no cover photos */}
+        {!coverPhotos.desktop.url && !coverPhotos.tablet.url && !coverPhotos.mobile.url && (
           <>
-            {/* Default gradient background if no cover photo */}
             <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-blue-50"></div>
             <div className="absolute inset-0 opacity-[0.03]">
               <div className="absolute inset-0" style={{

@@ -153,15 +153,12 @@ const Navbar = () => {
           </>
         )}
 
-        {/* White background for logo area */}
-        <div className="absolute left-0 top-0 bottom-0 w-[320px] md:w-[450px] bg-white"></div>
-
         <div className="container mx-auto px-4 py-3 md:py-4 relative z-10">
           <div className="flex justify-between items-center gap-4">
-            {/* Logo */}
+            {/* Logo with white background */}
             <Link
               to="/"
-              className="flex items-center flex-shrink-0"
+              className="flex items-center flex-shrink-0 bg-white rounded-lg px-3 py-2 shadow-sm"
             >
               <img
                 src={logo}

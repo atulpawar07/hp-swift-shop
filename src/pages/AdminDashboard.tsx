@@ -1020,7 +1020,7 @@ const AdminDashboard = () => {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 mt-4">
           <p>Loading...</p>
         </div>
         <Footer />
@@ -1036,7 +1036,7 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 mt-4">
         <Tabs defaultValue="products" className="w-full">
           <TabsList className="grid w-full grid-cols-6 mb-4">
             <TabsTrigger value="products">Products</TabsTrigger>

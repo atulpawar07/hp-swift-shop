@@ -199,9 +199,9 @@ const SiteSettings = () => {
 
   const getDevicePreviewSize = (device: DeviceType) => {
     switch (device) {
-      case 'desktop': return { width: '100%', height: '150px' };
-      case 'tablet': return { width: '768px', height: '140px' };
-      case 'mobile': return { width: '375px', height: '120px' };
+      case 'desktop': return { width: '100%', height: '180px' }; // Increased to match actual navbar
+      case 'tablet': return { width: '768px', height: '170px' }; // Increased to match actual navbar
+      case 'mobile': return { width: '375px', height: '160px' }; // Increased to match actual navbar
     }
   };
 
@@ -252,9 +252,9 @@ const SiteSettings = () => {
                 <div>
                   <strong className="text-base block mb-2">📐 Recommended Image Sizes:</strong>
                   <ul className="space-y-1.5 ml-4">
-                    <li><strong>Desktop:</strong> 1920 × 150 pixels (width × height)</li>
-                    <li><strong>Tablet:</strong> 1024 × 140 pixels (width × height)</li>
-                    <li><strong>Mobile:</strong> 768 × 120 pixels (width × height)</li>
+                    <li><strong>Desktop:</strong> 1920 × 180 pixels (width × height)</li>
+                    <li><strong>Tablet:</strong> 1024 × 170 pixels (width × height)</li>
+                    <li><strong>Mobile:</strong> 768 × 160 pixels (width × height)</li>
                   </ul>
                 </div>
                 <div className="pt-2 border-t border-blue-200 dark:border-blue-800">

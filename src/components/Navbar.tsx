@@ -169,12 +169,12 @@ const Navbar = () => {
 
             {/* Contact Info & Actions */}
             <div className="flex items-center gap-2 md:gap-4">
-              {/* WhatsApp Contact - Hidden on very small screens */}
+              {/* WhatsApp Contact - Always visible */}
               <a
                 href="https://wa.me/971563569089"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:flex items-center gap-1.5 px-2.5 md:px-3 py-1.5 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-all hover:scale-105 shadow-sm"
+                className="flex items-center gap-1.5 px-2.5 md:px-3 py-1.5 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-all hover:scale-105 shadow-sm"
                 title="Chat with us on WhatsApp"
               >
                 <MessageCircle className="h-4 w-4 flex-shrink-0" fill="currentColor" />
@@ -229,23 +229,9 @@ const Navbar = () => {
                   )}
                 </Button>
               </Link>
-            </div>
-          </div>
-
-          {/* WhatsApp Contact for very small screens */}
-          <div className="sm:hidden mt-2">
-            <a
-              href="https://wa.me/971563569089"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-all active:scale-95 shadow-sm"
-              title="Chat with us on WhatsApp"
-            >
-              <MessageCircle className="h-4 w-4 flex-shrink-0" fill="currentColor" />
-              <span className="font-semibold text-sm">WhatsApp</span>
-            </a>
           </div>
         </div>
+      </div>
       </div>
 
       {/* Desktop Navigation Bar */}

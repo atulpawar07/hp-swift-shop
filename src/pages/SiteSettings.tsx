@@ -246,16 +246,27 @@ const SiteSettings = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <Alert>
-              <Info className="h-4 w-4" />
-              <AlertDescription>
-                <strong>Recommended sizes:</strong>
-                <br />
-                • Desktop: 1920x150px | Tablet: 1024x140px | Mobile: 768x120px
-                <br />
-                Maximum file size: 5MB. Supported formats: JPG, PNG, WEBP
-                <br />
-                The logo area will maintain a white background for visibility.
+            <Alert className="bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
+              <Info className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <AlertDescription className="text-sm space-y-2">
+                <div>
+                  <strong className="text-base block mb-2">📐 Recommended Image Sizes:</strong>
+                  <ul className="space-y-1.5 ml-4">
+                    <li><strong>Desktop:</strong> 1920 × 150 pixels (width × height)</li>
+                    <li><strong>Tablet:</strong> 1024 × 140 pixels (width × height)</li>
+                    <li><strong>Mobile:</strong> 768 × 120 pixels (width × height)</li>
+                  </ul>
+                </div>
+                <div className="pt-2 border-t border-blue-200 dark:border-blue-800">
+                  <p><strong>Guidelines:</strong></p>
+                  <ul className="ml-4 mt-1 space-y-1">
+                    <li>• Maximum file size: 5MB</li>
+                    <li>• Supported formats: JPG, PNG, WEBP</li>
+                    <li>• Use landscape images for best results</li>
+                    <li>• After upload, use sliders to adjust position & scale</li>
+                    <li>• Logo area keeps white background for visibility</li>
+                  </ul>
+                </div>
               </AlertDescription>
             </Alert>
 

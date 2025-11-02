@@ -33,24 +33,35 @@ const Navbar = () => {
     tablet: { url: "", position: { x: 0, y: 0 }, scale: 1 },
     mobile: { url: "", position: { x: 0, y: 0 }, scale: 1 },
   });
+  const [logos, setLogos] = useState<{
+    desktop: { url: string; position: { x: number; y: number }; scale: number };
+    tablet: { url: string; position: { x: number; y: number }; scale: number };
+    mobile: { url: string; position: { x: number; y: number }; scale: number };
+  }>({
+    desktop: { url: logo, position: { x: 0, y: 0 }, scale: 1 },
+    tablet: { url: logo, position: { x: 0, y: 0 }, scale: 1 },
+    mobile: { url: logo, position: { x: 0, y: 0 }, scale: 1 },
+  });
   const location = useLocation();
   const { user, isAdmin, signOut } = useAuth();
 
   useEffect(() => {
-    const fetchCoverPhotos = async () => {
+    const fetchSettings = async () => {
       try {
         const devices = ['desktop', 'tablet', 'mobile'] as const;
         const newPhotos = { ...coverPhotos };
+        const newLogos = { ...logos };
 
         for (const device of devices) {
-          const { data } = await supabase
+          // Fetch cover photos
+          const { data: coverData } = await supabase
             .from("site_settings")
             .select("setting_value")
             .eq("setting_key", `cover_photo_${device}`)
             .maybeSingle();
 
-          if (data?.setting_value) {
-            const value = data.setting_value as any;
+          if (coverData?.setting_value) {
+            const value = coverData.setting_value as any;
             if (value && typeof value === 'object' && 'url' in value) {
               newPhotos[device] = {
                 url: value.url || "",
@@ -59,14 +70,33 @@ const Navbar = () => {
               };
             }
           }
+
+          // Fetch logos
+          const { data: logoData } = await supabase
+            .from("site_settings")
+            .select("setting_value")
+            .eq("setting_key", `logo_${device}`)
+            .maybeSingle();
+
+          if (logoData?.setting_value) {
+            const value = logoData.setting_value as any;
+            if (value && typeof value === 'object' && 'url' in value) {
+              newLogos[device] = {
+                url: value.url || logo,
+                position: value.position || { x: 0, y: 0 },
+                scale: value.scale || 1,
+              };
+            }
+          }
         }
 
         setCoverPhotos(newPhotos);
+        setLogos(newLogos);
       } catch (error) {
-        console.error("Error fetching cover photos:", error);
+        console.error("Error fetching settings:", error);
       }
     };
-    fetchCoverPhotos();
+    fetchSettings();
   }, []);
 
   const isActive = (path: string) => {
@@ -155,15 +185,51 @@ const Navbar = () => {
 
         <div className="container mx-auto px-4 py-3 md:py-4 relative z-10">
           <div className="flex justify-between items-center gap-4">
-            {/* Logo with white background */}
+            {/* Logo with white background - Desktop */}
             <Link
               to="/"
-              className="flex items-center flex-shrink-0 bg-white rounded-lg px-3 py-2 shadow-sm"
+              className="hidden lg:flex items-center flex-shrink-0 bg-white rounded-lg px-3 py-2 shadow-sm"
             >
               <img
-                src={logo}
+                src={logos.desktop.url}
                 alt="SK Enterprise"
-                className="h-20 md:h-28 lg:h-32 w-auto object-contain max-w-[280px] md:max-w-[400px]"
+                className="h-20 md:h-28 lg:h-32 w-auto object-contain max-w-[280px] md:max-w-[400px] transition-transform duration-200"
+                style={{
+                  transform: `scale(${logos.desktop.scale}) translate(${logos.desktop.position.x}%, ${logos.desktop.position.y}%)`,
+                  transformOrigin: 'center center',
+                }}
+              />
+            </Link>
+
+            {/* Logo with white background - Tablet */}
+            <Link
+              to="/"
+              className="hidden md:flex lg:hidden items-center flex-shrink-0 bg-white rounded-lg px-3 py-2 shadow-sm"
+            >
+              <img
+                src={logos.tablet.url}
+                alt="SK Enterprise"
+                className="h-20 md:h-28 w-auto object-contain max-w-[280px] md:max-w-[400px] transition-transform duration-200"
+                style={{
+                  transform: `scale(${logos.tablet.scale}) translate(${logos.tablet.position.x}%, ${logos.tablet.position.y}%)`,
+                  transformOrigin: 'center center',
+                }}
+              />
+            </Link>
+
+            {/* Logo with white background - Mobile */}
+            <Link
+              to="/"
+              className="md:hidden flex items-center flex-shrink-0 bg-white rounded-lg px-3 py-2 shadow-sm"
+            >
+              <img
+                src={logos.mobile.url}
+                alt="SK Enterprise"
+                className="h-20 w-auto object-contain max-w-[280px] transition-transform duration-200"
+                style={{
+                  transform: `scale(${logos.mobile.scale}) translate(${logos.mobile.position.x}%, ${logos.mobile.position.y}%)`,
+                  transformOrigin: 'center center',
+                }}
               />
             </Link>
 

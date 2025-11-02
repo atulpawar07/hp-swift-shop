@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,6 +18,12 @@ interface CoverPhotoSettings {
   scale: number;
 }
 
+interface LogoSettings {
+  url: string;
+  position: { x: number; y: number };
+  scale: number;
+}
+
 type DeviceType = 'desktop' | 'tablet' | 'mobile';
 
 const SiteSettings = () => {
@@ -28,15 +34,16 @@ const SiteSettings = () => {
     tablet: { url: "", position: { x: 0, y: 0 }, scale: 1 },
     mobile: { url: "", position: { x: 0, y: 0 }, scale: 1 },
   });
+  const [logos, setLogos] = useState<Record<DeviceType, LogoSettings>>({
+    desktop: { url: "", position: { x: 0, y: 0 }, scale: 1 },
+    tablet: { url: "", position: { x: 0, y: 0 }, scale: 1 },
+    mobile: { url: "", position: { x: 0, y: 0 }, scale: 1 },
+  });
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeDevice, setActiveDevice] = useState<DeviceType>('desktop');
-  const [adjusting, setAdjusting] = useState<DeviceType | null>(null);
-  const imageRefs = useRef<Record<DeviceType, HTMLImageElement | null>>({
-    desktop: null,
-    tablet: null,
-    mobile: null,
-  });
+  const [adjustingType, setAdjustingType] = useState<'cover' | 'logo' | null>(null);
+  const [adjustingDevice, setAdjustingDevice] = useState<DeviceType | null>(null);
 
   useEffect(() => {
     fetchCoverPhotos();
@@ -46,18 +53,38 @@ const SiteSettings = () => {
     try {
       const devices: DeviceType[] = ['desktop', 'tablet', 'mobile'];
       const newCoverPhotos = { ...coverPhotos };
+      const newLogos = { ...logos };
 
       for (const device of devices) {
-        const { data, error } = await supabase
+        // Fetch cover photo
+        const { data: coverData } = await supabase
           .from("site_settings")
           .select("setting_value")
           .eq("setting_key", `cover_photo_${device}`)
           .maybeSingle();
 
-        if (!error && data?.setting_value) {
-          const value = data.setting_value as any;
+        if (coverData?.setting_value) {
+          const value = coverData.setting_value as any;
           if (value && typeof value === 'object' && 'url' in value) {
             newCoverPhotos[device] = {
+              url: value.url || "",
+              position: value.position || { x: 0, y: 0 },
+              scale: value.scale || 1,
+            };
+          }
+        }
+
+        // Fetch logo
+        const { data: logoData } = await supabase
+          .from("site_settings")
+          .select("setting_value")
+          .eq("setting_key", `logo_${device}`)
+          .maybeSingle();
+
+        if (logoData?.setting_value) {
+          const value = logoData.setting_value as any;
+          if (value && typeof value === 'object' && 'url' in value) {
+            newLogos[device] = {
               url: value.url || "",
               position: value.position || { x: 0, y: 0 },
               scale: value.scale || 1,
@@ -67,8 +94,9 @@ const SiteSettings = () => {
       }
 
       setCoverPhotos(newCoverPhotos);
+      setLogos(newLogos);
     } catch (error) {
-      console.error("Error fetching cover photos:", error);
+      console.error("Error fetching settings:", error);
     } finally {
       setLoading(false);
     }
@@ -152,37 +180,113 @@ const SiteSettings = () => {
     }
   };
 
-  const handleAdjustmentChange = async (device: DeviceType, field: 'x' | 'y' | 'scale', value: number) => {
-    const updated = { ...coverPhotos[device] };
-    
-    if (field === 'scale') {
-      updated.scale = value;
-    } else {
-      updated.position[field] = value;
+  const handleFileUploadLogo = async (event: React.ChangeEvent<HTMLInputElement>, device: DeviceType) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size must be less than 5MB");
+      return;
     }
 
-    setCoverPhotos(prev => ({
-      ...prev,
-      [device]: updated,
-    }));
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file");
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      if (logos[device].url) {
+        const oldPath = logos[device].url.split("/").pop();
+        if (oldPath) {
+          await supabase.storage.from("site-assets").remove([`logos/${oldPath}`]);
+        }
+      }
+
+      const fileExt = file.name.split(".").pop();
+      const fileName = `logo-${device}-${Date.now()}.${fileExt}`;
+      const filePath = `logos/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("site-assets")
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("site-assets")
+        .getPublicUrl(filePath);
+
+      const newSettings: LogoSettings = {
+        url: publicUrl,
+        position: { x: 0, y: 0 },
+        scale: 1,
+      };
+
+      const { error: dbError } = await supabase
+        .from("site_settings")
+        .upsert([{
+          setting_key: `logo_${device}`,
+          setting_value: newSettings as any,
+          updated_by: (await supabase.auth.getUser()).data.user?.id,
+        }], { onConflict: "setting_key" });
+
+      if (dbError) throw dbError;
+
+      setLogos(prev => ({ ...prev, [device]: newSettings }));
+      toast.success(`${device.charAt(0).toUpperCase() + device.slice(1)} logo updated successfully`);
+    } catch (error) {
+      console.error("Error uploading logo:", error);
+      toast.error("Failed to upload logo");
+    } finally {
+      setUploading(false);
+    }
   };
 
-  const saveAdjustments = async (device: DeviceType) => {
+  const handleAdjustmentChange = async (
+    type: 'cover' | 'logo',
+    device: DeviceType,
+    field: 'x' | 'y' | 'scale',
+    value: number
+  ) => {
+    if (type === 'cover') {
+      const updated = { ...coverPhotos[device] };
+      if (field === 'scale') {
+        updated.scale = value;
+      } else {
+        updated.position[field] = value;
+      }
+      setCoverPhotos(prev => ({ ...prev, [device]: updated }));
+    } else {
+      const updated = { ...logos[device] };
+      if (field === 'scale') {
+        updated.scale = value;
+      } else {
+        updated.position[field] = value;
+      }
+      setLogos(prev => ({ ...prev, [device]: updated }));
+    }
+  };
+
+  const saveAdjustments = async (type: 'cover' | 'logo', device: DeviceType) => {
     try {
+      const settingKey = type === 'cover' ? `cover_photo_${device}` : `logo_${device}`;
+      const settingValue = type === 'cover' ? coverPhotos[device] : logos[device];
+
       const { error } = await supabase
         .from("site_settings")
         .upsert([{
-          setting_key: `cover_photo_${device}`,
-          setting_value: coverPhotos[device] as any,
+          setting_key: settingKey,
+          setting_value: settingValue as any,
           updated_by: (await supabase.auth.getUser()).data.user?.id,
-        }], {
-          onConflict: "setting_key",
-        });
+        }], { onConflict: "setting_key" });
 
       if (error) throw error;
 
       toast.success("Adjustments saved successfully");
-      setAdjusting(null);
+      setAdjustingType(null);
+      setAdjustingDevice(null);
     } catch (error) {
       console.error("Error saving adjustments:", error);
       toast.error("Failed to save adjustments");
@@ -284,31 +388,169 @@ const SiteSettings = () => {
               </TabsList>
 
               {(['desktop', 'tablet', 'mobile'] as DeviceType[]).map((device) => (
-                <TabsContent key={device} value={device} className="space-y-4">
-                  {/* Upload Section */}
-                  <div className="space-y-2">
-                    <Label htmlFor={`cover-upload-${device}`}>Upload {device.charAt(0).toUpperCase() + device.slice(1)} Cover Photo</Label>
-                    <div className="flex items-center gap-2">
-                      <Input
-                        id={`cover-upload-${device}`}
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleFileUpload(e, device)}
-                        disabled={uploading}
-                        className="flex-1"
-                      />
-                      <Button disabled={uploading}>
-                        <Upload className="h-4 w-4 mr-2" />
-                        {uploading ? "Uploading..." : "Upload"}
-                      </Button>
-                    </div>
-                  </div>
+                <TabsContent key={device} value={device} className="space-y-6">
+                  {/* Cover Photo Upload */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Cover Photo</CardTitle>
+                      <CardDescription>Background image for the navbar</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Input
+                            id={`cover-upload-${device}`}
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileUpload(e, device)}
+                            disabled={uploading}
+                            className="flex-1"
+                          />
+                          <Button disabled={uploading} size="sm">
+                            <Upload className="h-4 w-4 mr-2" />
+                            Upload
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      {coverPhotos[device].url && adjustingType === 'cover' && adjustingDevice === device && (
+                        <div className="space-y-3 pt-2 border-t">
+                          <Label className="text-sm font-semibold">Adjust Cover Photo</Label>
+                          <div className="space-y-2">
+                            <Label className="text-xs">Horizontal: {coverPhotos[device].position.x}%</Label>
+                            <Slider
+                              value={[coverPhotos[device].position.x]}
+                              onValueChange={([value]) => handleAdjustmentChange('cover', device, 'x', value)}
+                              min={-50}
+                              max={50}
+                              step={1}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-xs">Vertical: {coverPhotos[device].position.y}%</Label>
+                            <Slider
+                              value={[coverPhotos[device].position.y]}
+                              onValueChange={([value]) => handleAdjustmentChange('cover', device, 'y', value)}
+                              min={-50}
+                              max={50}
+                              step={1}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-xs">Scale: {coverPhotos[device].scale.toFixed(2)}x</Label>
+                            <Slider
+                              value={[coverPhotos[device].scale]}
+                              onValueChange={([value]) => handleAdjustmentChange('cover', device, 'scale', value)}
+                              min={0.5}
+                              max={3}
+                              step={0.1}
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <Button onClick={() => saveAdjustments('cover', device)} size="sm" className="flex-1">Save</Button>
+                            <Button variant="outline" onClick={() => { setAdjustingType(null); setAdjustingDevice(null); }} size="sm" className="flex-1">Cancel</Button>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {coverPhotos[device].url && !(adjustingType === 'cover' && adjustingDevice === device) && (
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => { setAdjustingType('cover'); setAdjustingDevice(device); }}
+                          className="w-full"
+                        >
+                          Adjust Cover Photo
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Logo Upload */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base">Logo</CardTitle>
+                      <CardDescription>Logo image that appears over the cover</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Input
+                            id={`logo-upload-${device}`}
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileUploadLogo(e, device)}
+                            disabled={uploading}
+                            className="flex-1"
+                          />
+                          <Button disabled={uploading} size="sm">
+                            <Upload className="h-4 w-4 mr-2" />
+                            Upload
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      {logos[device].url && adjustingType === 'logo' && adjustingDevice === device && (
+                        <div className="space-y-3 pt-2 border-t">
+                          <Label className="text-sm font-semibold">Adjust Logo</Label>
+                          <div className="space-y-2">
+                            <Label className="text-xs">Horizontal: {logos[device].position.x}%</Label>
+                            <Slider
+                              value={[logos[device].position.x]}
+                              onValueChange={([value]) => handleAdjustmentChange('logo', device, 'x', value)}
+                              min={-50}
+                              max={50}
+                              step={1}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-xs">Vertical: {logos[device].position.y}%</Label>
+                            <Slider
+                              value={[logos[device].position.y]}
+                              onValueChange={([value]) => handleAdjustmentChange('logo', device, 'y', value)}
+                              min={-50}
+                              max={50}
+                              step={1}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-xs">Scale: {logos[device].scale.toFixed(2)}x</Label>
+                            <Slider
+                              value={[logos[device].scale]}
+                              onValueChange={([value]) => handleAdjustmentChange('logo', device, 'scale', value)}
+                              min={0.5}
+                              max={3}
+                              step={0.1}
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <Button onClick={() => saveAdjustments('logo', device)} size="sm" className="flex-1">Save</Button>
+                            <Button variant="outline" onClick={() => { setAdjustingType(null); setAdjustingDevice(null); }} size="sm" className="flex-1">Cancel</Button>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {logos[device].url && !(adjustingType === 'logo' && adjustingDevice === device) && (
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => { setAdjustingType('logo'); setAdjustingDevice(device); }}
+                          className="w-full"
+                        >
+                          Adjust Logo
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
 
                   {/* Preview Section */}
-                  {coverPhotos[device].url && (
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Label>Preview - How it will look on {device}</Label>
+                  {(coverPhotos[device].url || logos[device].url) && (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-base">Live Preview</CardTitle>
+                        <CardDescription>How the navbar will look on {device}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
                         <div 
                           className="relative mx-auto rounded-lg overflow-hidden border-2 border-border shadow-lg"
                           style={{
@@ -316,91 +558,46 @@ const SiteSettings = () => {
                             height: getDevicePreviewSize(device).height,
                           }}
                         >
-                          {/* Cover Photo with adjustments */}
+                          {/* Cover Photo */}
                           <div className="absolute inset-0 overflow-hidden bg-gradient-to-br from-white via-gray-50 to-blue-50">
-                            <img
-                              ref={(el) => imageRefs.current[device] = el}
-                              src={coverPhotos[device].url}
-                              alt={`${device} cover preview`}
-                              className="w-full h-full object-cover transition-transform duration-200"
-                              style={{
-                                transform: `scale(${coverPhotos[device].scale}) translate(${coverPhotos[device].position.x}%, ${coverPhotos[device].position.y}%)`,
-                                transformOrigin: 'center center',
-                              }}
-                            />
+                            {coverPhotos[device].url && (
+                              <img
+                                src={coverPhotos[device].url}
+                                alt={`${device} cover preview`}
+                                className="w-full h-full object-cover transition-transform duration-200"
+                                style={{
+                                  transform: `scale(${coverPhotos[device].scale}) translate(${coverPhotos[device].position.x}%, ${coverPhotos[device].position.y}%)`,
+                                  transformOrigin: 'center center',
+                                }}
+                              />
+                            )}
                           </div>
                           
-                          {/* Logo area overlay */}
-                          <div className="absolute left-0 top-0 bottom-0 bg-white" 
-                               style={{ width: device === 'mobile' ? '180px' : device === 'tablet' ? '280px' : '380px' }}>
-                            <div className="flex items-center justify-center h-full px-4">
-                              <span className="text-xs text-muted-foreground">Logo Area</span>
-                            </div>
+                          {/* Logo layer with white background */}
+                          <div className="absolute left-4 top-1/2 -translate-y-1/2 bg-white rounded-lg px-3 py-2 shadow-sm" 
+                               style={{ 
+                                 maxWidth: device === 'mobile' ? '160px' : device === 'tablet' ? '260px' : '340px',
+                                 height: device === 'mobile' ? '80px' : device === 'tablet' ? '110px' : '130px'
+                               }}>
+                            {logos[device].url ? (
+                              <img
+                                src={logos[device].url}
+                                alt={`${device} logo preview`}
+                                className="w-full h-full object-contain transition-transform duration-200"
+                                style={{
+                                  transform: `scale(${logos[device].scale}) translate(${logos[device].position.x}%, ${logos[device].position.y}%)`,
+                                  transformOrigin: 'center center',
+                                }}
+                              />
+                            ) : (
+                              <div className="flex items-center justify-center h-full">
+                                <span className="text-xs text-muted-foreground">No logo</span>
+                              </div>
+                            )}
                           </div>
                         </div>
-                      </div>
-
-                      {/* Adjustment Controls */}
-                      {adjusting === device ? (
-                        <Card className="border-primary">
-                          <CardHeader>
-                            <CardTitle className="text-base">Adjust Image Position & Scale</CardTitle>
-                            <CardDescription>Fine-tune how the image appears</CardDescription>
-                          </CardHeader>
-                          <CardContent className="space-y-4">
-                            <div className="space-y-2">
-                              <Label>Horizontal Position: {coverPhotos[device].position.x}%</Label>
-                              <Slider
-                                value={[coverPhotos[device].position.x]}
-                                onValueChange={([value]) => handleAdjustmentChange(device, 'x', value)}
-                                min={-50}
-                                max={50}
-                                step={1}
-                                className="w-full"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label>Vertical Position: {coverPhotos[device].position.y}%</Label>
-                              <Slider
-                                value={[coverPhotos[device].position.y]}
-                                onValueChange={([value]) => handleAdjustmentChange(device, 'y', value)}
-                                min={-50}
-                                max={50}
-                                step={1}
-                                className="w-full"
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <Label>Scale: {coverPhotos[device].scale.toFixed(2)}x</Label>
-                              <Slider
-                                value={[coverPhotos[device].scale]}
-                                onValueChange={([value]) => handleAdjustmentChange(device, 'scale', value)}
-                                min={0.5}
-                                max={3}
-                                step={0.1}
-                                className="w-full"
-                              />
-                            </div>
-                            <div className="flex gap-2">
-                              <Button onClick={() => saveAdjustments(device)} className="flex-1">
-                                Save Adjustments
-                              </Button>
-                              <Button variant="outline" onClick={() => setAdjusting(null)} className="flex-1">
-                                Cancel
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ) : (
-                        <Button 
-                          variant="outline" 
-                          onClick={() => setAdjusting(device)}
-                          className="w-full"
-                        >
-                          Adjust Position & Scale
-                        </Button>
-                      )}
-                    </div>
+                      </CardContent>
+                    </Card>
                   )}
                 </TabsContent>
               ))}

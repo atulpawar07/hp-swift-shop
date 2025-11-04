@@ -121,11 +121,11 @@ const Navbar = () => {
       `}</style>
 
       {/* Top Bar with Logo and Contact */}
-      <div className="top-bar relative overflow-hidden bg-white min-h-[160px] md:min-h-[170px] lg:min-h-[180px]">
+      <div className="top-bar relative overflow-hidden bg-white">
         {/* Device-Specific Cover Photo Backgrounds */}
         {/* Desktop Cover - hidden on tablet/mobile */}
         {coverPhotos.desktop.url && (
-          <div className="absolute inset-0 hidden lg:block z-0">
+          <div className="absolute inset-0 hidden lg:block">
             <img
               src={coverPhotos.desktop.url}
               alt="Desktop Cover"
@@ -141,7 +141,7 @@ const Navbar = () => {
 
         {/* Tablet Cover - shown on md to lg screens */}
         {coverPhotos.tablet.url && (
-          <div className="absolute inset-0 hidden md:block lg:hidden z-0">
+          <div className="absolute inset-0 hidden md:block lg:hidden">
             <img
               src={coverPhotos.tablet.url}
               alt="Tablet Cover"
@@ -157,7 +157,7 @@ const Navbar = () => {
 
         {/* Mobile Cover - shown on small screens */}
         {coverPhotos.mobile.url && (
-          <div className="absolute inset-0 md:hidden z-0">
+          <div className="absolute inset-0 md:hidden">
             <img
               src={coverPhotos.mobile.url}
               alt="Mobile Cover"
@@ -174,8 +174,8 @@ const Navbar = () => {
         {/* Fallback gradient if no cover photos */}
         {!coverPhotos.desktop.url && !coverPhotos.tablet.url && !coverPhotos.mobile.url && (
           <>
-            <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-blue-50 z-0"></div>
-            <div className="absolute inset-0 opacity-[0.03] z-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-blue-50"></div>
+            <div className="absolute inset-0 opacity-[0.03]">
               <div className="absolute inset-0" style={{
                 backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(0,0,0,.05) 35px, rgba(0,0,0,.05) 70px)`
               }}></div>

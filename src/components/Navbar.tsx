@@ -240,11 +240,11 @@ const Navbar = () => {
                 href="https://wa.me/971563569089"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-2.5 md:px-3 py-1.5 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-all hover:scale-105 shadow-sm"
+                className="flex items-center gap-1.5 px-2.5 md:px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white border border-green-500 transition-colors shadow-sm font-semibold"
                 title="Chat with us on WhatsApp"
               >
-                <MessageCircle className="h-4 w-4 flex-shrink-0" fill="currentColor" />
-                <span className="font-semibold text-xs md:text-sm whitespace-nowrap">WhatsApp</span>
+                <MessageCircle className="h-4 w-4 flex-shrink-0" />
+                <span className="text-xs md:text-sm whitespace-nowrap">WhatsApp</span>
               </a>
 
               {/* User Actions - Compact on mobile */}

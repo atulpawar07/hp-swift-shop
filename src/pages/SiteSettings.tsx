@@ -147,31 +147,23 @@ const SiteSettings = () => {
         .from("site-assets")
         .getPublicUrl(filePath);
 
-      // Save to database
+      // Update local state with preview (not saved to DB yet)
       const newSettings: CoverPhotoSettings = {
         url: publicUrl,
         position: { x: 0, y: 0 },
         scale: 1,
       };
 
-      const { error: dbError } = await supabase
-        .from("site_settings")
-        .upsert([{
-          setting_key: `cover_photo_${device}`,
-          setting_value: newSettings as any,
-          updated_by: (await supabase.auth.getUser()).data.user?.id,
-        }], {
-          onConflict: "setting_key",
-        });
-
-      if (dbError) throw dbError;
-
       setCoverPhotos(prev => ({
         ...prev,
         [device]: newSettings,
       }));
       
-      toast.success(`${device.charAt(0).toUpperCase() + device.slice(1)} cover photo updated successfully`);
+      // Automatically open adjustment controls
+      setAdjustingType('cover');
+      setAdjustingDevice(device);
+      
+      toast.success(`Cover photo uploaded. Adjust position and click Save to apply.`);
     } catch (error) {
       console.error("Error uploading cover photo:", error);
       toast.error("Failed to upload cover photo");
@@ -218,24 +210,20 @@ const SiteSettings = () => {
         .from("site-assets")
         .getPublicUrl(filePath);
 
+      // Update local state with preview (not saved to DB yet)
       const newSettings: LogoSettings = {
         url: publicUrl,
         position: { x: 0, y: 0 },
         scale: 1,
       };
 
-      const { error: dbError } = await supabase
-        .from("site_settings")
-        .upsert([{
-          setting_key: `logo_${device}`,
-          setting_value: newSettings as any,
-          updated_by: (await supabase.auth.getUser()).data.user?.id,
-        }], { onConflict: "setting_key" });
-
-      if (dbError) throw dbError;
-
       setLogos(prev => ({ ...prev, [device]: newSettings }));
-      toast.success(`${device.charAt(0).toUpperCase() + device.slice(1)} logo updated successfully`);
+      
+      // Automatically open adjustment controls
+      setAdjustingType('logo');
+      setAdjustingDevice(device);
+      
+      toast.success(`Logo uploaded. Adjust position and click Save to apply.`);
     } catch (error) {
       console.error("Error uploading logo:", error);
       toast.error("Failed to upload logo");

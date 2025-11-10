@@ -5,13 +5,21 @@ import { CheckCircle } from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
 import { EditButton } from "@/components/admin/EditButton";
 import { ContentEditor } from "@/components/admin/ContentEditor";
+import { useUser } from "@/hooks/useUser"; // assumed hook that provides isAdmin (see note below)
 
 const About = () => {
   const { content: heroContent, updateContent: updateHero } = usePageContent('about', 'hero');
   const { content: storyContent, updateContent: updateStory } = usePageContent('about', 'story');
-  
+  const { content: visionContent, updateContent: updateVision } = usePageContent('about', 'vision');
+  const { content: missionContent, updateContent: updateMission } = usePageContent('about', 'mission');
+
   const [editingHero, setEditingHero] = useState(false);
   const [editingStory, setEditingStory] = useState(false);
+  const [editingVision, setEditingVision] = useState(false);
+  const [editingMission, setEditingMission] = useState(false);
+
+  // get admin flag from your auth/user hook
+  const { isAdmin } = useUser() as { isAdmin?: boolean };
 
   const features = [
     "Worldwide Sourcing",
@@ -38,7 +46,9 @@ const About = () => {
                   {heroContent?.description || 'Your trusted partner in IT distribution across UAE'}
                 </p>
               </div>
-              <EditButton onClick={() => setEditingHero(true)} />
+
+              {/* show edit only for admin */}
+              {isAdmin && <EditButton onClick={() => setEditingHero(true)} />}
             </div>
           </div>
         </section>
@@ -60,7 +70,7 @@ const About = () => {
                   <h2 className="text-3xl font-bold text-white">
                     {storyContent?.title || 'Who We Are'}
                   </h2>
-                  <EditButton onClick={() => setEditingStory(true)} />
+                  {isAdmin && <EditButton onClick={() => setEditingStory(true)} />}
                 </div>
                 
                 <p className="text-gray-200 mb-6 leading-relaxed whitespace-pre-line">
@@ -87,15 +97,21 @@ const About = () => {
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-2xl font-bold text-white mb-4">Our Vision</h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-2xl font-bold text-white mb-4">Our Vision</h3>
+                  {isAdmin && <EditButton onClick={() => setEditingVision(true)} />}
+                </div>
                 <p className="text-gray-200 leading-relaxed">
-                  To be the most trusted and reliable IT distribution partner in the UAE region, known for excellence in service delivery and customer satisfaction.
+                  {visionContent?.content || 'To be the most trusted and reliable IT distribution partner in the UAE region, known for excellence in service delivery and customer satisfaction.'}
                 </p>
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-white mb-4">Our Mission</h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-2xl font-bold text-white mb-4">Our Mission</h3>
+                  {isAdmin && <EditButton onClick={() => setEditingMission(true)} />}
+                </div>
                 <p className="text-gray-200 leading-relaxed">
-                  To provide world-class IT products and services with competitive pricing, efficient logistics, and exceptional customer support to businesses across all sectors.
+                  {missionContent?.content || 'To provide world-class IT products and services with competitive pricing, efficient logistics, and exceptional customer support to businesses across all sectors.'}
                 </p>
               </div>
             </div>
@@ -133,8 +149,37 @@ const About = () => {
           onSave={updateStory}
         />
       )}
+
+      {visionContent && (
+        <ContentEditor
+          open={editingVision}
+          onOpenChange={setEditingVision}
+          title="Edit Vision"
+          content={visionContent}
+          fields={[{ key: 'content', label: 'Vision', type: 'textarea', multiline: true }]}
+          onSave={updateVision}
+        />
+      )}
+
+      {missionContent && (
+        <ContentEditor
+          open={editingMission}
+          onOpenChange={setEditingMission}
+          title="Edit Mission"
+          content={missionContent}
+          fields={[{ key: 'content', label: 'Mission', type: 'textarea', multiline: true }]}
+          onSave={updateMission}
+        />
+      )}
     </div>
   );
 };
 
 export default About;
+
+/*
+Notes:
+- This adds editable Vision and Mission blocks and only shows edit controls when the user is an admin.
+- It assumes you have a `useUser` hook that returns an `isAdmin` boolean. If your project uses a different auth hook (for example `useAuth` or `useSession`), replace the import and the `isAdmin` usage accordingly.
+- `usePageContent('about', 'vision')` and `usePageContent('about', 'mission')` are used similar to existing sections; ensure these keys exist in your content store.
+*/

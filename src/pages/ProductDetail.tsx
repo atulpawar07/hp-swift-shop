@@ -17,6 +17,9 @@ interface Product {
   price: number | null;
   images: string[];
   in_stock: boolean;
+  description?: string | null;
+  shipping_info?: string | null;
+  returns_info?: string | null;
 }
 
 const ProductDetail = () => {
@@ -268,10 +271,16 @@ const ProductDetail = () => {
             <TabsContent value="description" className="mt-6">
               <div className="prose max-w-none">
                 <h3 className="text-xl font-semibold mb-3 text-white">About this Product</h3>
-                <p className="text-gray-200 leading-relaxed">
-                  {product.brand} {product.name} - A reliable {product.category.toLowerCase()} solution 
-                  for your business needs. We provide genuine products with full warranty support.
-                </p>
+                {product.description ? (
+                  <p className="text-gray-200 leading-relaxed whitespace-pre-line">
+                    {product.description}
+                  </p>
+                ) : (
+                  <p className="text-gray-200 leading-relaxed">
+                    {product.brand} {product.name} - A reliable {product.category.toLowerCase()} solution 
+                    for your business needs. We provide genuine products with full warranty support.
+                  </p>
+                )}
                 <h3 className="text-xl font-semibold mt-6 mb-3 text-white">Product Highlights</h3>
                 <ul className="space-y-2 text-gray-200">
                   <li>• Genuine {product.brand} product</li>
@@ -286,20 +295,32 @@ const ProductDetail = () => {
             <TabsContent value="shipping" className="mt-6">
               <div className="prose max-w-none text-gray-200">
                 <h3 className="text-xl font-semibold mb-3 text-white">Shipping Information</h3>
-                <p>We offer fast and reliable shipping across UAE. Orders are typically processed within 1-2 business days.</p>
-                <ul className="space-y-2 mt-4">
-                  <li>• Standard Delivery: 2-3 business days</li>
-                  <li>• Express Delivery: 1 business day (additional charges apply)</li>
-                  <li>• Free shipping on orders above AED 1,000</li>
-                </ul>
+                {product.shipping_info ? (
+                  <p className="whitespace-pre-line">{product.shipping_info}</p>
+                ) : (
+                  <>
+                    <p>We offer fast and reliable shipping across UAE. Orders are typically processed within 1-2 business days.</p>
+                    <ul className="space-y-2 mt-4">
+                      <li>• Standard Delivery: 2-3 business days</li>
+                      <li>• Express Delivery: 1 business day (additional charges apply)</li>
+                      <li>• Free shipping on orders above AED 1,000</li>
+                    </ul>
+                  </>
+                )}
 
                 <h3 className="text-xl font-semibold mt-8 mb-3 text-white">Returns & Refunds</h3>
-                <p>We accept returns within 7 days of delivery. Product must be unused and in original packaging.</p>
-                <ul className="space-y-2 mt-4">
-                  <li>• 7-day return policy</li>
-                  <li>• Full refund or replacement available</li>
-                  <li>• Contact us for return authorization</li>
-                </ul>
+                {product.returns_info ? (
+                  <p className="whitespace-pre-line">{product.returns_info}</p>
+                ) : (
+                  <>
+                    <p>We accept returns within 7 days of delivery. Product must be unused and in original packaging.</p>
+                    <ul className="space-y-2 mt-4">
+                      <li>• 7-day return policy</li>
+                      <li>• Full refund or replacement available</li>
+                      <li>• Contact us for return authorization</li>
+                    </ul>
+                  </>
+                )}
               </div>
             </TabsContent>
           </Tabs>

@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -25,6 +26,9 @@ interface Product {
   price: number | null;
   images: string[];
   in_stock: boolean;
+  description?: string | null;
+  shipping_info?: string | null;
+  returns_info?: string | null;
 }
 
 interface Category {
@@ -110,6 +114,9 @@ const AdminDashboard = () => {
   const [price, setPrice] = useState('');
   const [inStock, setInStock] = useState(true);
   const [imageFiles, setImageFiles] = useState<FileList | null>(null);
+  const [description, setDescription] = useState('');
+  const [shippingInfo, setShippingInfo] = useState('');
+  const [returnsInfo, setReturnsInfo] = useState('');
 
   useEffect(() => {
     if (!loading && (!user || !isAdmin)) {
@@ -261,6 +268,9 @@ const AdminDashboard = () => {
         price: price ? parseFloat(price) : null,
         images: imageUrls,
         in_stock: inStock,
+        description: description.trim() || null,
+        shipping_info: shippingInfo.trim() || null,
+        returns_info: returnsInfo.trim() || null,
       };
 
       if (editingProduct) {
@@ -298,6 +308,9 @@ const AdminDashboard = () => {
     setCategory(product.category);
     setPrice(product.price?.toString() || '');
     setInStock(product.in_stock);
+    setDescription(product.description || '');
+    setShippingInfo(product.shipping_info || '');
+    setReturnsInfo(product.returns_info || '');
     setProductDialogOpen(true);
   };
 
@@ -325,6 +338,9 @@ const AdminDashboard = () => {
     setPrice('');
     setInStock(true);
     setImageFiles(null);
+    setDescription('');
+    setShippingInfo('');
+    setReturnsInfo('');
     setEditingProduct(null);
   };
 
@@ -820,6 +836,9 @@ const AdminDashboard = () => {
         'Category': 'Laptops',
         'Price (AED)': '2999',
         'In Stock': 'Yes',
+        'Description': 'High-quality laptop with excellent performance and battery life',
+        'Shipping Info': 'Free shipping across UAE. Delivery within 2-3 business days',
+        'Returns Info': '7-day return policy. Product must be unused and in original packaging',
         'Image Filenames': 'product1_image1.jpg, product1_image2.jpg'
       },
       {
@@ -828,6 +847,9 @@ const AdminDashboard = () => {
         'Category': 'Printers',
         'Price (AED)': '1499',
         'In Stock': 'No',
+        'Description': 'Professional color printer with high-speed printing capability',
+        'Shipping Info': 'Standard delivery in 3-5 business days',
+        'Returns Info': 'Contact us for return authorization within 7 days',
         'Image Filenames': 'product2_image1.jpg'
       }
     ];
@@ -842,6 +864,9 @@ const AdminDashboard = () => {
       { wch: 15 }, // Category
       { wch: 12 }, // Price
       { wch: 10 }, // In Stock
+      { wch: 50 }, // Description
+      { wch: 50 }, // Shipping Info
+      { wch: 50 }, // Returns Info
       { wch: 40 }  // Image Filenames
     ];
 
@@ -912,6 +937,9 @@ const AdminDashboard = () => {
         const category = row['Category'] || row['category'];
         const price = row['Price (AED)'] || row['price'];
         const inStock = row['In Stock'] || row['in_stock'];
+        const description = row['Description'] || row['description'] || '';
+        const shippingInfo = row['Shipping Info'] || row['shipping_info'] || '';
+        const returnsInfo = row['Returns Info'] || row['returns_info'] || '';
         const imageFilenames = row['Image Filenames'] || row['image_filenames'] || '';
 
         // Validate required fields
@@ -952,7 +980,10 @@ const AdminDashboard = () => {
           category: category,
           price: price ? parseFloat(price) : null,
           in_stock: inStock?.toString().toLowerCase() === 'yes' || inStock?.toString().toLowerCase() === 'true',
-          images: productImages.length > 0 ? productImages : (existingProduct?.images || [])
+          images: productImages.length > 0 ? productImages : (existingProduct?.images || []),
+          description: description.trim() || null,
+          shipping_info: shippingInfo.trim() || null,
+          returns_info: returnsInfo.trim() || null,
         };
 
         if (existingProduct) {
@@ -1119,6 +1150,39 @@ const AdminDashboard = () => {
                           value={price}
                           onChange={(e) => setPrice(e.target.value)}
                           placeholder="Leave empty for 'Contact for price'"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="description">Description</Label>
+                        <Textarea
+                          id="description"
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                          placeholder="Detailed product description"
+                          rows={4}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="shipping_info">Shipping Information</Label>
+                        <Textarea
+                          id="shipping_info"
+                          value={shippingInfo}
+                          onChange={(e) => setShippingInfo(e.target.value)}
+                          placeholder="Shipping details and delivery times"
+                          rows={3}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="returns_info">Returns Information</Label>
+                        <Textarea
+                          id="returns_info"
+                          value={returnsInfo}
+                          onChange={(e) => setReturnsInfo(e.target.value)}
+                          placeholder="Return policy and conditions"
+                          rows={3}
                         />
                       </div>
 

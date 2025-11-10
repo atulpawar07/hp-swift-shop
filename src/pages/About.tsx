@@ -1,185 +1,101 @@
-import { useState } from 'react';
+// src/pages/about.tsx
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { CheckCircle } from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
 import { EditButton } from "@/components/admin/EditButton";
 import { ContentEditor } from "@/components/admin/ContentEditor";
-import { useUser } from "@/hooks/useUser"; // assumed hook that provides isAdmin (see note below)
+import { useAuth } from "@/context/AuthProvider"; // adjust path if different
+import { Spinner } from "@/components/Spinner"; // optional: replace with your loader
 
 const About = () => {
-  const { content: heroContent, updateContent: updateHero } = usePageContent('about', 'hero');
-  const { content: storyContent, updateContent: updateStory } = usePageContent('about', 'story');
-  const { content: visionContent, updateContent: updateVision } = usePageContent('about', 'vision');
-  const { content: missionContent, updateContent: updateMission } = usePageContent('about', 'mission');
+  const { content, loading: contentLoading, error, refresh } = usePageContent("about");
+  const { user, isAdmin, loading: authLoading } = useAuth();
 
-  const [editingHero, setEditingHero] = useState(false);
-  const [editingStory, setEditingStory] = useState(false);
-  const [editingVision, setEditingVision] = useState(false);
-  const [editingMission, setEditingMission] = useState(false);
+  // local UI state for editor modal/drawer (controlled by admin)
+  const [editorOpen, setEditorOpen] = useState(false);
 
-  // get admin flag from your auth/user hook
-  const { isAdmin } = useUser() as { isAdmin?: boolean };
+  // derived loading: either auth or content loading prevents UI from showing admin controls
+  const isInitialLoading = authLoading || contentLoading;
 
-  const features = [
-    "Worldwide Sourcing",
-    "Broad Range of IT Products and Services",
-    "Flexible Logistics",
-    "Right Price",
-    "Speedy Service"
-  ];
+  // keep a small guard to avoid flashing admin UI before auth resolves
+  useEffect(() => {
+    // close editor if user becomes non-admin
+    if (!isAdmin && editorOpen) {
+      setEditorOpen(false);
+    }
+  }, [isAdmin, editorOpen]);
+
+  const handleOpenEditor = () => setEditorOpen(true);
+  const handleCloseEditor = () => setEditorOpen(false);
+
+  const handleSave = async (newContent: string) => {
+    // ContentEditor should handle saving; if it calls a callback, you can refresh content here.
+    await refresh();
+    handleCloseEditor();
+  };
 
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white">
+    <>
       <Navbar />
-      
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-black py-16">
-          <div className="container mx-auto px-4">
-            <div className="flex justify-between items-start gap-4">
-              <div>
-                <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                  {heroContent?.title || 'About SK Enterprise'}
-                </h1>
-                <p className="text-lg text-gray-200 max-w-3xl">
-                  {heroContent?.description || 'Your trusted partner in IT distribution across UAE'}
-                </p>
-              </div>
+      <main className="max-w-4xl mx-auto px-4 py-12">
+        {/* top row: heading + optional admin edit button */}
+        <div className="flex items-center justify-between gap-4 mb-8">
+          <h1 className="text-3xl font-semibold">About</h1>
 
-              {/* show edit only for admin */}
-              {isAdmin && <EditButton onClick={() => setEditingHero(true)} />}
+          {/* show a small loader while auth is resolving; once resolved, show EditButton only for admin */}
+          {isInitialLoading ? (
+            <div aria-hidden className="ml-4">
+              {/* Replace with your spinner component or a simple skeleton */}
+              <Spinner />
             </div>
-          </div>
+          ) : (
+            isAdmin && (
+              <EditButton onClick={handleOpenEditor} aria-label="Edit About page" />
+            )
+          )}
+        </div>
+
+        {/* page content */}
+        <section className="prose lg:prose-lg max-w-none">
+          {content ? (
+            <div dangerouslySetInnerHTML={{ __html: content }} />
+          ) : error ? (
+            <div className="rounded-md bg-red-50 p-4 text-red-700">
+              <strong>Error loading content.</strong>
+              <div className="mt-1 text-sm">{String(error)}</div>
+            </div>
+          ) : (
+            <div className="text-muted">
+              {/* fallback when no content is present */}
+              <p>No content found for the About page yet.</p>
+              {isAdmin && (
+                <p className="text-sm text-muted">Use the edit button to add content.</p>
+              )}
+            </div>
+          )}
         </section>
 
-        {/* Company Info */}
-        <section className="py-16 bg-black">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col lg:flex-row gap-12 items-center">
-              <div className="lg:w-1/3">
-                <img 
-                  src="https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&h=400&fit=crop" 
-                  alt="Business Partnership" 
-                  className="rounded-lg shadow-lg w-full"
-                />
-              </div>
-
-              <div className="lg:w-2/3">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-3xl font-bold text-white">
-                    {storyContent?.title || 'Who We Are'}
-                  </h2>
-                  {isAdmin && <EditButton onClick={() => setEditingStory(true)} />}
-                </div>
-                
-                <p className="text-gray-200 mb-6 leading-relaxed whitespace-pre-line">
-                  {storyContent?.content || 'In today\'s demanding and dynamic world of IT Distribution, it takes a special kind of organization to deliver consistently on all key business metrics: availability, right price, prompt delivery, efficient logistics and top-class service. With decades of experience in worldwide sourcing of IT products and services and robust relationships across the IT value-chain, SK Enterprise is ideally positioned to be your supplier of choice.'}
-                </p>
-
-                <h3 className="text-xl font-semibold text-white mb-4">Our Key USPs:</h3>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  {features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                      <span className="text-white">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Vision & Mission */}
-        <section className="py-16 bg-black">
-          <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-bold text-white mb-4">Our Vision</h3>
-                  {isAdmin && <EditButton onClick={() => setEditingVision(true)} />}
-                </div>
-                <p className="text-gray-200 leading-relaxed">
-                  {visionContent?.content || 'To be the most trusted and reliable IT distribution partner in the UAE region, known for excellence in service delivery and customer satisfaction.'}
-                </p>
-              </div>
-              <div>
-                <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-bold text-white mb-4">Our Mission</h3>
-                  {isAdmin && <EditButton onClick={() => setEditingMission(true)} />}
-                </div>
-                <p className="text-gray-200 leading-relaxed">
-                  {missionContent?.content || 'To provide world-class IT products and services with competitive pricing, efficient logistics, and exceptional customer support to businesses across all sectors.'}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* small success/info box (example) */}
+        <div className="mt-8 flex items-center gap-2 text-sm text-slate-600">
+          <CheckCircle className="w-5 h-5 text-green-500" />
+          <span>Updated content is saved to your CMS.</span>
+        </div>
       </main>
 
       <Footer />
 
-      {/* Edit Dialogs */}
-      {heroContent && (
+      {/* Editor modal/drawer */}
+      {editorOpen && (
         <ContentEditor
-          open={editingHero}
-          onOpenChange={setEditingHero}
-          title="Edit About Hero"
-          content={heroContent}
-          fields={[
-            { key: 'title', label: 'Title', type: 'text' },
-            { key: 'description', label: 'Description', type: 'textarea' }
-          ]}
-          onSave={updateHero}
+          defaultContent={content ?? ""}
+          onClose={handleCloseEditor}
+          onSave={handleSave}
         />
       )}
-
-      {storyContent && (
-        <ContentEditor
-          open={editingStory}
-          onOpenChange={setEditingStory}
-          title="Edit Company Story"
-          content={storyContent}
-          fields={[
-            { key: 'title', label: 'Title', type: 'text' },
-            { key: 'content', label: 'Content', type: 'textarea', multiline: true }
-          ]}
-          onSave={updateStory}
-        />
-      )}
-
-      {visionContent && (
-        <ContentEditor
-          open={editingVision}
-          onOpenChange={setEditingVision}
-          title="Edit Vision"
-          content={visionContent}
-          fields={[{ key: 'content', label: 'Vision', type: 'textarea', multiline: true }]}
-          onSave={updateVision}
-        />
-      )}
-
-      {missionContent && (
-        <ContentEditor
-          open={editingMission}
-          onOpenChange={setEditingMission}
-          title="Edit Mission"
-          content={missionContent}
-          fields={[{ key: 'content', label: 'Mission', type: 'textarea', multiline: true }]}
-          onSave={updateMission}
-        />
-      )}
-    </div>
+    </>
   );
 };
 
 export default About;
-
-/*
-Notes:
-- This adds editable Vision and Mission blocks and only shows edit controls when the user is an admin.
-- It assumes you have a `useUser` hook that returns an `isAdmin` boolean. If your project uses a different auth hook (for example `useAuth` or `useSession`), replace the import and the `isAdmin` usage accordingly.
-- `usePageContent('about', 'vision')` and `usePageContent('about', 'mission')` are used similar to existing sections; ensure these keys exist in your content store.
-*/

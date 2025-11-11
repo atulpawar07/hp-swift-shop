@@ -91,6 +91,35 @@ const Navbar = () => {
           }
         }
 
+        // Preload all images before showing navbar
+        const imagesToPreload: string[] = [];
+        
+        if (newPhotos.desktop.url) imagesToPreload.push(newPhotos.desktop.url);
+        if (newPhotos.tablet.url) imagesToPreload.push(newPhotos.tablet.url);
+        if (newPhotos.mobile.url) imagesToPreload.push(newPhotos.mobile.url);
+        if (newLogos.desktop.url) imagesToPreload.push(newLogos.desktop.url);
+        if (newLogos.tablet.url) imagesToPreload.push(newLogos.tablet.url);
+        if (newLogos.mobile.url) imagesToPreload.push(newLogos.mobile.url);
+
+        // Preload images with timeout fallback
+        const preloadPromises = imagesToPreload.map(url => {
+          return new Promise<void>((resolve) => {
+            const img = new Image();
+            const timeout = setTimeout(() => resolve(), 1000); // 1s timeout per image
+            img.onload = () => {
+              clearTimeout(timeout);
+              resolve();
+            };
+            img.onerror = () => {
+              clearTimeout(timeout);
+              resolve();
+            };
+            img.src = url;
+          });
+        });
+
+        await Promise.all(preloadPromises);
+
         setCoverPhotos(newPhotos);
         setLogos(newLogos);
         setSettingsLoaded(true);

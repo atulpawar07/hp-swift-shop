@@ -24,6 +24,7 @@ import logo from "@/assets/logo-light.png";
 const Navbar = () => {
   const [cartCount] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
   const [coverPhotos, setCoverPhotos] = useState<{
     desktop: { url: string; position: { x: number; y: number }; scale: number };
     tablet: { url: string; position: { x: number; y: number }; scale: number };
@@ -92,8 +93,10 @@ const Navbar = () => {
 
         setCoverPhotos(newPhotos);
         setLogos(newLogos);
+        setSettingsLoaded(true);
       } catch (error) {
         console.error("Error fetching settings:", error);
+        setSettingsLoaded(true);
       }
     };
     fetchSettings();
@@ -121,10 +124,10 @@ const Navbar = () => {
       `}</style>
 
       {/* Top Bar with Logo and Contact */}
-      <div className="top-bar relative overflow-hidden bg-white">
+      <div className="top-bar relative overflow-hidden" style={{ backgroundColor: settingsLoaded && !coverPhotos.desktop.url && !coverPhotos.tablet.url && !coverPhotos.mobile.url ? '#ffffff' : 'transparent' }}>
         {/* Device-Specific Cover Photo Backgrounds */}
         {/* Desktop Cover - hidden on tablet/mobile */}
-        {coverPhotos.desktop.url && (
+        {settingsLoaded && coverPhotos.desktop.url && (
           <div className="absolute inset-0 hidden lg:block">
             <img
               src={coverPhotos.desktop.url}
@@ -140,7 +143,7 @@ const Navbar = () => {
         )}
 
         {/* Tablet Cover - shown on md to lg screens */}
-        {coverPhotos.tablet.url && (
+        {settingsLoaded && coverPhotos.tablet.url && (
           <div className="absolute inset-0 hidden md:block lg:hidden">
             <img
               src={coverPhotos.tablet.url}
@@ -156,7 +159,7 @@ const Navbar = () => {
         )}
 
         {/* Mobile Cover - shown on small screens */}
-        {coverPhotos.mobile.url && (
+        {settingsLoaded && coverPhotos.mobile.url && (
           <div className="absolute inset-0 md:hidden">
             <img
               src={coverPhotos.mobile.url}
@@ -172,7 +175,7 @@ const Navbar = () => {
         )}
 
         {/* Fallback gradient if no cover photos */}
-        {!coverPhotos.desktop.url && !coverPhotos.tablet.url && !coverPhotos.mobile.url && (
+        {settingsLoaded && !coverPhotos.desktop.url && !coverPhotos.tablet.url && !coverPhotos.mobile.url && (
           <>
             <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-blue-50"></div>
             <div className="absolute inset-0 opacity-[0.03]">

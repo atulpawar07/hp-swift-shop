@@ -14,15 +14,19 @@ import { Button } from "@/components/ui/button";
 const Index = () => {
   const navigate = useNavigate();
   const { content: statsContent, updateContent: updateStats } = usePageContent('home', 'stats');
+  const { content: featuresContent, updateContent: updateFeatures } = usePageContent('home', 'features');
   const [editingStats, setEditingStats] = useState(false);
+  const [editingFeatures, setEditingFeatures] = useState(false);
 
-  const features = [
+  const defaultFeatures = [
     "Worldwide Sourcing",
     "Broad Range of IT Products and Services",
     "Flexible Logistics",
     "Right Price",
     "Speedy Service"
   ];
+
+  const features = featuresContent?.items || defaultFeatures;
 
   const [partners, setPartners] = useState<{ name: string; logo: string }[]>([]);
   const [editingWelcome, setEditingWelcome] = useState(false);
@@ -192,7 +196,13 @@ const Index = () => {
                 {welcomeContent?.description || 'In today\'s demanding and dynamic world of IT Distribution, it takes a special kind of organization to deliver consistently on all key business metrics: availability, right price, prompt delivery, efficient logistics and top-class service. With decades of experience in worldwide sourcing of IT products and services and robust relationships across the IT value-chain, SK Enterprise is ideally positioned to be your supplier of choice. Whether your needs are a one-time fulfillment or on-going run-rate purchases, you will find the right partner in SK Enterprise.'}
               </p>
 
-              <p className="text-gray-200 mb-8">These are some of our key USPs:</p>
+              <div className="flex justify-between items-center mb-4">
+                <p className="text-gray-200">These are some of our key USPs:</p>
+                <EditButton 
+                  onClick={() => setEditingFeatures(true)} 
+                  className="admin-edit-button" 
+                />
+              </div>
 
               <div className="grid md:grid-cols-2 gap-4 mb-8">
                 {features.map((feature, index) => (
@@ -314,6 +324,32 @@ const Index = () => {
           onSave={updateWelcome}
         />
       )}
+
+      {/* Edit Features Dialog */}
+      <Dialog open={editingFeatures} onOpenChange={setEditingFeatures}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Key USPs</DialogTitle>
+            <DialogDescription>
+              Edit the key selling points (one per line)
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <textarea
+              className="w-full min-h-[200px] p-3 border rounded-md bg-background text-foreground"
+              value={features.join('\n')}
+              onChange={(e) => {
+                const newFeatures = e.target.value.split('\n').filter(f => f.trim());
+                updateFeatures({ items: newFeatures });
+              }}
+              placeholder="Enter one feature per line"
+            />
+            <Button onClick={() => setEditingFeatures(false)} className="w-full">
+              Done
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Partners Dialog */}
       <Dialog open={editingPartners} onOpenChange={setEditingPartners}>

@@ -5,21 +5,29 @@ import { CheckCircle } from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
 import { EditButton } from "@/components/admin/EditButton";
 import { ContentEditor } from "@/components/admin/ContentEditor";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 const About = () => {
   const { content: heroContent, updateContent: updateHero } = usePageContent('about', 'hero');
   const { content: storyContent, updateContent: updateStory } = usePageContent('about', 'story');
+  const { content: featuresContent, updateContent: updateFeatures } = usePageContent('about', 'features');
+  const { content: visionMissionContent, updateContent: updateVisionMission } = usePageContent('about', 'vision_mission');
   
   const [editingHero, setEditingHero] = useState(false);
   const [editingStory, setEditingStory] = useState(false);
+  const [editingFeatures, setEditingFeatures] = useState(false);
+  const [editingVisionMission, setEditingVisionMission] = useState(false);
 
-  const features = [
+  const defaultFeatures = [
     "Worldwide Sourcing",
     "Broad Range of IT Products and Services",
     "Flexible Logistics",
     "Right Price",
     "Speedy Service"
   ];
+
+  const features = featuresContent?.items || defaultFeatures;
 
   return (
     <div className="min-h-screen flex flex-col bg-black text-white">
@@ -67,7 +75,10 @@ const About = () => {
                   {storyContent?.content || 'In today\'s demanding and dynamic world of IT Distribution, it takes a special kind of organization to deliver consistently on all key business metrics: availability, right price, prompt delivery, efficient logistics and top-class service. With decades of experience in worldwide sourcing of IT products and services and robust relationships across the IT value-chain, SK Enterprise is ideally positioned to be your supplier of choice.'}
                 </p>
 
-                <h3 className="text-xl font-semibold text-white mb-4">Our Key USPs:</h3>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-xl font-semibold text-white">Our Key USPs:</h3>
+                  <EditButton onClick={() => setEditingFeatures(true)} />
+                </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
                   {features.map((feature, index) => (
@@ -85,17 +96,20 @@ const About = () => {
         {/* Vision & Mission */}
         <section className="py-16 bg-black">
           <div className="container mx-auto px-4">
+            <div className="flex justify-end mb-4">
+              <EditButton onClick={() => setEditingVisionMission(true)} />
+            </div>
             <div className="grid md:grid-cols-2 gap-8">
               <div>
                 <h3 className="text-2xl font-bold text-white mb-4">Our Vision</h3>
                 <p className="text-gray-200 leading-relaxed">
-                  To be the most trusted and reliable IT distribution partner in the UAE region, known for excellence in service delivery and customer satisfaction.
+                  {visionMissionContent?.vision || 'To be the most trusted and reliable IT distribution partner in the UAE region, known for excellence in service delivery and customer satisfaction.'}
                 </p>
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-white mb-4">Our Mission</h3>
                 <p className="text-gray-200 leading-relaxed">
-                  To provide world-class IT products and services with competitive pricing, efficient logistics, and exceptional customer support to businesses across all sectors.
+                  {visionMissionContent?.mission || 'To provide world-class IT products and services with competitive pricing, efficient logistics, and exceptional customer support to businesses across all sectors.'}
                 </p>
               </div>
             </div>
@@ -131,6 +145,47 @@ const About = () => {
             { key: 'content', label: 'Content', type: 'textarea', multiline: true }
           ]}
           onSave={updateStory}
+        />
+      )}
+
+      {/* Edit Features Dialog */}
+      <Dialog open={editingFeatures} onOpenChange={setEditingFeatures}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Key USPs</DialogTitle>
+            <DialogDescription>
+              Edit the key selling points (one per line)
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <textarea
+              className="w-full min-h-[200px] p-3 border rounded-md bg-background text-foreground"
+              value={features.join('\n')}
+              onChange={(e) => {
+                const newFeatures = e.target.value.split('\n').filter(f => f.trim());
+                updateFeatures({ items: newFeatures });
+              }}
+              placeholder="Enter one feature per line"
+            />
+            <Button onClick={() => setEditingFeatures(false)} className="w-full">
+              Done
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Vision & Mission Dialog */}
+      {visionMissionContent !== null && (
+        <ContentEditor
+          open={editingVisionMission}
+          onOpenChange={setEditingVisionMission}
+          title="Edit Vision & Mission"
+          content={visionMissionContent || {}}
+          fields={[
+            { key: 'vision', label: 'Vision', type: 'textarea', multiline: true },
+            { key: 'mission', label: 'Mission', type: 'textarea', multiline: true }
+          ]}
+          onSave={updateVisionMission}
         />
       )}
     </div>

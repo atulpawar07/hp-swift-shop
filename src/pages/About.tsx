@@ -175,19 +175,17 @@ const About = () => {
       </Dialog>
 
       {/* Edit Vision & Mission Dialog */}
-      {visionMissionContent !== null && (
-        <ContentEditor
-          open={editingVisionMission}
-          onOpenChange={setEditingVisionMission}
-          title="Edit Vision & Mission"
-          content={visionMissionContent || {}}
-          fields={[
-            { key: 'vision', label: 'Vision', type: 'textarea', multiline: true },
-            { key: 'mission', label: 'Mission', type: 'textarea', multiline: true }
-          ]}
-          onSave={updateVisionMission}
-        />
-      )}
+      <ContentEditor
+        open={editingVisionMission}
+        onOpenChange={setEditingVisionMission}
+        title="Edit Vision & Mission"
+        content={visionMissionContent || {}}
+        fields={[
+          { key: 'vision', label: 'Vision', type: 'textarea', multiline: true },
+          { key: 'mission', label: 'Mission', type: 'textarea', multiline: true }
+        ]}
+        onSave={updateVisionMission}
+      />
     </div>
   );
 };

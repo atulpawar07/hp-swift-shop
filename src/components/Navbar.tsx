@@ -124,7 +124,11 @@ const Navbar = () => {
       `}</style>
 
       {/* Top Bar with Logo and Contact */}
-      <div className="top-bar relative overflow-hidden" style={{ backgroundColor: settingsLoaded && !coverPhotos.desktop.url && !coverPhotos.tablet.url && !coverPhotos.mobile.url ? '#ffffff' : 'transparent' }}>
+      <div className="top-bar relative overflow-hidden" style={{ 
+        backgroundColor: settingsLoaded && !coverPhotos.desktop.url && !coverPhotos.tablet.url && !coverPhotos.mobile.url ? '#ffffff' : 'transparent',
+        opacity: settingsLoaded ? 1 : 0,
+        transition: 'opacity 0.2s ease-in'
+      }}>
         {/* Device-Specific Cover Photo Backgrounds */}
         {/* Desktop Cover - hidden on tablet/mobile */}
         {settingsLoaded && coverPhotos.desktop.url && (

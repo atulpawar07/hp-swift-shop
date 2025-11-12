@@ -17,6 +17,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Plus, Edit, Trash2, Download, Upload, Settings as SettingsIcon } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import { BulkProductUpdate } from '@/components/admin/BulkProductUpdate';
 
 interface Product {
   id: string;
@@ -1091,14 +1092,16 @@ const AdminDashboard = () => {
               <CardHeader>
                 <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                   <CardTitle>Product Management</CardTitle>
-                  <Dialog open={productDialogOpen} onOpenChange={setProductDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button onClick={resetProductForm}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Add Product
-                      </Button>
-                    </DialogTrigger>
-                  <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <div className="flex gap-2">
+                    <BulkProductUpdate products={products} onSuccess={fetchProducts} />
+                    <Dialog open={productDialogOpen} onOpenChange={setProductDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button onClick={resetProductForm}>
+                          <Plus className="mr-2 h-4 w-4" />
+                          Add Product
+                        </Button>
+                      </DialogTrigger>
+                     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
                       <DialogTitle>
                         {editingProduct ? 'Edit Product' : 'Add New Product'}
@@ -1238,7 +1241,8 @@ const AdminDashboard = () => {
                     </form>
                   </DialogContent>
                 </Dialog>
-              </div>
+                  </div>
+                </div>
               
               {/* Search Input */}
               <div className="mt-4">

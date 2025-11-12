@@ -29,6 +29,7 @@ interface Product {
   description?: string | null;
   shipping_info?: string | null;
   returns_info?: string | null;
+  highlights?: string[] | null;
 }
 
 interface Category {
@@ -117,6 +118,7 @@ const AdminDashboard = () => {
   const [description, setDescription] = useState('');
   const [shippingInfo, setShippingInfo] = useState('');
   const [returnsInfo, setReturnsInfo] = useState('');
+  const [highlights, setHighlights] = useState('');
 
   useEffect(() => {
     if (!loading && (!user || !isAdmin)) {
@@ -271,6 +273,9 @@ const AdminDashboard = () => {
         description: description.trim() || null,
         shipping_info: shippingInfo.trim() || null,
         returns_info: returnsInfo.trim() || null,
+        highlights: highlights.trim() 
+          ? highlights.split('\n').map(h => h.trim()).filter(h => h) 
+          : null,
       };
 
       if (editingProduct) {
@@ -311,6 +316,7 @@ const AdminDashboard = () => {
     setDescription(product.description || '');
     setShippingInfo(product.shipping_info || '');
     setReturnsInfo(product.returns_info || '');
+    setHighlights(product.highlights?.join('\n') || '');
     setProductDialogOpen(true);
   };
 
@@ -341,6 +347,7 @@ const AdminDashboard = () => {
     setDescription('');
     setShippingInfo('');
     setReturnsInfo('');
+    setHighlights('');
     setEditingProduct(null);
   };
 
@@ -1184,6 +1191,20 @@ const AdminDashboard = () => {
                           placeholder="Return policy and conditions"
                           rows={3}
                         />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="highlights">Product Highlights (one per line)</Label>
+                        <Textarea
+                          id="highlights"
+                          value={highlights}
+                          onChange={(e) => setHighlights(e.target.value)}
+                          placeholder="Enter each highlight on a new line, e.g.:&#10;Genuine product&#10;Full warranty support&#10;Fast delivery"
+                          rows={5}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Each line will be displayed as a separate bullet point on the product page.
+                        </p>
                       </div>
 
                       <div className="flex items-center space-x-2">

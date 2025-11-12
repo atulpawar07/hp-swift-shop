@@ -143,6 +143,10 @@ const Navbar = () => {
     { path: "/contact", label: "Contact Us", icon: Mail },
   ];
 
+  if (!settingsLoaded) {
+    return null;
+  }
+
   return (
     <nav className="bg-white text-foreground sticky top-0 z-50 shadow-sm" id="site-navbar">
       {/* Scoped CSS to avoid theme overrides and ensure no border between bars */}
@@ -154,13 +158,11 @@ const Navbar = () => {
 
       {/* Top Bar with Logo and Contact */}
       <div className="top-bar relative overflow-hidden" style={{ 
-        backgroundColor: settingsLoaded && !coverPhotos.desktop.url && !coverPhotos.tablet.url && !coverPhotos.mobile.url ? '#ffffff' : 'transparent',
-        opacity: settingsLoaded ? 1 : 0,
-        transition: 'opacity 0.2s ease-in'
+        backgroundColor: !coverPhotos.desktop.url && !coverPhotos.tablet.url && !coverPhotos.mobile.url ? '#ffffff' : 'transparent'
       }}>
         {/* Device-Specific Cover Photo Backgrounds */}
         {/* Desktop Cover - hidden on tablet/mobile */}
-        {settingsLoaded && coverPhotos.desktop.url && (
+        {coverPhotos.desktop.url && (
           <div className="absolute inset-0 hidden lg:block">
             <img
               src={coverPhotos.desktop.url}
@@ -176,7 +178,7 @@ const Navbar = () => {
         )}
 
         {/* Tablet Cover - shown on md to lg screens */}
-        {settingsLoaded && coverPhotos.tablet.url && (
+        {coverPhotos.tablet.url && (
           <div className="absolute inset-0 hidden md:block lg:hidden">
             <img
               src={coverPhotos.tablet.url}
@@ -192,7 +194,7 @@ const Navbar = () => {
         )}
 
         {/* Mobile Cover - shown on small screens */}
-        {settingsLoaded && coverPhotos.mobile.url && (
+        {coverPhotos.mobile.url && (
           <div className="absolute inset-0 md:hidden">
             <img
               src={coverPhotos.mobile.url}
@@ -208,7 +210,7 @@ const Navbar = () => {
         )}
 
         {/* Fallback gradient if no cover photos */}
-        {settingsLoaded && !coverPhotos.desktop.url && !coverPhotos.tablet.url && !coverPhotos.mobile.url && (
+        {!coverPhotos.desktop.url && !coverPhotos.tablet.url && !coverPhotos.mobile.url && (
           <>
             <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-blue-50"></div>
             <div className="absolute inset-0 opacity-[0.03]">

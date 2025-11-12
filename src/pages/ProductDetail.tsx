@@ -20,6 +20,7 @@ interface Product {
   description?: string | null;
   shipping_info?: string | null;
   returns_info?: string | null;
+  highlights?: string[] | null;
 }
 
 const ProductDetail = () => {
@@ -283,11 +284,19 @@ const ProductDetail = () => {
                 )}
                 <h3 className="text-xl font-semibold mt-6 mb-3 text-white">Product Highlights</h3>
                 <ul className="space-y-2 text-gray-200">
-                  <li>• Genuine {product.brand} product</li>
-                  <li>• Authorized distributor warranty</li>
-                  <li>• Professional after-sales support</li>
-                  <li>• Bulk order discounts available</li>
-                  <li>• Fast delivery across UAE</li>
+                  {product.highlights && product.highlights.length > 0 ? (
+                    product.highlights.map((highlight, idx) => (
+                      <li key={idx}>• {highlight}</li>
+                    ))
+                  ) : (
+                    <>
+                      <li>• Genuine {product.brand} product</li>
+                      <li>• Authorized distributor warranty</li>
+                      <li>• Professional after-sales support</li>
+                      <li>• Bulk order discounts available</li>
+                      <li>• Fast delivery across UAE</li>
+                    </>
+                  )}
                 </ul>
               </div>
             </TabsContent>

@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Upload, Image as ImageIcon, Info, ArrowLeft, Monitor, Tablet, Smartphone } from "lucide-react";
+import { Upload, Image as ImageIcon, Info, ArrowLeft, Monitor, Tablet, Smartphone, Download } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
@@ -291,9 +291,31 @@ const SiteSettings = () => {
 
   const getDevicePreviewSize = (device: DeviceType) => {
     switch (device) {
-      case 'desktop': return { width: '100%', height: '180px' }; // Increased to match actual navbar
-      case 'tablet': return { width: '768px', height: '170px' }; // Increased to match actual navbar
-      case 'mobile': return { width: '375px', height: '160px' }; // Increased to match actual navbar
+      case 'desktop': return { width: '100%', height: '160px' };
+      case 'tablet': return { width: '768px', height: '140px' };
+      case 'mobile': return { width: '375px', height: '120px' };
+    }
+  };
+
+  const downloadCoverPhoto = async (device: DeviceType) => {
+    const url = coverPhotos[device].url;
+    if (!url) return;
+
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = `cover-photo-${device}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+      toast.success('Cover photo downloaded');
+    } catch (error) {
+      console.error('Error downloading cover photo:', error);
+      toast.error('Failed to download cover photo');
     }
   };
 
@@ -398,6 +420,15 @@ const SiteSettings = () => {
                             <Upload className="h-4 w-4 mr-2" />
                             Upload
                           </Button>
+                          {coverPhotos[device].url && (
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => downloadCoverPhoto(device)}
+                            >
+                              <Download className="h-4 w-4" />
+                            </Button>
+                          )}
                         </div>
                       </div>
                       
@@ -540,48 +571,72 @@ const SiteSettings = () => {
                       </CardHeader>
                       <CardContent>
                         <div 
-                          className="relative mx-auto rounded-lg overflow-hidden border-2 border-border shadow-lg"
+                          className="relative mx-auto rounded-lg overflow-hidden border-2 border-border shadow-lg bg-white"
                           style={{
                             maxWidth: getDevicePreviewSize(device).width,
                             height: getDevicePreviewSize(device).height,
                           }}
                         >
-                          {/* Cover Photo */}
-                          <div className="absolute inset-0 overflow-hidden bg-gradient-to-br from-white via-gray-50 to-blue-50">
-                            {coverPhotos[device].url && (
-                              <img
-                                src={coverPhotos[device].url}
-                                alt={`${device} cover preview`}
-                                className="w-full h-full object-cover transition-transform duration-200"
-                                style={{
-                                  transform: `scale(${coverPhotos[device].scale}) translate(${coverPhotos[device].position.x}%, ${coverPhotos[device].position.y}%)`,
-                                  transformOrigin: 'center center',
-                                }}
-                              />
+                          {/* Cover Photo with gradient overlay to match actual navbar */}
+                          <div className="absolute inset-0 overflow-hidden">
+                            {coverPhotos[device].url ? (
+                              <>
+                                <img
+                                  src={coverPhotos[device].url}
+                                  alt={`${device} cover preview`}
+                                  className="w-full h-full object-cover transition-transform duration-200"
+                                  style={{
+                                    transform: `scale(${coverPhotos[device].scale}) translate(${coverPhotos[device].position.x}%, ${coverPhotos[device].position.y}%)`,
+                                    transformOrigin: 'center center',
+                                  }}
+                                />
+                                {/* Gradient overlay to match actual navbar */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-black/5 to-transparent"></div>
+                              </>
+                            ) : (
+                              <>
+                                <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-blue-50"></div>
+                                <div className="absolute inset-0 opacity-[0.03]">
+                                  <div className="absolute inset-0" style={{
+                                    backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(0,0,0,.05) 35px, rgba(0,0,0,.05) 70px)`
+                                  }}></div>
+                                </div>
+                              </>
                             )}
                           </div>
                           
-                          {/* Logo layer with white background */}
-                          <div className="absolute left-4 top-1/2 -translate-y-1/2 bg-white rounded-lg px-3 py-2 shadow-sm" 
+                          {/* Logo layer with white background - matches actual navbar */}
+                          <div className="absolute left-4 top-1/2 -translate-y-1/2 bg-white rounded-lg px-3 py-2 shadow-sm z-10 flex items-center justify-center" 
                                style={{ 
-                                 maxWidth: device === 'mobile' ? '160px' : device === 'tablet' ? '260px' : '340px',
-                                 height: device === 'mobile' ? '80px' : device === 'tablet' ? '110px' : '130px'
+                                 width: device === 'mobile' ? '160px' : device === 'tablet' ? '220px' : '280px',
+                                 height: device === 'mobile' ? '80px' : device === 'tablet' ? '112px' : '128px'
                                }}>
                             {logos[device].url ? (
                               <img
                                 src={logos[device].url}
                                 alt={`${device} logo preview`}
-                                className="w-full h-full object-contain transition-transform duration-200"
+                                className="max-w-full max-h-full object-contain transition-transform duration-200"
                                 style={{
                                   transform: `scale(${logos[device].scale}) translate(${logos[device].position.x}%, ${logos[device].position.y}%)`,
                                   transformOrigin: 'center center',
                                 }}
                               />
                             ) : (
-                              <div className="flex items-center justify-center h-full">
+                              <div className="flex items-center justify-center w-full h-full">
                                 <span className="text-xs text-muted-foreground">No logo</span>
                               </div>
                             )}
+                          </div>
+
+                          {/* Right side elements placeholder - to show full navbar context */}
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 z-10">
+                            <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
+                              <div className="w-4 h-4 text-green-600">📱</div>
+                            </div>
+                            <div className="hidden md:flex gap-2">
+                              <div className="w-16 h-8 bg-gray-200 rounded"></div>
+                              <div className="w-16 h-8 bg-gray-200 rounded"></div>
+                            </div>
                           </div>
                         </div>
                       </CardContent>

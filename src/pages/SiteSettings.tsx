@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Upload, Image as ImageIcon, Info, ArrowLeft, Monitor, Tablet, Smartphone, Download } from "lucide-react";
+import { Upload, Image as ImageIcon, Info, ArrowLeft, Monitor, Tablet, Smartphone, Download, MessageCircle, User, ShoppingCart } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
@@ -628,14 +628,21 @@ const SiteSettings = () => {
                             )}
                           </div>
 
-                          {/* Right side elements placeholder - to show full navbar context */}
+                          {/* Right side elements - realistic button representations matching actual navbar */}
                           <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 z-10">
-                            <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
-                              <div className="w-4 h-4 text-green-600">📱</div>
+                            {/* WhatsApp button */}
+                            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-green-600 text-white text-xs font-semibold shadow-sm">
+                              <MessageCircle className="h-3 w-3" />
+                              <span className={device === 'mobile' ? 'hidden' : ''}>WhatsApp</span>
                             </div>
-                            <div className="hidden md:flex gap-2">
-                              <div className="w-16 h-8 bg-gray-200 rounded"></div>
-                              <div className="w-16 h-8 bg-gray-200 rounded"></div>
+                            {/* Sign In / Admin button */}
+                            <div className={`flex items-center gap-1 px-2.5 py-1.5 rounded bg-blue-600 text-white text-xs shadow-sm ${device === 'mobile' ? 'hidden' : ''}`}>
+                              <User className="h-3 w-3" />
+                              <span>Sign In</span>
+                            </div>
+                            {/* Cart icon */}
+                            <div className="relative w-8 h-8 flex items-center justify-center">
+                              <ShoppingCart className="h-4 w-4 text-foreground" />
                             </div>
                           </div>
                         </div>

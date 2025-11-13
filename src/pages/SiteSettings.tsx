@@ -11,6 +11,7 @@ import { Upload, Image as ImageIcon, Info, ArrowLeft, Monitor, Tablet, Smartphon
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
+import { NavbarThemeCustomizer } from "@/components/admin/NavbarThemeCustomizer";
 
 interface CoverPhotoSettings {
   url: string;
@@ -349,6 +350,9 @@ const SiteSettings = () => {
           <h1 className="text-3xl font-bold">Site Settings</h1>
         </div>
 
+        {/* Navbar Theme Customizer */}
+        <NavbarThemeCustomizer />
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -606,23 +610,25 @@ const SiteSettings = () => {
                           </div>
                           
                           {/* Logo layer with white background - matches actual navbar */}
-                          <div className="absolute left-4 top-1/2 -translate-y-1/2 bg-white rounded-lg px-3 py-2 shadow-sm z-10 flex items-center justify-center" 
+                          <div className="absolute left-4 top-1/2 -translate-y-1/2 bg-white rounded-lg px-3 py-2 shadow-sm z-10 inline-flex items-center justify-center" 
                                style={{ 
-                                 width: device === 'mobile' ? '160px' : device === 'tablet' ? '220px' : '280px',
-                                 height: device === 'mobile' ? '80px' : device === 'tablet' ? '112px' : '128px'
+                                 maxWidth: device === 'mobile' ? '160px' : device === 'tablet' ? '220px' : '280px',
+                                 maxHeight: device === 'mobile' ? '80px' : device === 'tablet' ? '112px' : '128px'
                                }}>
                             {logos[device].url ? (
                               <img
                                 src={logos[device].url}
                                 alt={`${device} logo preview`}
-                                className="max-w-full max-h-full object-contain transition-transform duration-200"
+                                className="object-contain transition-transform duration-200"
                                 style={{
+                                  height: device === 'mobile' ? '80px' : device === 'tablet' ? '112px' : '128px',
+                                  width: 'auto',
                                   transform: `scale(${logos[device].scale}) translate(${logos[device].position.x}%, ${logos[device].position.y}%)`,
                                   transformOrigin: 'center center',
                                 }}
                               />
                             ) : (
-                              <div className="flex items-center justify-center w-full h-full">
+                              <div className="flex items-center justify-center">
                                 <span className="text-xs text-muted-foreground">No logo</span>
                               </div>
                             )}

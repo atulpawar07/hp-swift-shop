@@ -14,21 +14,32 @@ const authSchema = z.object({
   password: z.string().min(6, { message: 'Password must be at least 6 characters' }).max(100),
 });
 
+const signUpSchema = authSchema.extend({
+  fullName: z.string().trim().min(2, { message: 'Name must be at least 2 characters' }).max(100, { message: 'Name must be less than 100 characters' }),
+  phone: z.string().trim().regex(/^\+?[1-9]\d{1,14}$/, { message: 'Please enter a valid phone number (e.g., +1234567890)' }),
+});
+
 const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const [touched, setTouched] = useState<{ email?: boolean; password?: boolean }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string; fullName?: string; phone?: string }>({});
+  const [touched, setTouched] = useState<{ email?: boolean; password?: boolean; fullName?: boolean; phone?: boolean }>({});
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
-  const validateField = (field: 'email' | 'password', value: string) => {
+  const validateField = (field: 'email' | 'password' | 'fullName' | 'phone', value: string, isSignUp = false) => {
     try {
       if (field === 'email') {
         authSchema.shape.email.parse(value);
-      } else {
+      } else if (field === 'password') {
         authSchema.shape.password.parse(value);
+      } else if (field === 'fullName' && isSignUp) {
+        signUpSchema.shape.fullName.parse(value);
+      } else if (field === 'phone' && isSignUp) {
+        signUpSchema.shape.phone.parse(value);
       }
       setErrors(prev => ({ ...prev, [field]: undefined }));
       return true;
@@ -74,9 +85,10 @@ const Auth = () => {
     }
   };
 
-  const handleBlur = (field: 'email' | 'password') => {
+  const handleBlur = (field: 'email' | 'password' | 'fullName' | 'phone', isSignUp = false) => {
     setTouched(prev => ({ ...prev, [field]: true }));
-    validateField(field, field === 'email' ? email : password);
+    const value = field === 'email' ? email : field === 'password' ? password : field === 'fullName' ? fullName : phone;
+    validateField(field, value, isSignUp);
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -93,13 +105,34 @@ const Auth = () => {
     }
   };
 
+  const validateSignUpForm = () => {
+    try {
+      signUpSchema.parse({ email, password, fullName, phone });
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const formattedErrors: { email?: string; password?: string; fullName?: string; phone?: string } = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            formattedErrors[err.path[0] as 'email' | 'password' | 'fullName' | 'phone'] = err.message;
+          }
+        });
+        setErrors(formattedErrors);
+        toast.error('Please fix the validation errors');
+      }
+      return false;
+    }
+  };
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateSignUpForm()) return;
     
     setLoading(true);
     try {
-      await signUp(email, password);
+      await signUp(email, password, fullName, phone);
+      toast.success('Please check your email to verify your account');
     } catch (error) {
       console.error('Sign up error:', error);
     } finally {
@@ -172,6 +205,50 @@ const Auth = () => {
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
+                  <Label htmlFor="signup-fullname">Full Name</Label>
+                  <Input
+                    id="signup-fullname"
+                    type="text"
+                    placeholder="John Doe"
+                    value={fullName}
+                    onChange={(e) => {
+                      setFullName(e.target.value);
+                      if (touched.fullName) validateField('fullName', e.target.value, true);
+                    }}
+                    onBlur={() => handleBlur('fullName', true)}
+                    className={errors.fullName ? 'border-destructive focus-visible:ring-destructive' : ''}
+                    aria-invalid={!!errors.fullName}
+                    aria-describedby={errors.fullName ? 'signup-fullname-error' : undefined}
+                  />
+                  {errors.fullName && (
+                    <p id="signup-fullname-error" className="text-sm text-destructive font-medium">
+                      {errors.fullName}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="signup-phone">Phone Number</Label>
+                  <Input
+                    id="signup-phone"
+                    type="tel"
+                    placeholder="+1234567890"
+                    value={phone}
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                      if (touched.phone) validateField('phone', e.target.value, true);
+                    }}
+                    onBlur={() => handleBlur('phone', true)}
+                    className={errors.phone ? 'border-destructive focus-visible:ring-destructive' : ''}
+                    aria-invalid={!!errors.phone}
+                    aria-describedby={errors.phone ? 'signup-phone-error' : undefined}
+                  />
+                  {errors.phone && (
+                    <p id="signup-phone-error" className="text-sm text-destructive font-medium">
+                      {errors.phone}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="signup-email">Email</Label>
                   <Input
                     id="signup-email"
@@ -179,7 +256,7 @@ const Auth = () => {
                     placeholder="your@email.com"
                     value={email}
                     onChange={(e) => handleEmailChange(e.target.value)}
-                    onBlur={() => handleBlur('email')}
+                    onBlur={() => handleBlur('email', true)}
                     className={errors.email ? 'border-destructive focus-visible:ring-destructive' : ''}
                     aria-invalid={!!errors.email}
                     aria-describedby={errors.email ? 'signup-email-error' : undefined}
@@ -198,7 +275,7 @@ const Auth = () => {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => handlePasswordChange(e.target.value)}
-                    onBlur={() => handleBlur('password')}
+                    onBlur={() => handleBlur('password', true)}
                     className={errors.password ? 'border-destructive focus-visible:ring-destructive' : ''}
                     aria-invalid={!!errors.password}
                     aria-describedby={errors.password ? 'signup-password-error' : undefined}
@@ -210,7 +287,7 @@ const Auth = () => {
                   )}
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Creating account...' : 'Create Account'}
+                  {loading ? 'Creating account...' : 'Sign Up'}
                 </Button>
               </form>
             </TabsContent>

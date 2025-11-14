@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Package, ShoppingCart, Users, TrendingUp, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { ActivityLogs } from "@/components/admin/ActivityLogs";
 
 const Admin = () => {
   const { user, isAdmin, loading } = useAuth();
@@ -148,26 +149,8 @@ const Admin = () => {
           </Card>
         </div>
 
-        {/* Feature Notice */}
-        <Card className="bg-primary/5 border-primary/20">
-          <CardContent className="pt-6">
-            <h3 className="text-lg font-semibold mb-2">🚀 Ready to enable full backend features?</h3>
-            <p className="text-muted-foreground mb-4">
-              To unlock complete product management, order processing, user authentication, 
-              and currency conversion features, we need to connect Lovable Cloud. This will provide:
-            </p>
-            <ul className="list-disc list-inside space-y-1 text-muted-foreground mb-4">
-              <li>Database for products, orders, and customers</li>
-              <li>User authentication for admin and customers</li>
-              <li>Real-time currency conversion API</li>
-              <li>File storage for product images</li>
-              <li>Backend APIs for all operations</li>
-            </ul>
-            <p className="text-sm text-muted-foreground italic">
-              The frontend structure is ready. Backend integration will be enabled next.
-            </p>
-          </CardContent>
-        </Card>
+        {/* Activity Logs */}
+        <ActivityLogs />
       </div>
     </div>
   );

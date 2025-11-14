@@ -10,7 +10,7 @@ interface AuthContextType {
   isAdmin: boolean;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, fullName: string, phone: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -94,14 +94,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     navigate('/');
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, fullName: string, phone: string) => {
     const redirectUrl = `${window.location.origin}/`;
     
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: redirectUrl
+        emailRedirectTo: redirectUrl,
+        data: {
+          full_name: fullName,
+          phone: phone
+        }
       }
     });
 
@@ -110,8 +114,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       throw error;
     }
 
-    toast.success('Account created successfully!');
-    navigate('/');
+    // Update profile with additional info
+    if (data.user) {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          full_name: fullName,
+          phone: phone
+        })
+        .eq('id', data.user.id);
+
+      if (profileError) {
+        console.error('Error updating profile:', profileError);
+      }
+    }
+
+    toast.success('Account created! Please check your email to verify your account.');
+    navigate('/auth');
   };
 
   const signOut = async () => {

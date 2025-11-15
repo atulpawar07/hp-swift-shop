@@ -10,7 +10,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Users, Shield, Mail, Phone, Calendar, CheckCircle, XCircle, Trash2, Pencil } from 'lucide-react';
+import { Users, Shield, Mail, Phone, Calendar, CheckCircle, XCircle, Trash2, Pencil, KeyRound } from 'lucide-react';
 import { toast } from 'sonner';
 import { logActivity } from '@/lib/activityLogger';
 
@@ -32,7 +32,7 @@ export const UserManagement = () => {
   const [userToDelete, setUserToDelete] = useState<UserProfile | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [userToEdit, setUserToEdit] = useState<UserProfile | null>(null);
-  const [editForm, setEditForm] = useState({ full_name: '', phone: '', email: '' });
+  const [editForm, setEditForm] = useState({ full_name: '', phone: '' });
 
   useEffect(() => {
     fetchUsers();
@@ -139,7 +139,6 @@ export const UserManagement = () => {
     setEditForm({
       full_name: user.full_name || '',
       phone: user.phone || '',
-      email: user.email || '',
     });
     setEditDialogOpen(true);
   };
@@ -153,7 +152,6 @@ export const UserManagement = () => {
         .update({
           full_name: editForm.full_name || null,
           phone: editForm.phone || null,
-          email: editForm.email,
         })
         .eq('id', userToEdit.id);
 
@@ -165,7 +163,6 @@ export const UserManagement = () => {
         entityId: userToEdit.id,
         details: { 
           updated_fields: editForm,
-          previous_email: userToEdit.email 
         },
       });
 
@@ -176,6 +173,28 @@ export const UserManagement = () => {
     } catch (error: any) {
       console.error('Error updating user:', error);
       toast.error(error.message || 'Failed to update user');
+    }
+  };
+
+  const handleResetPassword = async (userEmail: string, userId: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(userEmail, {
+        redirectTo: `${window.location.origin}/auth`,
+      });
+
+      if (error) throw error;
+
+      await logActivity({
+        action: 'Reset Password',
+        entityType: 'user',
+        entityId: userId,
+        details: { email: userEmail },
+      });
+
+      toast.success(`Password reset email sent to ${userEmail}`);
+    } catch (error: any) {
+      console.error('Error sending password reset:', error);
+      toast.error(error.message || 'Failed to send password reset email');
     }
   };
 
@@ -355,8 +374,17 @@ export const UserManagement = () => {
                             variant="outline"
                             size="sm"
                             onClick={() => handleEditUser(user)}
+                            title="Edit user details"
                           >
                             <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleResetPassword(user.email, user.id)}
+                            title="Send password reset email"
+                          >
+                            <KeyRound className="h-4 w-4" />
                           </Button>
                           <Button
                             variant="destructive"
@@ -365,6 +393,7 @@ export const UserManagement = () => {
                               setUserToDelete(user);
                               setDeleteDialogOpen(true);
                             }}
+                            title="Delete user"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -406,15 +435,8 @@ export const UserManagement = () => {
                 placeholder="Enter phone number"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={editForm.email}
-                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                placeholder="Enter email address"
-              />
+            <div className="text-sm text-muted-foreground bg-muted p-3 rounded-md">
+              <strong>Note:</strong> Email cannot be edited here. To reset a user's password, use the password reset button in the actions column.
             </div>
           </div>
           <DialogFooter>

@@ -583,6 +583,28 @@ const AdminDashboard = () => {
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validate password strength
+    if (newUserPassword.length < 12) {
+      toast.error('Password must be at least 12 characters');
+      return;
+    }
+    if (!/[A-Z]/.test(newUserPassword)) {
+      toast.error('Password must contain at least one uppercase letter');
+      return;
+    }
+    if (!/[a-z]/.test(newUserPassword)) {
+      toast.error('Password must contain at least one lowercase letter');
+      return;
+    }
+    if (!/[0-9]/.test(newUserPassword)) {
+      toast.error('Password must contain at least one number');
+      return;
+    }
+    if (!/[^A-Za-z0-9]/.test(newUserPassword)) {
+      toast.error('Password must contain at least one special character');
+      return;
+    }
+    
     try {
       // Create the user account
       const redirectUrl = `${window.location.origin}/`;

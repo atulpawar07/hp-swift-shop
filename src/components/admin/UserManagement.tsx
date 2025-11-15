@@ -7,7 +7,10 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Users, Shield, Mail, Phone, Calendar, CheckCircle, XCircle, Trash2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Users, Shield, Mail, Phone, Calendar, CheckCircle, XCircle, Trash2, Pencil } from 'lucide-react';
 import { toast } from 'sonner';
 import { logActivity } from '@/lib/activityLogger';
 
@@ -27,6 +30,9 @@ export const UserManagement = () => {
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<UserProfile | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [userToEdit, setUserToEdit] = useState<UserProfile | null>(null);
+  const [editForm, setEditForm] = useState({ full_name: '', phone: '', email: '' });
 
   useEffect(() => {
     fetchUsers();
@@ -125,6 +131,51 @@ export const UserManagement = () => {
     } catch (error: any) {
       console.error('Error removing role:', error);
       toast.error(error.message || 'Failed to remove role');
+    }
+  };
+
+  const handleEditUser = (user: UserProfile) => {
+    setUserToEdit(user);
+    setEditForm({
+      full_name: user.full_name || '',
+      phone: user.phone || '',
+      email: user.email || '',
+    });
+    setEditDialogOpen(true);
+  };
+
+  const handleUpdateUser = async () => {
+    if (!userToEdit) return;
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: editForm.full_name || null,
+          phone: editForm.phone || null,
+          email: editForm.email,
+        })
+        .eq('id', userToEdit.id);
+
+      if (error) throw error;
+
+      await logActivity({
+        action: 'Update User',
+        entityType: 'user',
+        entityId: userToEdit.id,
+        details: { 
+          updated_fields: editForm,
+          previous_email: userToEdit.email 
+        },
+      });
+
+      toast.success('User details updated successfully');
+      setEditDialogOpen(false);
+      setUserToEdit(null);
+      fetchUsers();
+    } catch (error: any) {
+      console.error('Error updating user:', error);
+      toast.error(error.message || 'Failed to update user');
     }
   };
 
@@ -301,6 +352,13 @@ export const UserManagement = () => {
                             </SelectContent>
                           </Select>
                           <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditUser(user)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
                             variant="destructive"
                             size="sm"
                             onClick={() => {
@@ -320,6 +378,55 @@ export const UserManagement = () => {
           </ScrollArea>
         </CardContent>
       </Card>
+
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit User Details</DialogTitle>
+            <DialogDescription>
+              Update user information for {userToEdit?.email}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="full_name">Full Name</Label>
+              <Input
+                id="full_name"
+                value={editForm.full_name}
+                onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
+                placeholder="Enter full name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone</Label>
+              <Input
+                id="phone"
+                value={editForm.phone}
+                onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                placeholder="Enter phone number"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={editForm.email}
+                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                placeholder="Enter email address"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleUpdateUser}>
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>

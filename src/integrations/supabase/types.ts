@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          details: Json | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          details?: Json | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       brands: {
         Row: {
           created_at: string | null
@@ -144,6 +177,7 @@ export type Database = {
         Row: {
           created_at: string | null
           email: string | null
+          email_verified: boolean | null
           full_name: string | null
           id: string
           phone: string | null
@@ -151,6 +185,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           email?: string | null
+          email_verified?: boolean | null
           full_name?: string | null
           id: string
           phone?: string | null
@@ -158,6 +193,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           email?: string | null
+          email_verified?: boolean | null
           full_name?: string | null
           id?: string
           phone?: string | null

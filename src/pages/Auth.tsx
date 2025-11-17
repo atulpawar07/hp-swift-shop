@@ -217,19 +217,82 @@ const Auth = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Welcome</CardTitle>
+          <CardTitle className="text-2xl text-center">
+            {showResetPassword ? 'Reset Password' : 'Welcome'}
+          </CardTitle>
           <CardDescription className="text-center">
-            Sign in to your account or create a new one
+            {showResetPassword 
+              ? 'Enter your email to receive a password reset link' 
+              : 'Sign in to your account or create a new one'}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="signin">
+          {showResetPassword ? (
+            <div className="space-y-4">
+              {resetEmailSent ? (
+                <div className="text-center space-y-4">
+                  <p className="text-sm text-muted-foreground">
+                    Password reset email sent! Please check your inbox and follow the instructions.
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      setShowResetPassword(false);
+                      setResetEmailSent(false);
+                      setEmail('');
+                    }}
+                  >
+                    Back to Sign In
+                  </Button>
+                </div>
+              ) : (
+                <form onSubmit={handleResetPassword} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="reset-email">Email</Label>
+                    <Input
+                      id="reset-email"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={email}
+                      onChange={(e) => handleEmailChange(e.target.value)}
+                      onBlur={() => handleBlur('email')}
+                      className={errors.email ? 'border-destructive focus-visible:ring-destructive' : ''}
+                      aria-invalid={!!errors.email}
+                      aria-describedby={errors.email ? 'reset-email-error' : undefined}
+                    />
+                    {errors.email && (
+                      <p id="reset-email-error" className="text-sm text-destructive font-medium">
+                        {errors.email}
+                      </p>
+                    )}
+                  </div>
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? 'Sending...' : 'Send Reset Link'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      setShowResetPassword(false);
+                      setErrors({});
+                    }}
+                    disabled={loading}
+                  >
+                    Back to Sign In
+                  </Button>
+                </form>
+              )}
+            </div>
+          ) : (
+            <Tabs defaultValue="signin" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="signin">Sign In</TabsTrigger>
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="signin-email">Email</Label>
@@ -374,6 +437,7 @@ const Auth = () => {
               </form>
             </TabsContent>
           </Tabs>
+          )}
           
           <Button
             variant="ghost"

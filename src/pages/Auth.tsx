@@ -9,18 +9,22 @@ import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-const authSchema = z.object({
+const signInSchema = z.object({
   email: z.string().trim().min(1, { message: 'Email is required' }).email({ message: 'Please enter a valid email address (e.g., user@example.com)' }).max(255),
-  password: z.string()
-    .min(12, { message: 'Password must be at least 12 characters' })
-    .max(100)
-    .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter' })
-    .regex(/[a-z]/, { message: 'Password must contain at least one lowercase letter' })
-    .regex(/[0-9]/, { message: 'Password must contain at least one number' })
-    .regex(/[^A-Za-z0-9]/, { message: 'Password must contain at least one special character' }),
+  password: z.string().min(1, { message: 'Password is required' }),
 });
 
-const signUpSchema = authSchema.extend({
+const signUpPasswordSchema = z.string()
+  .min(12, { message: 'Password must be at least 12 characters' })
+  .max(100)
+  .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter' })
+  .regex(/[a-z]/, { message: 'Password must contain at least one lowercase letter' })
+  .regex(/[0-9]/, { message: 'Password must contain at least one number' })
+  .regex(/[^A-Za-z0-9]/, { message: 'Password must contain at least one special character' });
+
+const signUpSchema = z.object({
+  email: z.string().trim().min(1, { message: 'Email is required' }).email({ message: 'Please enter a valid email address (e.g., user@example.com)' }).max(255),
+  password: signUpPasswordSchema,
   fullName: z.string().trim().min(2, { message: 'Name must be at least 2 characters' }).max(100, { message: 'Name must be less than 100 characters' }),
   phone: z.string().trim().regex(/^\+?[1-9]\d{1,14}$/, { message: 'Please enter a valid phone number (e.g., +1234567890)' }),
 });
@@ -41,9 +45,13 @@ const Auth = () => {
   const validateField = (field: 'email' | 'password' | 'fullName' | 'phone', value: string, isSignUp = false) => {
     try {
       if (field === 'email') {
-        authSchema.shape.email.parse(value);
+        signInSchema.shape.email.parse(value);
       } else if (field === 'password') {
-        authSchema.shape.password.parse(value);
+        if (isSignUp) {
+          signUpPasswordSchema.parse(value);
+        } else {
+          signInSchema.shape.password.parse(value);
+        }
       } else if (field === 'fullName' && isSignUp) {
         signUpSchema.shape.fullName.parse(value);
       } else if (field === 'phone' && isSignUp) {
@@ -61,7 +69,7 @@ const Auth = () => {
 
   const validateForm = () => {
     try {
-      authSchema.parse({ email, password });
+      signInSchema.parse({ email, password });
       setErrors({});
       return true;
     } catch (error) {
@@ -86,10 +94,10 @@ const Auth = () => {
     }
   };
 
-  const handlePasswordChange = (value: string) => {
+  const handlePasswordChange = (value: string, isSignUp = false) => {
     setPassword(value);
     if (touched.password) {
-      validateField('password', value);
+      validateField('password', value, isSignUp);
     }
   };
 
@@ -177,7 +185,7 @@ const Auth = () => {
     }
 
     try {
-      authSchema.shape.email.parse(email);
+      signInSchema.shape.email.parse(email);
       setErrors({});
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -249,8 +257,8 @@ const Auth = () => {
                     type="password"
                     placeholder="••••••••"
                     value={password}
-                    onChange={(e) => handlePasswordChange(e.target.value)}
-                    onBlur={() => handleBlur('password')}
+                    onChange={(e) => handlePasswordChange(e.target.value, false)}
+                    onBlur={() => handleBlur('password', false)}
                     className={errors.password ? 'border-destructive focus-visible:ring-destructive' : ''}
                     aria-invalid={!!errors.password}
                     aria-describedby={errors.password ? 'signin-password-error' : undefined}
@@ -348,7 +356,7 @@ const Auth = () => {
                     type="password"
                     placeholder="••••••••"
                     value={password}
-                    onChange={(e) => handlePasswordChange(e.target.value)}
+                    onChange={(e) => handlePasswordChange(e.target.value, true)}
                     onBlur={() => handleBlur('password', true)}
                     className={errors.password ? 'border-destructive focus-visible:ring-destructive' : ''}
                     aria-invalid={!!errors.password}

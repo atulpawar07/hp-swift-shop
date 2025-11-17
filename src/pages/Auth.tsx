@@ -31,6 +31,8 @@ const Auth = () => {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; fullName?: string; phone?: string }>({});
   const [touched, setTouched] = useState<{ email?: boolean; password?: boolean; fullName?: boolean; phone?: boolean }>({});
   const { signIn, signUp } = useAuth();
@@ -133,14 +135,71 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateSignUpForm()) return;
-    
+
+    try {
+      signUpSchema.parse({ email, password, fullName, phone });
+      setErrors({});
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const formattedErrors: { email?: string; password?: string; fullName?: string; phone?: string } = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            formattedErrors[err.path[0] as 'email' | 'password' | 'fullName' | 'phone'] = err.message;
+          }
+        });
+        setErrors(formattedErrors);
+        toast.error('Please fix the validation errors');
+        return;
+      }
+    }
+
     setLoading(true);
     try {
       await signUp(email, password, fullName, phone);
-      toast.success('Please check your email to verify your account');
+    } catch (error: any) {
+      if (error.message?.includes('User already registered')) {
+        toast.error('An account with this email already exists. Please sign in instead.');
+      } else {
+        toast.error(error.message || 'Failed to sign up. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email) {
+      setErrors({ email: 'Please enter your email address' });
+      toast.error('Please enter your email address');
+      return;
+    }
+
+    try {
+      authSchema.shape.email.parse(email);
+      setErrors({});
     } catch (error) {
-      console.error('Sign up error:', error);
+      if (error instanceof z.ZodError) {
+        setErrors({ email: error.errors[0]?.message });
+        toast.error(error.errors[0]?.message);
+        return;
+      }
+    }
+
+    setLoading(true);
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth`,
+      });
+
+      if (error) throw error;
+
+      setResetEmailSent(true);
+      toast.success('Password reset email sent! Please check your inbox.');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to send reset email. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -204,6 +263,15 @@ const Auth = () => {
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? 'Signing in...' : 'Sign In'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="link"
+                  className="w-full text-sm"
+                  onClick={() => setShowResetPassword(true)}
+                  disabled={loading}
+                >
+                  Forgot your password?
                 </Button>
               </form>
             </TabsContent>

@@ -37,7 +37,10 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string; fullName?: string; phone?: string }>({});
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errors, setErrors] = useState<{ email?: string; password?: string; fullName?: string; phone?: string; newPassword?: string; confirmPassword?: string }>({});
   const [touched, setTouched] = useState<{ email?: boolean; password?: boolean; fullName?: boolean; phone?: boolean }>({});
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
@@ -213,21 +216,130 @@ const Auth = () => {
     }
   };
 
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!newPassword || !confirmPassword) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setErrors({ confirmPassword: 'Passwords do not match' });
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    try {
+      signUpPasswordSchema.parse(newPassword);
+      setErrors({});
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setErrors({ newPassword: error.errors[0]?.message });
+        toast.error(error.errors[0]?.message);
+        return;
+      }
+    }
+
+    setLoading(true);
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) throw error;
+
+      toast.success('Password updated successfully! You can now sign in.');
+      setIsResettingPassword(false);
+      setNewPassword('');
+      setConfirmPassword('');
+      navigate('/auth');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to update password. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Check if user is coming from password reset email
+  useState(() => {
+    const checkPasswordReset = async () => {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data } = await supabase.auth.getSession();
+      
+      // Check if there's a password reset token in the URL
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const type = hashParams.get('type');
+      
+      if (type === 'recovery' && data.session) {
+        setIsResettingPassword(true);
+      }
+    };
+    
+    checkPasswordReset();
+  });
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl text-center">
-            {showResetPassword ? 'Reset Password' : 'Welcome'}
+            {isResettingPassword ? 'Set New Password' : showResetPassword ? 'Reset Password' : 'Welcome'}
           </CardTitle>
           <CardDescription className="text-center">
-            {showResetPassword 
-              ? 'Enter your email to receive a password reset link' 
-              : 'Sign in to your account or create a new one'}
+            {isResettingPassword 
+              ? 'Enter your new password below' 
+              : showResetPassword 
+                ? 'Enter your email to receive a password reset link' 
+                : 'Sign in to your account or create a new one'}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {showResetPassword ? (
+          {isResettingPassword ? (
+            <form onSubmit={handleUpdatePassword} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="new-password">New Password</Label>
+                <Input
+                  id="new-password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className={errors.newPassword ? 'border-destructive focus-visible:ring-destructive' : ''}
+                  aria-invalid={!!errors.newPassword}
+                />
+                {errors.newPassword && (
+                  <p className="text-sm text-destructive font-medium">
+                    {errors.newPassword}
+                  </p>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Must be at least 12 characters with uppercase, lowercase, number, and special character
+                </p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className={errors.confirmPassword ? 'border-destructive focus-visible:ring-destructive' : ''}
+                  aria-invalid={!!errors.confirmPassword}
+                />
+                {errors.confirmPassword && (
+                  <p className="text-sm text-destructive font-medium">
+                    {errors.confirmPassword}
+                  </p>
+                )}
+              </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Updating...' : 'Update Password'}
+              </Button>
+            </form>
+          ) : showResetPassword ? (
             <div className="space-y-4">
               {resetEmailSent ? (
                 <div className="text-center space-y-4">

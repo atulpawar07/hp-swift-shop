@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://sk-enterprise.lovable.app/sitemap.xml
+Sitemap: https://www.skenterpriseuae.com/sitemap.xml

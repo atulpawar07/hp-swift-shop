@@ -10,6 +10,7 @@ import { ContentEditor } from "@/components/admin/ContentEditor";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import SEO from "@/components/SEO";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -101,6 +102,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-black text-white">
+      <SEO 
+        title="SK Enterprise UAE - IT Solutions, Hardware & Networking Equipment"
+        description="Leading supplier of IT solutions in UAE. Computers, laptops, printers, networking equipment, UPS systems from top brands like HP, Dell, Canon, Brother, APC. Dubai based."
+        canonical="https://www.skenterpriseuae.com/"
+      />
       <Navbar />
       <Hero />
 

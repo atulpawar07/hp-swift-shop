@@ -12,6 +12,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import SEO from "@/components/SEO";
 
 interface Product {
   id: string;
@@ -250,6 +251,11 @@ const Products = () => {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <SEO 
+        title="IT Products & Hardware - Computers, Printers, Networking | SK Enterprise UAE"
+        description="Browse our extensive range of IT products in UAE. HP, Dell, Canon, Brother printers, APC UPS systems, networking equipment, computers and laptops. Quality hardware at competitive prices."
+        canonical="https://www.skenterpriseuae.com/products"
+      />
       <Navbar />
       
       {loading ? (

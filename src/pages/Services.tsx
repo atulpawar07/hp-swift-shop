@@ -19,6 +19,7 @@ import { usePageContent } from "@/hooks/usePageContent";
 import { EditButton } from "@/components/admin/EditButton";
 import { ContentEditor } from "@/components/admin/ContentEditor";
 import { ServicesEditor } from "@/components/admin/ServicesEditor";
+import SEO from "@/components/SEO";
 
 const iconMap: Record<string, any> = {
   Package, Building, Wrench, Network, Users, ShoppingCart,
@@ -34,6 +35,11 @@ const Services = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-black text-white">
+      <SEO 
+        title="IT Services Dubai - Maintenance, Support, Networking | SK Enterprise UAE"
+        description="Professional IT services in UAE. Computer maintenance, network setup, technical support, system upgrades, and IT consulting. Expert solutions for businesses in Dubai and across UAE."
+        canonical="https://www.skenterpriseuae.com/services"
+      />
       <Navbar />
       
       <main className="flex-1">

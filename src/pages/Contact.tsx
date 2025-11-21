@@ -21,6 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import SEO from "@/components/SEO";
 
 // Form validation schema
 const contactFormSchema = z.object({
@@ -169,6 +170,11 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-black text-white">
+      <SEO 
+        title="Contact SK Enterprise UAE - Get in Touch for IT Solutions"
+        description="Contact SK Enterprise for IT solutions in Dubai, UAE. Email: sales@skenterpriseuae.com | Phone: +971 563 569089. Expert support for all your technology needs."
+        canonical="https://www.skenterpriseuae.com/contact"
+      />
       <Navbar />
 
       <main className="flex-1">

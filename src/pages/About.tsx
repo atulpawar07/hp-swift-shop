@@ -7,6 +7,7 @@ import { EditButton } from "@/components/admin/EditButton";
 import { ContentEditor } from "@/components/admin/ContentEditor";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import SEO from "@/components/SEO";
 
 const About = () => {
   const { content: heroContent, updateContent: updateHero } = usePageContent('about', 'hero');
@@ -31,6 +32,11 @@ const About = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-black text-white">
+      <SEO 
+        title="About SK Enterprise UAE - Your Trusted IT Solutions Partner"
+        description="Learn about SK Enterprise UAE, Dubai's leading IT solutions provider. Expert team delivering quality computers, networking equipment, and technology solutions since establishment."
+        canonical="https://www.skenterpriseuae.com/about"
+      />
       <Navbar />
       
       <main className="flex-1">

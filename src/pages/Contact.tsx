@@ -168,6 +168,16 @@ const Contact = () => {
     }
   };
 
+  const displayPhone =
+    typeof contactInfo?.phone === "string" && contactInfo.phone.trim().length > 0
+      ? contactInfo.phone
+      : primaryPhone;
+
+  const displayEmail =
+    typeof contactInfo?.email === "string" && contactInfo.email.trim().length > 0
+      ? contactInfo.email
+      : primaryEmail;
+
   return (
     <div className="min-h-screen flex flex-col bg-black text-white">
       <SEO 
@@ -215,10 +225,10 @@ const Contact = () => {
                     <div>
                       <h3 className="font-semibold text-white mb-1">Phone</h3>
                       <a
-                        href={`tel:${primaryPhone}`}
+                        href={`tel:${displayPhone}`}
                         className="text-gray-200 hover:text-primary"
                       >
-                        {primaryPhone}
+                        {displayPhone}
                       </a>
                     </div>
                   </div>
@@ -230,10 +240,10 @@ const Contact = () => {
                     <div>
                       <h3 className="font-semibold text-white mb-1">Email</h3>
                       <a
-                        href={`mailto:${primaryEmail}`}
+                        href={`mailto:${displayEmail}`}
                         className="text-gray-200 hover:text-primary"
                       >
-                        {primaryEmail}
+                        {displayEmail}
                       </a>
                     </div>
                   </div>

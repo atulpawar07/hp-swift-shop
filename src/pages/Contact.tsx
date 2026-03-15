@@ -168,6 +168,16 @@ const Contact = () => {
     }
   };
 
+  const displayPhone =
+    typeof contactInfo?.phone === "string" && contactInfo.phone.trim().length > 0
+      ? contactInfo.phone
+      : primaryPhone;
+
+  const displayEmail =
+    typeof contactInfo?.email === "string" && contactInfo.email.trim().length > 0
+      ? contactInfo.email
+      : primaryEmail;
+
   return (
     <div className="min-h-screen flex flex-col bg-black text-white">
       <SEO 

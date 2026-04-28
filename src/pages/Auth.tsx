@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -263,22 +264,22 @@ const Auth = () => {
   };
 
   // Check if user is coming from password reset email
-  useState(() => {
-    const checkPasswordReset = async () => {
-      const { supabase } = await import('@/integrations/supabase/client');
-      const { data } = await supabase.auth.getSession();
-      
-      // Check if there's a password reset token in the URL
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const type = hashParams.get('type');
-      
-      if (type === 'recovery' && data.session) {
+  useEffect(() => {
+    // Detect recovery via URL hash immediately (before Supabase consumes it)
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    if (hashParams.get('type') === 'recovery') {
+      setIsResettingPassword(true);
+    }
+
+    // Also listen for the PASSWORD_RECOVERY event fired by Supabase
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
         setIsResettingPassword(true);
       }
-    };
-    
-    checkPasswordReset();
-  });
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
